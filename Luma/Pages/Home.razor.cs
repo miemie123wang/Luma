@@ -1,16 +1,43 @@
 using Microsoft.AspNetCore.Components;
+using Luma.Services;
 
 namespace Luma.Pages;
 
 public partial class Home : ComponentBase
 {
-    protected string CurrentPhaseIcon { get; set; } = "🌇";
-    protected string CurrentPhaseName { get; set; } = "黄金时段";
-    protected string CurrentPhaseDescription { get; set; } = "现在是拍摄的最佳时机";
-    protected string NextPhase { get; set; } = "日落后蓝调时段 · 约1小时后";
+    [Inject] private SunCalcService SunCalcService { get; set; } = default!;
+    [Inject] private LightPhaseService LightPhaseService { get; set; } = default!;
 
-    protected override void OnInitialized()
+    protected LightPhaseInfo? CurrentPhase { get; set; }
+    protected GeoLocation? Location { get; set; }
+    protected string LocationName { get; set; } = "";
+    protected bool IsLoading { get; set; } = true;
+    protected string? ErrorMessage { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // 之后这里会根据真实时间计算光线阶段
+        if (!firstRender) return;
+
+        try
+        {
+            Location = await SunCalcService.GetCurrentPositionAsync();
+            if (Location != null)
+            {
+                var sunTimes = await SunCalcService.GetSunTimesAsync(Location.Lat, Location.Lng);
+                if (sunTimes != null)
+                    CurrentPhase = LightPhaseService.GetCurrentPhase(sunTimes);
+
+                LocationName = await SunCalcService.GetLocationNameAsync(Location.Lat, Location.Lng);
+            }
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "无法获取位置，请允许位置权限";
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 }

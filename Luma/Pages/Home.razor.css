@@ -1,0 +1,49 @@
+.page-title {
+    color: #f5a623;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    color: #999;
+    margin-bottom: 2rem;
+    display: block;
+}
+
+.light-card {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+}
+
+.light-card-error {
+    background-color: #1a1a1a;
+    border: 1px solid #c0392b;
+    border-radius: 12px;
+}
+
+.phase-title {
+    color: #f5a623;
+}
+
+.phase-description {
+    color: #f0f0f0;
+    margin-top: 0.5rem;
+}
+
+.phase-next {
+    color: #999;
+}
+
+.phase-location {
+    color: #555;
+}
+
+.phase-error {
+    color: #e74c3c;
+}
+
+.divider {
+    margin: 1rem 0;
+    border-color: #333;
+}

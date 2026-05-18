@@ -160,3 +160,53 @@ main[b-0tse2o64ps] {
         overflow-y: auto;
     }
 }
+/* /Pages/Home.razor.rz.scp.css */
+.page-title[b-mhkqp0dq25] {
+    color: #f5a623;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle[b-mhkqp0dq25] {
+    color: #999;
+    margin-bottom: 2rem;
+    display: block;
+}
+
+.light-card[b-mhkqp0dq25] {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+}
+
+.light-card-error[b-mhkqp0dq25] {
+    background-color: #1a1a1a;
+    border: 1px solid #c0392b;
+    border-radius: 12px;
+}
+
+.phase-title[b-mhkqp0dq25] {
+    color: #f5a623;
+}
+
+.phase-description[b-mhkqp0dq25] {
+    color: #f0f0f0;
+    margin-top: 0.5rem;
+}
+
+.phase-next[b-mhkqp0dq25] {
+    color: #999;
+}
+
+.phase-location[b-mhkqp0dq25] {
+    color: #555;
+}
+
+.phase-error[b-mhkqp0dq25] {
+    color: #e74c3c;
+}
+
+.divider[b-mhkqp0dq25] {
+    margin: 1rem 0;
+    border-color: #333;
+}
