@@ -12,5 +12,6 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<SunCalcService>();
 builder.Services.AddScoped<LightPhaseService>();
 builder.Services.AddHttpClient<WeatherService>();
+builder.Services.AddScoped<SettingsService>();
 
 await builder.Build().RunAsync();

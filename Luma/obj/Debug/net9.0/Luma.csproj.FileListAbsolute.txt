@@ -1114,10 +1114,10 @@ C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\mh8uzqakyi-yhaootui95.gz
 C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\2hso0tggzk-3nv4nq0k74.gz
 C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\uwg8pzlzir-crpphxv0mk.gz
 C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\vaxspv2j7j-t8yn5vxdk2.gz
-C:\Users\leoan\Luma\luma\bin\Debug\net9.0\wwwroot\_framework\Luma.u2bingra1y.wasm
-C:\Users\leoan\Luma\luma\bin\Debug\net9.0\wwwroot\_framework\Luma.0ceh650jw9.pdb
-C:\Users\leoan\Luma\luma\bin\Debug\net9.0\wwwroot\_framework\Luma.u2bingra1y.wasm.gz
-C:\Users\leoan\Luma\luma\bin\Debug\net9.0\wwwroot\_framework\Luma.0ceh650jw9.pdb.gz
-C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\ty1d6ylpxc-u2bingra1y.gz
-C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\gfa99tl2yu-0ceh650jw9.gz
-C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\j28c5q7xpp-3pgsga1n3a.gz
+C:\Users\leoan\Luma\luma\bin\Debug\net9.0\wwwroot\_framework\Luma.i8s36xciiw.wasm
+C:\Users\leoan\Luma\luma\bin\Debug\net9.0\wwwroot\_framework\Luma.qgao45b0p3.pdb
+C:\Users\leoan\Luma\luma\bin\Debug\net9.0\wwwroot\_framework\Luma.i8s36xciiw.wasm.gz
+C:\Users\leoan\Luma\luma\bin\Debug\net9.0\wwwroot\_framework\Luma.qgao45b0p3.pdb.gz
+C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\ty1d6ylpxc-i8s36xciiw.gz
+C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\gfa99tl2yu-qgao45b0p3.gz
+C:\Users\leoan\Luma\luma\obj\Debug\net9.0\compressed\j28c5q7xpp-gouiz7tyw4.gz
