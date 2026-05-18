@@ -1,25 +1,60 @@
 @page "/"
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="py-6">
-    <MudText Typo="Typo.h5" Style="color: #f5a623; font-weight: 700; margin-bottom: 0.5rem;">
+
+    <MudText Typo="Typo.h5" Class="page-title">
         🌅 现在的光线
     </MudText>
-    <MudText Typo="Typo.caption" Style="color: #999; margin-bottom: 2rem; display: block;">
+    <MudText Typo="Typo.caption" Class="page-subtitle">
         实时光线助手
     </MudText>
 
-    <MudCard Style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px;">
-        <MudCardContent>
-            <MudText Typo="Typo.h4" Align="Align.Center" Style="color: #f5a623;">
-                @CurrentPhaseIcon @CurrentPhaseName
-            </MudText>
-            <MudText Typo="Typo.body1" Align="Align.Center" Style="color: #f0f0f0; margin-top: 0.5rem;">
-                @CurrentPhaseDescription
-            </MudText>
-            <MudDivider Style="margin: 1rem 0; border-color: #333;" />
-            <MudText Typo="Typo.body2" Style="color: #999;" Align="Align.Center">
-                下一个好时段：@NextPhase
-            </MudText>
-        </MudCardContent>
-    </MudCard>
+    @if (IsLoading)
+    {
+        <MudCard Class="light-card">
+            <MudCardContent>
+                <MudProgressCircular Color="Color.Warning" Indeterminate="true"
+                                     Style="display: block; margin: 1rem auto;" />
+                <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
+                    正在获取位置和光线数据...
+                </MudText>
+            </MudCardContent>
+        </MudCard>
+    }
+    else if (ErrorMessage != null)
+    {
+        <MudCard Class="light-card-error">
+            <MudCardContent>
+                <MudText Typo="Typo.body1" Align="Align.Center" Class="phase-error">
+                    ⚠️ @ErrorMessage
+                </MudText>
+            </MudCardContent>
+        </MudCard>
+    }
+    else if (CurrentPhase != null)
+    {
+        <MudCard Class="light-card">
+            <MudCardContent>
+                <MudText Typo="Typo.h4" Align="Align.Center" Class="phase-title">
+                    @CurrentPhase.Icon @CurrentPhase.Name
+                </MudText>
+                <MudText Typo="Typo.body1" Align="Align.Center" Class="phase-description">
+                    @CurrentPhase.Description
+                </MudText>
+
+                <MudDivider Class="divider" />
+
+                <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
+                    下一个好时段：@CurrentPhase.NextPhase
+                </MudText>
+
+                <MudDivider Class="divider" />
+
+                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location">
+                    📍 @LocationName &nbsp;·&nbsp; @Location?.Lat.ToString("F4"), @Location?.Lng.ToString("F4")
+                </MudText>
+            </MudCardContent>
+        </MudCard>
+    }
+
 </MudContainer>
