@@ -50,6 +50,26 @@
 
                 <MudDivider Class="divider" />
 
+                @if (Weather != null)
+                {
+                    <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
+                        @Weather.Icon @Weather.Description &nbsp;·&nbsp; 云量 @Weather.CloudCover%
+                        @if (Weather.IsGoodForPhoto)
+                        {
+                            <span style="color: var(--mud-palette-warning)"> ✓ 适合拍摄</span>
+                        }
+                        else
+                        {
+                            <span style="color: var(--mud-palette-text-secondary)"> 光线条件一般</span>
+                        }
+                    </MudText>
+                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location" Style="margin-top: 4px;">
+                        🌡️ @Weather.Temperature.ToString("F0")°C &nbsp;·&nbsp;
+                        💨 @Weather.WindSpeed.ToString("F0") km/h &nbsp;·&nbsp;
+                        👁️ @(Weather.Visibility >= 1000 ? $"{Weather.Visibility / 1000} km" : $"{Weather.Visibility} m")
+                    </MudText>
+                }
+                
                 <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location">
                     📍 @LocationName &nbsp;·&nbsp; @Location?.Lat.ToString("F4"), @Location?.Lng.ToString("F4")
                 </MudText>

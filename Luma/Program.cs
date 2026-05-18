@@ -11,5 +11,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddMudServices();
 builder.Services.AddScoped<SunCalcService>();
 builder.Services.AddScoped<LightPhaseService>();
+builder.Services.AddHttpClient<WeatherService>();
 
 await builder.Build().RunAsync();

@@ -1,32 +1,6 @@
+using Luma.Models;
+
 namespace Luma.Services;
-
-public enum LightPhase
-{
-    Night,
-    AstronomicalDawn,
-    NauticalDawn,
-    BlueHour,
-    GoldenHourMorning,
-    Sunrise,
-    Morning,
-    Midday,
-    Afternoon,
-    GoldenHourEvening,
-    Sunset,
-    BlueDusk,
-    NauticalDusk,
-    AstronomicalDusk
-}
-
-public class LightPhaseInfo
-{
-    public LightPhase Phase { get; set; }
-    public string Icon { get; set; } = "";
-    public string Name { get; set; } = "";
-    public string Description { get; set; } = "";
-    public string NextPhase { get; set; } = "";
-    public int Rating { get; set; } // 1-5 拍摄评级
-}
 
 public class LightPhaseService
 {
@@ -88,7 +62,7 @@ public class LightPhaseService
 
         return MakePhase(LightPhase.Night, "⭐", "夜晚", "适合星空和长曝光夜景拍摄", "天文晨光将在黎明前出现", 3);
     }
-    
+
     private static DateTime Parse(string iso) => DateTime.Parse(iso, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
     private static LightPhaseInfo MakePhase(LightPhase phase, string icon, string name, string desc, string next, int rating) => new()
