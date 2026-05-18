@@ -25,7 +25,8 @@ window.lumaJS = {
             navigator.geolocation.getCurrentPosition(
                 pos => resolve({
                     lat: pos.coords.latitude,
-                    lng: pos.coords.longitude
+                    lng: pos.coords.longitude,
+                    altitude: pos.coords.altitude
                 }),
                 err => reject(err.message)
             );
