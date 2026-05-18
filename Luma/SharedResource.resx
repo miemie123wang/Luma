@@ -99,4 +99,6 @@
   <data name="Phase_Night_Name" xml:space="preserve"><value>Night</value></data>
   <data name="Phase_Night_Desc" xml:space="preserve"><value>Great for stargazing and long-exposure night photography</value></data>
   <data name="Phase_Night_Next" xml:space="preserve"><value>Astronomical dawn will appear before sunrise</value></data>
+  <data name="Altitude_Display" xml:space="preserve"><value>⛰️ {0}m</value></data>
+  <data name="Altitude_Warning" xml:space="preserve"><value>High altitude — light is crisp, watch for overexposure</value></data>
 </root>

@@ -18,6 +18,11 @@ public partial class Home : ComponentBase
     protected string LocationName { get; set; } = "";
     protected WeatherInfo? Weather { get; set; }
     protected bool IsLoading { get; set; } = true;
+
+    protected string FormattedVisibility => Weather == null ? "" :
+        Weather.Visibility >= 1000
+            ? $"{(Weather.Visibility / 1000).ToString("F1", System.Globalization.CultureInfo.InvariantCulture)} km"
+            : $"{Weather.Visibility.ToString("F0", System.Globalization.CultureInfo.InvariantCulture)} m";
     protected string? ErrorMessage { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

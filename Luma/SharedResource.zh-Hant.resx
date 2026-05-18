@@ -99,4 +99,6 @@
   <data name="Phase_Night_Name" xml:space="preserve"><value>夜晚</value></data>
   <data name="Phase_Night_Desc" xml:space="preserve"><value>適合星空和長曝光夜景拍攝</value></data>
   <data name="Phase_Night_Next" xml:space="preserve"><value>天文晨光將在黎明前出現</value></data>
+  <data name="Altitude_Display" xml:space="preserve"><value>⛰️ {0}m</value></data>
+  <data name="Altitude_Warning" xml:space="preserve"><value>高海拔 — 光線通透，注意高光過曝</value></data>
 </root>

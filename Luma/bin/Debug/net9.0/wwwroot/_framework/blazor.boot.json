@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Luma",
   "resources": {
-    "hash": "sha256-GEGsRnZdjLNc4wshEJKhbEhd2qUvAOI2a2fVUiVKMhw=",
+    "hash": "sha256-461s6bALSSH8OmqSCE2zRmzQpuS1996D7s4x+46n4ic=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Authorization.mss3h30ktc.wasm": "Microsoft.AspNetCore.Authorization.wasm",
       "Microsoft.AspNetCore.Components.m523nak9l1.wasm": "Microsoft.AspNetCore.Components.wasm",
@@ -206,11 +206,11 @@
       "dotnet.native.vz0adxojrz.wasm": "dotnet.native.wasm",
       "dotnet.runtime.dstopyvqzi.js": "dotnet.runtime.js",
       "icudt.oh1zvcfom8.dat": "icudt.dat",
-      "Luma.28vp6dqkq0.wasm": "Luma.wasm",
-      "Luma.io5vnoswcu.pdb": "Luma.pdb",
-      "Luma.resources.3u9w9oqq10.wasm": "Luma.resources.wasm",
-      "Luma.resources.eupl5nip71.wasm": "Luma.resources.wasm",
-      "Luma.resources.9xoz6pzeak.wasm": "Luma.resources.wasm"
+      "Luma.xjhd4c1ykn.wasm": "Luma.wasm",
+      "Luma.14ygzhw268.pdb": "Luma.pdb",
+      "Luma.resources.ju98i0pkb7.wasm": "Luma.resources.wasm",
+      "Luma.resources.ag52sgvx32.wasm": "Luma.resources.wasm",
+      "Luma.resources.o4qxhk5e25.wasm": "Luma.resources.wasm"
     },
     "jsModuleNative": {
       "dotnet.native.xsn1d6x2kd.js": "sha256-wcPTC3mDpEcT24XjJe50tp5nZPwae2BBvtQVsRs4FN4="
@@ -425,20 +425,20 @@
       "WindowsBase.y8ae02uxne.wasm": "sha256-YpOYeMLDuchOCocYiO5kv2I5pRhSWnQf5dUnxxoLx5U=",
       "mscorlib.psc7ighyl0.wasm": "sha256-d6G5ZJb6YYCRbk8d7mDqZMv6fP4X3DaizvVwaelHRRE=",
       "netstandard.mpl0s8028r.wasm": "sha256-6qlDOZEfxxE8/6gC6pnGt8ZFmV3YnAbNrh8hSJMZXbk=",
-      "Luma.28vp6dqkq0.wasm": "sha256-UiS1zRnCNnBJsI2hNtceG/dy7EUND50PBYH9ryDaNgc="
+      "Luma.xjhd4c1ykn.wasm": "sha256-HV5jHI/rKbRFllD7pQEUkJGxkELO0ePfcdA3PmL63QY="
     },
     "pdb": {
-      "Luma.io5vnoswcu.pdb": "sha256-fjr7Dj+03BSzR8VvvfmuOPC6B2AkBwFGgY/5oliEoE0="
+      "Luma.14ygzhw268.pdb": "sha256-sXdGB3BdyOoAnmf6uLB6/3zK7U4kDQbcgKkjYH7VFKE="
     },
     "satelliteResources": {
       "es": {
-        "Luma.resources.3u9w9oqq10.wasm": "sha256-yyJoFeLSKIRBGocPKxZDFCNIvXJUWHfirTdl4qaOnn4="
+        "Luma.resources.ju98i0pkb7.wasm": "sha256-28Ufzs0IKuYAdGKF+CuhAP/k9nb8Ps7aaY2+gXz9Jv0="
       },
       "zh-Hans": {
-        "Luma.resources.eupl5nip71.wasm": "sha256-6kidWiG4S9WxABT8XtRd65FpTxrRTAoqX/yhsQdN2KI="
+        "Luma.resources.ag52sgvx32.wasm": "sha256-GpT9nIYobg0qjdQxLM7xXY8PXxr+mip1wJFgbXvd2So="
       },
       "zh-Hant": {
-        "Luma.resources.9xoz6pzeak.wasm": "sha256-Ex3if/U4ZLjLePftwKh5hjldxuN1zRWntcdPhKLhz6k="
+        "Luma.resources.o4qxhk5e25.wasm": "sha256-iFMp5ut/TwtLowZYrAqblysRj51k8KYZhNbHO/sqRXs="
       }
     }
   },

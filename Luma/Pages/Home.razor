@@ -65,10 +65,10 @@
                         }
                     </MudText>
                     <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location" Style="margin-top: 4px;">
-                        @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), (Weather.Visibility >= 1000 ? $"{(Weather.Visibility / 1000).ToString("F1", CultureInfo.InvariantCulture)} km" : $"{Weather.Visibility.ToString("F0", CultureInfo.InvariantCulture)} m")]
+                        @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), FormattedVisibility]
                     </MudText>
                 }
-                
+
                 <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location">
                     @if (Location != null)
                     {
@@ -79,6 +79,20 @@
                         @Localizer["Location_Info", LocationName, "", ""]
                     }
                 </MudText>
+
+                @if (Location?.Altitude != null)
+                {
+                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location">
+                        @string.Format(Localizer["Altitude_Display"], (int)Location.Altitude.Value)
+                    </MudText>
+                    @if (Location.Altitude.Value > 2000)
+                    {
+                        <MudText Typo="Typo.caption" Align="Align.Center" Style="color: var(--mud-palette-warning);">
+                            ⚠️ @Localizer["Altitude_Warning"]
+                        </MudText>
+                    }
+                }
+
             </MudCardContent>
         </MudCard>
     }

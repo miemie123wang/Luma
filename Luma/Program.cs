@@ -18,6 +18,8 @@ builder.Services.AddHttpClient<WeatherService>();
 builder.Services.AddScoped<SettingsService>();
 
 builder.Services.AddLocalization();
+builder.Services.AddSingleton<Microsoft.Extensions.Localization.IStringLocalizer<SharedResource>,
+    Luma.Localization.InMemoryStringLocalizer>();
 
 var host = builder.Build();
 
