@@ -119,6 +119,26 @@ a:hover {
     content: var(--blazor-load-percentage-text, "Loading");
 }
 
+/* Language selector in AppBar */
+.lang-select .mud-input-slot,
+.lang-select .mud-select-input,
+.lang-select input {
+    color: #f0f0f0 !important;
+}
+
+.lang-select .mud-input-outlined-border {
+    border-color: #555 !important;
+}
+
+.lang-select .mud-input-adornment .mud-icon-root {
+    color: #f0f0f0 !important;
+}
+
+/* MudSelect popup list */
+.mud-popover .mud-list-item-text span {
+    color: #f0f0f0;
+}
+
 /* Error */
 #blazor-error-ui {
     background: #2a1a1a;
