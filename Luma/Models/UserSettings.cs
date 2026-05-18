@@ -37,4 +37,5 @@ public class UserSettings
     public ShootingStyle Style { get; set; } = ShootingStyle.Landscape;
     public TimePreference TimePreference { get; set; } = TimePreference.Both;
     public ExperienceLevel Experience { get; set; } = ExperienceLevel.Beginner;
+    public string Language { get; set; } = "en";
 }

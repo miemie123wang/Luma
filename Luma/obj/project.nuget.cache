@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "y5DmbQ+bzg0=",
+  "dgSpecHash": "a2p0cLEw07M=",
   "success": true,
-  "projectFilePath": "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj",
+  "projectFilePath": "C:\\Users\\leoan\\Luma\\Luma\\Luma.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\leoan\\.nuget\\packages\\microsoft.aspnetcore.authorization\\9.0.16\\microsoft.aspnetcore.authorization.9.0.16.nupkg.sha512",
     "C:\\Users\\leoan\\.nuget\\packages\\microsoft.aspnetcore.components\\9.0.16\\microsoft.aspnetcore.components.9.0.16.nupkg.sha512",

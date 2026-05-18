@@ -1,18 +1,17 @@
 @page "/settings"
-
 <MudContainer MaxWidth="MaxWidth.Small" Class="py-6">
 
     <MudText Typo="Typo.h5" Class="page-title">
-        ⚙️ 设置
+        @Localizer["Settings_Title"]
     </MudText>
     <MudText Typo="Typo.caption" Class="page-subtitle">
-        器材、经验级别和偏好
+        @Localizer["Settings_Subtitle"]
     </MudText>
 
     <MudCard Class="light-card">
         <MudCardContent>
 
-            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">📷 器材类型</MudText>
+            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Camera_Label"]</MudText>
             <MudButtonGroup Variant="Variant.Outlined" Color="Color.Warning" OverrideStyles="false" Style="flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem;">
                 @foreach (var option in CameraOptions)
                 {
@@ -20,14 +19,14 @@
                                Color="Color.Warning"
                                Size="Size.Small"
                                OnClick="@(() => { CurrentSettings.Camera = option.Value; })">
-                        @option.Label
+                        @Localizer[option.LabelKey]
                     </MudButton>
                 }
             </MudButtonGroup>
 
             <MudDivider Class="divider" />
 
-            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">🎨 拍摄类型</MudText>
+            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Style_Label"]</MudText>
             <MudButtonGroup Variant="Variant.Outlined" Color="Color.Warning" OverrideStyles="false" Style="flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem;">
                 @foreach (var option in StyleOptions)
                 {
@@ -35,14 +34,14 @@
                                Color="Color.Warning"
                                Size="Size.Small"
                                OnClick="@(() => { CurrentSettings.Style = option.Value; })">
-                        @option.Label
+                        @Localizer[option.LabelKey]
                     </MudButton>
                 }
             </MudButtonGroup>
 
             <MudDivider Class="divider" />
 
-            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">⏰ 时间偏好</MudText>
+            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Time_Label"]</MudText>
             <MudButtonGroup Variant="Variant.Outlined" Color="Color.Warning" OverrideStyles="false" Style="flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem;">
                 @foreach (var option in TimeOptions)
                 {
@@ -50,14 +49,14 @@
                                Color="Color.Warning"
                                Size="Size.Small"
                                OnClick="@(() => { CurrentSettings.TimePreference = option.Value; })">
-                        @option.Label
+                        @Localizer[option.LabelKey]
                     </MudButton>
                 }
             </MudButtonGroup>
 
             <MudDivider Class="divider" />
 
-            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">🎯 经验级别</MudText>
+            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Experience_Label"]</MudText>
             <MudButtonGroup Variant="Variant.Outlined" Color="Color.Warning" OverrideStyles="false" Style="flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem;">
                 @foreach (var option in ExperienceOptions)
                 {
@@ -65,19 +64,27 @@
                                Color="Color.Warning"
                                Size="Size.Small"
                                OnClick="@(() => { CurrentSettings.Experience = option.Value; })">
-                        @option.Label
+                        @Localizer[option.LabelKey]
                     </MudButton>
                 }
             </MudButtonGroup>
 
             <MudDivider Class="divider" />
 
+            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Language_Label"]</MudText>
+            <MudSelect T="string" Label="" Value="@CurrentSettings.Language" ValueChanged="@(async v => { CurrentSettings.Language = v; await InvokeAsync(StateHasChanged); })" Dense="true" Style="width: 200px; margin-bottom: 1rem;">
+                @foreach (var opt in LanguageOptions)
+                {
+                    <MudSelectItem T="string" Value="@opt.Value">@Localizer[$"Language_{opt.Value}"]</MudSelectItem>
+                }
+            </MudSelect>
+
             <MudButton FullWidth="true"
                        Variant="Variant.Filled"
                        Color="Color.Warning"
                        OnClick="SaveSettings"
                        Style="margin-top: 8px;">
-                @(IsSaved ? "✓ 已保存" : "保存设置")
+                @(IsSaved ? Localizer["SaveButton_Saved"] : Localizer["SaveButton_Save"])
             </MudButton>
 
         </MudCardContent>

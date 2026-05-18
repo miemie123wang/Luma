@@ -1,11 +1,13 @@
-﻿<MudNavMenu>
+﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<Luma.SharedResource> Localizer
+
+<MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.WbSunny">
-        实时光线
+        @Localizer["Nav_Home"]
     </MudNavLink>
     <MudNavLink Href="planner" Icon="@Icons.Material.Filled.CalendarMonth">
-        行程规划
+        @Localizer["Nav_Planner"]
     </MudNavLink>
     <MudNavLink Href="settings" Icon="@Icons.Material.Filled.Settings">
-        设置
+        @Localizer["Nav_Settings"]
     </MudNavLink>
 </MudNavMenu>

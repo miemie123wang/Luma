@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using Luma.Services;
 using Luma.Models;
 
@@ -9,6 +10,7 @@ public partial class Home : ComponentBase
     [Inject] private SunCalcService SunCalcService { get; set; } = default!;
     [Inject] private LightPhaseService LightPhaseService { get; set; } = default!;
     [Inject] private WeatherService WeatherService { get; set; } = default!;
+    
 
     protected LightPhaseInfo? CurrentPhase { get; set; }
     protected GeoLocation? Location { get; set; }
@@ -36,7 +38,7 @@ public partial class Home : ComponentBase
         }
         catch (Exception)
         {
-            ErrorMessage = "无法获取位置，请允许位置权限";
+            ErrorMessage = Localizer["Error_LocationDenied"];
         }
         finally
         {

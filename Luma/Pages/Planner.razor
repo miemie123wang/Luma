@@ -1,17 +1,18 @@
 @page "/planner"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Luma.SharedResource> Localizer
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="py-6">
     <MudText Typo="Typo.h5" Style="color: #f5a623; font-weight: 700; margin-bottom: 0.5rem;">
-        📅 行程规划
+        @Localizer["Planner_Title"]
     </MudText>
     <MudText Typo="Typo.caption" Style="color: #999; margin-bottom: 2rem; display: block;">
-        输入地点和日期，找出最佳拍摄日
+        @Localizer["Planner_Subtitle"]
     </MudText>
 
     <MudCard Style="background-color: #1a1a1a; border: 1px solid #333; border-radius: 12px;">
         <MudCardContent>
             <MudText Typo="Typo.body1" Style="color: #999;" Align="Align.Center">
-                🚧 即将推出
+                @Localizer["Planner_ComingSoon"]
             </MudText>
         </MudCardContent>
     </MudCard>

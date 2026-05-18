@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Settings_Title" xml:space="preserve"><value>設定</value></data>
+  <data name="Settings_Subtitle" xml:space="preserve"><value>器材、經驗等級與偏好</value></data>
+  <data name="SaveButton_Save" xml:space="preserve"><value>儲存設定</value></data>
+  <data name="SaveButton_Saved" xml:space="preserve"><value>✓ 已儲存</value></data>
+  <data name="Language_Label" xml:space="preserve"><value>語言</value></data>
+  <data name="Language_en" xml:space="preserve"><value>English</value></data>
+  <data name="Language_zh-Hans" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Language_zh-Hant" xml:space="preserve"><value>繁體中文</value></data>
+  <data name="Camera_Label" xml:space="preserve"><value>器材類型</value></data>
+  <data name="CameraOption_Phone" xml:space="preserve"><value>📱 手機</value></data>
+  <data name="CameraOption_PhonePro" xml:space="preserve"><value>📱 手機 Pro</value></data>
+  <data name="CameraOption_APS" xml:space="preserve"><value>📷 APS-C</value></data>
+  <data name="CameraOption_FullFrame" xml:space="preserve"><value>🎞️ 全幅</value></data>
+  <data name="CameraOption_ActionCam" xml:space="preserve"><value>🏄 運動相機</value></data>
+  <data name="Style_Label" xml:space="preserve"><value>拍攝類型</value></data>
+  <data name="Style_Landscape" xml:space="preserve"><value>🏔️ 風景</value></data>
+  <data name="Style_Urban" xml:space="preserve"><value>🏙️ 城市</value></data>
+  <data name="Style_Portrait" xml:space="preserve"><value>👤 人像</value></data>
+  <data name="Style_NightSky" xml:space="preserve"><value>⭐ 星空</value></data>
+  <data name="Time_Label" xml:space="preserve"><value>時間偏好</value></data>
+  <data name="Time_EarlyBird" xml:space="preserve"><value>🌅 早鳥</value></data>
+  <data name="Time_NightOwl" xml:space="preserve"><value>🌇 夜貓</value></data>
+  <data name="Time_Both" xml:space="preserve"><value>✨ 兩者</value></data>
+  <data name="Experience_Label" xml:space="preserve"><value>經驗等級</value></data>
+  <data name="Experience_Beginner" xml:space="preserve"><value>🌱 入門</value></data>
+  <data name="Experience_Intermediate" xml:space="preserve"><value>📷 進階</value></data>
+  <data name="Experience_Professional" xml:space="preserve"><value>🎯 專業</value></data>
+  <data name="Home_Title" xml:space="preserve"><value>🌅 現在的光線</value></data>
+  <data name="Home_Subtitle" xml:space="preserve"><value>即時光線助手</value></data>
+  <data name="Loading_Message" xml:space="preserve"><value>正在取得位置與光線資料...</value></data>
+  <data name="Error_LocationDenied" xml:space="preserve"><value>無法取得位置，請允許定位權限</value></data>
+  <data name="NextPhase_Text" xml:space="preserve"><value>下一個好時段：{0}</value></data>
+  <data name="Weather_Summary" xml:space="preserve"><value>{0} {1} · 雲量 {2}%</value></data>
+  <data name="SuitableForPhoto" xml:space="preserve"><value>✓ 適合拍攝</value></data>
+  <data name="UnsuitableForPhoto" xml:space="preserve"><value>光線條件一般</value></data>
+  <data name="Weather_Details" xml:space="preserve"><value>🌡️ {0}°C · 💨 {1} km/h · 👁️ {2}</value></data>
+  <data name="Location_Info" xml:space="preserve"><value>📍 {0} · {1}, {2}</value></data>
+  <data name="App_Name" xml:space="preserve"><value>🌅 LUMA</value></data>
+  <data name="App_Subtitle" xml:space="preserve"><value>光線助手</value></data>
+  <data name="Nav_Home" xml:space="preserve"><value>即時光線</value></data>
+  <data name="Nav_Planner" xml:space="preserve"><value>行程規劃</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>設定</value></data>
+  <data name="Planner_Title" xml:space="preserve"><value>📅 行程規劃</value></data>
+  <data name="Planner_Subtitle" xml:space="preserve"><value>輸入地點與日期，找出最佳拍攝日</value></data>
+  <data name="Planner_ComingSoon" xml:space="preserve"><value>🚧 即將推出</value></data>
+</root>

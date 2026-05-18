@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Settings_Title" xml:space="preserve"><value>Settings</value></data>
+  <data name="Settings_Subtitle" xml:space="preserve"><value>Equipment, experience level and preferences</value></data>
+  <data name="SaveButton_Save" xml:space="preserve"><value>Save settings</value></data>
+  <data name="SaveButton_Saved" xml:space="preserve"><value>✓ Saved</value></data>
+  <data name="Language_Label" xml:space="preserve"><value>Language</value></data>
+  <data name="Language_en" xml:space="preserve"><value>English</value></data>
+  <data name="Language_zh-Hans" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Language_zh-Hant" xml:space="preserve"><value>繁體中文</value></data>
+  <data name="Camera_Label" xml:space="preserve"><value>Camera Type</value></data>
+  <data name="CameraOption_Phone" xml:space="preserve"><value>📱 Phone</value></data>
+  <data name="CameraOption_PhonePro" xml:space="preserve"><value>📱 Phone Pro</value></data>
+  <data name="CameraOption_APS" xml:space="preserve"><value>📷 APS-C</value></data>
+  <data name="CameraOption_FullFrame" xml:space="preserve"><value>🎞️ Full Frame</value></data>
+  <data name="CameraOption_ActionCam" xml:space="preserve"><value>🏄 Action Cam</value></data>
+  <data name="Style_Label" xml:space="preserve"><value>Shooting Style</value></data>
+  <data name="Style_Landscape" xml:space="preserve"><value>🏔️ Landscape</value></data>
+  <data name="Style_Urban" xml:space="preserve"><value>🏙️ Urban</value></data>
+  <data name="Style_Portrait" xml:space="preserve"><value>👤 Portrait</value></data>
+  <data name="Style_NightSky" xml:space="preserve"><value>⭐ Night Sky</value></data>
+  <data name="Time_Label" xml:space="preserve"><value>Time Preference</value></data>
+  <data name="Time_EarlyBird" xml:space="preserve"><value>🌅 Early Bird</value></data>
+  <data name="Time_NightOwl" xml:space="preserve"><value>🌇 Night Owl</value></data>
+  <data name="Time_Both" xml:space="preserve"><value>✨ Both</value></data>
+  <data name="Experience_Label" xml:space="preserve"><value>Experience Level</value></data>
+  <data name="Experience_Beginner" xml:space="preserve"><value>🌱 Beginner</value></data>
+  <data name="Experience_Intermediate" xml:space="preserve"><value>📷 Intermediate</value></data>
+  <data name="Experience_Professional" xml:space="preserve"><value>🎯 Professional</value></data>
+  <data name="Home_Title" xml:space="preserve"><value>🌅 Current Light</value></data>
+  <data name="Home_Subtitle" xml:space="preserve"><value>Realtime light assistant</value></data>
+  <data name="Loading_Message" xml:space="preserve"><value>Fetching location and light data...</value></data>
+  <data name="Error_LocationDenied" xml:space="preserve"><value>Unable to get location, please allow location permissions</value></data>
+  <data name="NextPhase_Text" xml:space="preserve"><value>Next good period: {0}</value></data>
+  <data name="Weather_Summary" xml:space="preserve"><value>{0} {1} · Cloud cover {2}%</value></data>
+  <data name="SuitableForPhoto" xml:space="preserve"><value>✓ Suitable for photos</value></data>
+  <data name="UnsuitableForPhoto" xml:space="preserve"><value>Lighting is average</value></data>
+  <data name="Weather_Details" xml:space="preserve"><value>🌡️ {0}°C · 💨 {1} km/h · 👁️ {2}</value></data>
+  <data name="Location_Info" xml:space="preserve"><value>📍 {0} · {1}, {2}</value></data>
+  <data name="App_Name" xml:space="preserve"><value>🌅 LUMA</value></data>
+  <data name="App_Subtitle" xml:space="preserve"><value>Light Assistant</value></data>
+  <data name="Nav_Home" xml:space="preserve"><value>Current Light</value></data>
+  <data name="Nav_Planner" xml:space="preserve"><value>Planner</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Planner_Title" xml:space="preserve"><value>📅 Planner</value></data>
+  <data name="Planner_Subtitle" xml:space="preserve"><value>Enter places and dates to find the best photo days</value></data>
+  <data name="Planner_ComingSoon" xml:space="preserve"><value>🚧 Coming soon</value></data>
+</root>

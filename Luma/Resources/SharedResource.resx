@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Settings_Title" xml:space="preserve"><value>Settings</value></data>
+  <data name="Settings_Subtitle" xml:space="preserve"><value>Equipment, experience level and preferences</value></data>
+  <data name="SaveButton_Save" xml:space="preserve"><value>Save settings</value></data>
+  <data name="SaveButton_Saved" xml:space="preserve"><value>✓ Saved</value></data>
+  <data name="Language_Label" xml:space="preserve"><value>Language</value></data>
+  <data name="Language_en" xml:space="preserve"><value>English</value></data>
+  <data name="Language_zh-Hans" xml:space="preserve"><value>简体中文</value></data>
+  <data name="Language_zh-Hant" xml:space="preserve"><value>繁體中文</value></data>
+  <data name="Camera_Label" xml:space="preserve"><value>Camera Type</value></data>
+  <data name="CameraOption_Phone" xml:space="preserve"><value>📱 Phone</value></data>
+  <data name="CameraOption_PhonePro" xml:space="preserve"><value>📱 Phone Pro</value></data>
+  <data name="CameraOption_APS" xml:space="preserve"><value>📷 APS-C</value></data>
+  <data name="CameraOption_FullFrame" xml:space="preserve"><value>🎞️ Full Frame</value></data>
+  <data name="CameraOption_ActionCam" xml:space="preserve"><value>🏄 Action Cam</value></data>
+  <data name="Style_Label" xml:space="preserve"><value>Shooting Style</value></data>
+  <data name="Style_Landscape" xml:space="preserve"><value>🏔️ Landscape</value></data>
+  <data name="Style_Urban" xml:space="preserve"><value>🏙️ Urban</value></data>
+  <data name="Style_Portrait" xml:space="preserve"><value>👤 Portrait</value></data>
+  <data name="Style_NightSky" xml:space="preserve"><value>⭐ Night Sky</value></data>
+  <data name="Time_Label" xml:space="preserve"><value>Time Preference</value></data>
+  <data name="Time_EarlyBird" xml:space="preserve"><value>🌅 Early Bird</value></data>
+  <data name="Time_NightOwl" xml:space="preserve"><value>🌇 Night Owl</value></data>
+  <data name="Time_Both" xml:space="preserve"><value>✨ Both</value></data>
+  <data name="Experience_Label" xml:space="preserve"><value>Experience Level</value></data>
+  <data name="Experience_Beginner" xml:space="preserve"><value>🌱 Beginner</value></data>
+  <data name="Experience_Intermediate" xml:space="preserve"><value>📷 Intermediate</value></data>
+  <data name="Experience_Professional" xml:space="preserve"><value>🎯 Professional</value></data>
+</root>
