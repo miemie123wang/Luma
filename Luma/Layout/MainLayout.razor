@@ -1,0 +1,37 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_lumaTheme" IsDarkMode="true" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0" Style="background-color: #1a1a1a; border-bottom: 1px solid #333;">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+            OnClick="ToggleDrawer" />
+        <MudText Typo="Typo.h6" Style="color: #f5a623; font-weight: 700; letter-spacing: 2px;">
+            🌅 LUMA
+        </MudText>
+        <MudSpacer />
+        <MudText Typo="Typo.caption" Style="color: #999;">光线助手</MudText>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen" Variant="DrawerVariant.Responsive"
+        Style="background-color: #1a1a1a; border-right: 1px solid #333;">
+        <MudNavMenu>
+            <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.WbSunny">
+                实时光线
+            </MudNavLink>
+            <MudNavLink Href="planner" Icon="@Icons.Material.Filled.CalendarMonth">
+                行程规划
+            </MudNavLink>
+            <MudNavLink Href="settings" Icon="@Icons.Material.Filled.Settings">
+                设置
+            </MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent Style="background-color: #0d0d0d; min-height: 100vh; padding-top: 64px;">
+        @Body
+    </MudMainContent>
+</MudLayout>
