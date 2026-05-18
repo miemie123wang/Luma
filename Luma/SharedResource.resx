@@ -49,4 +49,54 @@
   <data name="Planner_Title" xml:space="preserve"><value>📅 Planner</value></data>
   <data name="Planner_Subtitle" xml:space="preserve"><value>Enter places and dates to find the best photo days</value></data>
   <data name="Planner_ComingSoon" xml:space="preserve"><value>🚧 Coming soon</value></data>
+  <data name="Weather_Clear" xml:space="preserve"><value>Clear sky</value></data>
+  <data name="Weather_MostlyClear" xml:space="preserve"><value>Mainly clear</value></data>
+  <data name="Weather_PartlyCloudy" xml:space="preserve"><value>Partly cloudy</value></data>
+  <data name="Weather_Overcast" xml:space="preserve"><value>Overcast</value></data>
+  <data name="Weather_Foggy" xml:space="preserve"><value>Foggy</value></data>
+  <data name="Weather_Drizzle" xml:space="preserve"><value>Drizzle</value></data>
+  <data name="Weather_Rain" xml:space="preserve"><value>Rain</value></data>
+  <data name="Weather_Snow" xml:space="preserve"><value>Snow</value></data>
+  <data name="Weather_Showers" xml:space="preserve"><value>Rain showers</value></data>
+  <data name="Weather_Thunderstorm" xml:space="preserve"><value>Thunderstorm</value></data>
+  <data name="Weather_Unknown" xml:space="preserve"><value>Unknown</value></data>
+  <data name="Phase_AstronomicalDawn_Name" xml:space="preserve"><value>Astronomical Dawn</value></data>
+  <data name="Phase_AstronomicalDawn_Desc" xml:space="preserve"><value>Sky begins to lighten with very faint light</value></data>
+  <data name="Phase_AstronomicalDawn_Next" xml:space="preserve"><value>Blue hour is approaching</value></data>
+  <data name="Phase_BlueHourMorning_Name" xml:space="preserve"><value>Blue Hour</value></data>
+  <data name="Phase_BlueHourMorning_Desc" xml:space="preserve"><value>Soft blue-purple light, great for cityscapes and landscapes</value></data>
+  <data name="Phase_BlueHourMorning_Next" xml:space="preserve"><value>Sunrise is approaching</value></data>
+  <data name="Phase_SunrisePre_Name" xml:space="preserve"><value>Pre-Sunrise</value></data>
+  <data name="Phase_SunrisePre_Desc" xml:space="preserve"><value>Warm light rising from the horizon</value></data>
+  <data name="Phase_SunrisePre_Next" xml:space="preserve"><value>Golden hour is approaching</value></data>
+  <data name="Phase_GoldenHourMorning_Name" xml:space="preserve"><value>Golden Hour</value></data>
+  <data name="Phase_GoldenHourMorning_Desc" xml:space="preserve"><value>Best time to shoot — soft, warm light</value></data>
+  <data name="Phase_GoldenHourMorning_Next" xml:space="preserve"><value>Golden hour is ending soon</value></data>
+  <data name="Phase_GoldenHourMorningTail_Name" xml:space="preserve"><value>Late Golden Hour</value></data>
+  <data name="Phase_GoldenHourMorningTail_Desc" xml:space="preserve"><value>Light is still soft, make the most of it</value></data>
+  <data name="Phase_GoldenHourMorningTail_Next" xml:space="preserve"><value>Light will become harsher soon</value></data>
+  <data name="Phase_Morning_Name" xml:space="preserve"><value>Morning</value></data>
+  <data name="Phase_Morning_Desc" xml:space="preserve"><value>Harsh light, good for high-contrast shots</value></data>
+  <data name="Phase_Morning_Next" xml:space="preserve"><value>Solar noon is approaching</value></data>
+  <data name="Phase_Afternoon_Name" xml:space="preserve"><value>Afternoon</value></data>
+  <data name="Phase_Afternoon_Desc" xml:space="preserve"><value>Still harsh light, wait for the golden hour</value></data>
+  <data name="Phase_Afternoon_Next" xml:space="preserve"><value>Evening golden hour is approaching</value></data>
+  <data name="Phase_GoldenHourEvening_Name" xml:space="preserve"><value>Golden Hour</value></data>
+  <data name="Phase_GoldenHourEvening_Desc" xml:space="preserve"><value>Best time to shoot — soft, warm light</value></data>
+  <data name="Phase_GoldenHourEvening_Next" xml:space="preserve"><value>Sunset is approaching</value></data>
+  <data name="Phase_Sunset_Name" xml:space="preserve"><value>Sunset</value></data>
+  <data name="Phase_Sunset_Desc" xml:space="preserve"><value>Warm light, great for silhouettes and landscapes</value></data>
+  <data name="Phase_Sunset_Next" xml:space="preserve"><value>Blue hour is approaching</value></data>
+  <data name="Phase_BlueDusk_Name" xml:space="preserve"><value>Blue Hour</value></data>
+  <data name="Phase_BlueDusk_Desc" xml:space="preserve"><value>Soft blue-purple light, city lights begin to appear</value></data>
+  <data name="Phase_BlueDusk_Next" xml:space="preserve"><value>Sky will go completely dark soon</value></data>
+  <data name="Phase_NauticalDusk_Name" xml:space="preserve"><value>Dusk</value></data>
+  <data name="Phase_NauticalDusk_Desc" xml:space="preserve"><value>Sky still has residual glow, good for long exposures</value></data>
+  <data name="Phase_NauticalDusk_Next" xml:space="preserve"><value>Night is approaching</value></data>
+  <data name="Phase_AstronomicalDusk_Name" xml:space="preserve"><value>Astronomical Dusk</value></data>
+  <data name="Phase_AstronomicalDusk_Desc" xml:space="preserve"><value>Sky is nearly dark, stars begin to appear</value></data>
+  <data name="Phase_AstronomicalDusk_Next" xml:space="preserve"><value>Full night is approaching</value></data>
+  <data name="Phase_Night_Name" xml:space="preserve"><value>Night</value></data>
+  <data name="Phase_Night_Desc" xml:space="preserve"><value>Great for stargazing and long-exposure night photography</value></data>
+  <data name="Phase_Night_Next" xml:space="preserve"><value>Astronomical dawn will appear before sunrise</value></data>
 </root>

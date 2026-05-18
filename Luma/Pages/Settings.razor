@@ -8,6 +8,13 @@
         @Localizer["Settings_Subtitle"]
     </MudText>
 
+    @if (IsLoading)
+    {
+        <MudProgressCircular Indeterminate="true" Color="Color.Warning" Class="d-block mx-auto mt-6" />
+    }
+    else
+    {
+
     <MudCard Class="light-card">
         <MudCardContent>
 
@@ -69,16 +76,6 @@
                 }
             </MudButtonGroup>
 
-            <MudDivider Class="divider" />
-
-            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Language_Label"]</MudText>
-            <MudSelect T="string" Label="" Value="@CurrentSettings.Language" ValueChanged="@(async v => { CurrentSettings.Language = v; await InvokeAsync(StateHasChanged); })" Dense="true" Style="width: 200px; margin-bottom: 1rem;">
-                @foreach (var opt in LanguageOptions)
-                {
-                    <MudSelectItem T="string" Value="@opt.Value">@Localizer[$"Language_{opt.Value}"]</MudSelectItem>
-                }
-            </MudSelect>
-
             <MudButton FullWidth="true"
                        Variant="Variant.Filled"
                        Color="Color.Warning"
@@ -89,5 +86,7 @@
 
         </MudCardContent>
     </MudCard>
+
+    }
 
 </MudContainer>

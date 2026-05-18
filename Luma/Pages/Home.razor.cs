@@ -7,6 +7,7 @@ namespace Luma.Pages;
 
 public partial class Home : ComponentBase
 {
+    [CascadingParameter(Name = "UICulture")] private string UICulture { get; set; } = "";
     [Inject] private SunCalcService SunCalcService { get; set; } = default!;
     [Inject] private LightPhaseService LightPhaseService { get; set; } = default!;
     [Inject] private WeatherService WeatherService { get; set; } = default!;

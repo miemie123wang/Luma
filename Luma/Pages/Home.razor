@@ -37,16 +37,16 @@
         <MudCard Class="light-card">
             <MudCardContent>
                 <MudText Typo="Typo.h4" Align="Align.Center" Class="phase-title">
-                    @CurrentPhase.Icon @CurrentPhase.Name
+                    @CurrentPhase.Icon @Localizer[CurrentPhase.Name]
                 </MudText>
                 <MudText Typo="Typo.body1" Align="Align.Center" Class="phase-description">
-                    @CurrentPhase.Description
+                    @Localizer[CurrentPhase.Description]
                 </MudText>
 
                 <MudDivider Class="divider" />
 
                 <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
-                    @Localizer["NextPhase_Text", CurrentPhase.NextPhase]
+                    @Localizer["NextPhase_Text", Localizer[CurrentPhase.NextPhase]]
                 </MudText>
 
                 <MudDivider Class="divider" />
@@ -54,7 +54,7 @@
                 @if (Weather != null)
                 {
                     <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
-                        @Localizer["Weather_Summary", Weather.Icon, Weather.Description, Weather.CloudCover]
+                        @Localizer["Weather_Summary", Weather.Icon, Localizer[Weather.Description], Weather.CloudCover]
                         @if (Weather.IsGoodForPhoto)
                         {
                             <span style="color: var(--mud-palette-warning)"> @Localizer["SuitableForPhoto"]</span>
@@ -65,14 +65,14 @@
                         }
                     </MudText>
                     <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location" Style="margin-top: 4px;">
-                        @Localizer["Weather_Details", Weather.Temperature.ToString("F0"), Weather.WindSpeed.ToString("F0"), (Weather.Visibility >= 1000 ? $"{Weather.Visibility / 1000} km" : $"{Weather.Visibility} m")]
+                        @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), (Weather.Visibility >= 1000 ? $"{(Weather.Visibility / 1000).ToString("F1", CultureInfo.InvariantCulture)} km" : $"{Weather.Visibility.ToString("F0", CultureInfo.InvariantCulture)} m")]
                     </MudText>
                 }
                 
                 <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location">
                     @if (Location != null)
                     {
-                        @Localizer["Location_Info", LocationName, Location.Lat.ToString("F4"), Location.Lng.ToString("F4")]
+                        @Localizer["Location_Info", LocationName, Location.Lat.ToString("F4", CultureInfo.InvariantCulture), Location.Lng.ToString("F4", CultureInfo.InvariantCulture)]
                     }
                     else
                     {

@@ -1,5 +1,9 @@
 ﻿@inject Microsoft.Extensions.Localization.IStringLocalizer<Luma.SharedResource> Localizer
 
+@code {
+    [CascadingParameter(Name = "UICulture")] private string UICulture { get; set; } = "";
+}
+
 <MudNavMenu>
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.WbSunny">
         @Localizer["Nav_Home"]

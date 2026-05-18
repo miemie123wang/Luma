@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace Luma.Layout;
@@ -7,7 +6,7 @@ public partial class MainLayout
 {
     private bool _drawerOpen = true;
 
-    private MudTheme _lumaTheme = new MudTheme()
+    private readonly MudTheme _lumaTheme = new()
     {
         PaletteLight = new PaletteLight()
         {
@@ -24,6 +23,14 @@ public partial class MainLayout
             TextPrimary = "#f0f0f0",
             AppbarBackground = "#1a1a1a",
         }
+    };
+
+    private string CurrentLanguageLabel => CurrentLanguage switch
+    {
+        "es"      => "🇪🇸 ES",
+        "zh-Hans" => "🇨🇳 简",
+        "zh-Hant" => "🇹🇼 繁",
+        _         => "🇺🇸 EN"
     };
 
     private void ToggleDrawer()

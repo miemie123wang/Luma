@@ -1,38 +1,76 @@
 ﻿@inherits LayoutComponentBase
+@using System.Globalization
+@using Microsoft.JSInterop
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Luma.SharedResource> Localizer
+@inject IJSRuntime JS
 
 <MudThemeProvider Theme="_lumaTheme" IsDarkMode="true" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar Elevation="0" Style="background-color: #1a1a1a; border-bottom: 1px solid #333;">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
-            OnClick="ToggleDrawer" />
-        <MudText Typo="Typo.h6" Style="color: #f5a623; font-weight: 700; letter-spacing: 2px;">
-            @Localizer["App_Name"]
-        </MudText>
-        <MudSpacer />
-        <MudText Typo="Typo.caption" Style="color: #999;">@Localizer["App_Subtitle"]</MudText>
-    </MudAppBar>
+<CascadingValue Value="@CurrentLanguage" Name="UICulture">
+    <MudLayout>
+        <MudAppBar Elevation="0" Style="background-color: #1a1a1a; border-bottom: 1px solid #333;">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                OnClick="ToggleDrawer" />
+            <MudText Typo="Typo.h6" Style="color: #f5a623; font-weight: 700; letter-spacing: 2px;">
+                @Localizer["App_Name"]
+            </MudText>
+            <MudSpacer />
+            <MudText Typo="Typo.caption" Style="color: #999;">@Localizer["App_Subtitle"]</MudText>
+            <MudMenu Label="@CurrentLanguageLabel" Dense="true" Size="Size.Small"
+                     Variant="Variant.Text" Color="Color.Inherit"
+                     AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight"
+                     Style="margin-left:8px;">
+                <MudMenuItem OnClick="@(async () => await OnSelectLang("en"))">🇺🇸 English</MudMenuItem>
+                <MudMenuItem OnClick="@(async () => await OnSelectLang("es"))">🇪🇸 Español</MudMenuItem>
+                <MudMenuItem OnClick="@(async () => await OnSelectLang("zh-Hans"))">🇨🇳 简体中文</MudMenuItem>
+                <MudMenuItem OnClick="@(async () => await OnSelectLang("zh-Hant"))">🇹🇼 繁體中文</MudMenuItem>
+            </MudMenu>
+        </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" Variant="DrawerVariant.Responsive"
-        Style="background-color: #1a1a1a; border-right: 1px solid #333;">
-        <MudNavMenu>
-            <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.WbSunny">
-                @Localizer["Nav_Home"]
-            </MudNavLink>
-            <MudNavLink Href="planner" Icon="@Icons.Material.Filled.CalendarMonth">
-                @Localizer["Nav_Planner"]
-            </MudNavLink>
-            <MudNavLink Href="settings" Icon="@Icons.Material.Filled.Settings">
-                @Localizer["Nav_Settings"]
-            </MudNavLink>
-        </MudNavMenu>
-    </MudDrawer>
+        <MudDrawer @bind-Open="_drawerOpen" Variant="DrawerVariant.Responsive"
+            Style="background-color: #1a1a1a; border-right: 1px solid #333;">
+            <MudNavMenu>
+                <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.WbSunny">
+                    @Localizer["Nav_Home"]
+                </MudNavLink>
+                <MudNavLink Href="planner" Icon="@Icons.Material.Filled.CalendarMonth">
+                    @Localizer["Nav_Planner"]
+                </MudNavLink>
+                <MudNavLink Href="settings" Icon="@Icons.Material.Filled.Settings">
+                    @Localizer["Nav_Settings"]
+                </MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
 
-    <MudMainContent Style="background-color: #0d0d0d; min-height: 100vh; padding-top: 64px;">
-        @Body
-    </MudMainContent>
-</MudLayout>
+        <MudMainContent Style="background-color: #0d0d0d; min-height: 100vh; padding-top: 64px;">
+            @Body
+        </MudMainContent>
+    </MudLayout>
+</CascadingValue>
+
+@code {
+    private string CurrentLanguage { get; set; } = CultureInfo.CurrentUICulture.Name;
+
+    private async Task ChangeLanguage(string lang)
+    {
+        if (string.IsNullOrEmpty(lang)) return;
+        var culture = new CultureInfo(lang);
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        CurrentLanguage = lang;
+        try
+        {
+            await JS.InvokeVoidAsync("blazorCulture.set", lang, false);
+        }
+        catch { }
+        StateHasChanged();
+    }
+
+    private async Task OnSelectLang(string val)
+    {
+        if (!string.IsNullOrEmpty(val)) await ChangeLanguage(val);
+    }
+}

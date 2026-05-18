@@ -4,5 +4,5 @@ namespace Luma.Pages;
 
 public partial class Planner : ComponentBase
 {
-    // 行程规划逻辑
+    [CascadingParameter(Name = "UICulture")] private string UICulture { get; set; } = "";
 }

@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Luma",
   "resources": {
-    "hash": "sha256-NteRaiDy895w8Ei3EcOVCornhCEYB2gTa98IEMjckiQ=",
+    "hash": "sha256-GEGsRnZdjLNc4wshEJKhbEhd2qUvAOI2a2fVUiVKMhw=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Authorization.mss3h30ktc.wasm": "Microsoft.AspNetCore.Authorization.wasm",
       "Microsoft.AspNetCore.Components.m523nak9l1.wasm": "Microsoft.AspNetCore.Components.wasm",
@@ -205,14 +205,12 @@
       "dotnet.native.xsn1d6x2kd.js": "dotnet.native.js",
       "dotnet.native.vz0adxojrz.wasm": "dotnet.native.wasm",
       "dotnet.runtime.dstopyvqzi.js": "dotnet.runtime.js",
-      "icudt_CJK.tjcz0u77k5.dat": "icudt_CJK.dat",
-      "icudt_EFIGS.tptq2av103.dat": "icudt_EFIGS.dat",
-      "icudt_no_CJK.lfu7j35m59.dat": "icudt_no_CJK.dat",
-      "Luma.y49q78klc7.wasm": "Luma.wasm",
-      "Luma.7thvd2lmxo.pdb": "Luma.pdb",
-      "Luma.resources.7kt173hxum.wasm": "Luma.resources.wasm",
-      "Luma.resources.238gup6o4b.wasm": "Luma.resources.wasm",
-      "Luma.resources.34xf5nrrr4.wasm": "Luma.resources.wasm"
+      "icudt.oh1zvcfom8.dat": "icudt.dat",
+      "Luma.28vp6dqkq0.wasm": "Luma.wasm",
+      "Luma.io5vnoswcu.pdb": "Luma.pdb",
+      "Luma.resources.3u9w9oqq10.wasm": "Luma.resources.wasm",
+      "Luma.resources.eupl5nip71.wasm": "Luma.resources.wasm",
+      "Luma.resources.9xoz6pzeak.wasm": "Luma.resources.wasm"
     },
     "jsModuleNative": {
       "dotnet.native.xsn1d6x2kd.js": "sha256-wcPTC3mDpEcT24XjJe50tp5nZPwae2BBvtQVsRs4FN4="
@@ -224,9 +222,7 @@
       "dotnet.native.vz0adxojrz.wasm": "sha256-i7Ti7oQs36plu2O2qirzK1+9ilcJLmWqAtlDbuZGeZw="
     },
     "icu": {
-      "icudt_CJK.tjcz0u77k5.dat": "sha256-SZLtQnRc0JkwqHab0VUVP7T3uBPSeYzxzDnpxPpUnHk=",
-      "icudt_EFIGS.tptq2av103.dat": "sha256-8fItetYY8kQ0ww6oxwTLiT3oXlBwHKumbeP2pRF4yTc=",
-      "icudt_no_CJK.lfu7j35m59.dat": "sha256-L7sV7NEYP37/Qr2FPCePo5cJqRgTXRwGHuwF5Q+0Nfs="
+      "icudt.oh1zvcfom8.dat": "sha256-tO5O5YzMTVSaKBboxAqezOQL9ewmupzV2JrB5Rkc8a4="
     },
     "coreAssembly": {
       "System.Runtime.InteropServices.JavaScript.e3m61l2pjx.wasm": "sha256-WirXwtt6yfxumOgZBBczsedH7I0IFK5F0/PL+H1bQVE=",
@@ -429,26 +425,26 @@
       "WindowsBase.y8ae02uxne.wasm": "sha256-YpOYeMLDuchOCocYiO5kv2I5pRhSWnQf5dUnxxoLx5U=",
       "mscorlib.psc7ighyl0.wasm": "sha256-d6G5ZJb6YYCRbk8d7mDqZMv6fP4X3DaizvVwaelHRRE=",
       "netstandard.mpl0s8028r.wasm": "sha256-6qlDOZEfxxE8/6gC6pnGt8ZFmV3YnAbNrh8hSJMZXbk=",
-      "Luma.y49q78klc7.wasm": "sha256-Pki0BoT5OOCWPfYQ4xCfimuSFxqDFagTfyse0/rpf8I="
+      "Luma.28vp6dqkq0.wasm": "sha256-UiS1zRnCNnBJsI2hNtceG/dy7EUND50PBYH9ryDaNgc="
     },
     "pdb": {
-      "Luma.7thvd2lmxo.pdb": "sha256-67AfAQOYCyRYEtMS7K1j2r31aG27eyBmjbB/bqNaNyI="
+      "Luma.io5vnoswcu.pdb": "sha256-fjr7Dj+03BSzR8VvvfmuOPC6B2AkBwFGgY/5oliEoE0="
     },
     "satelliteResources": {
+      "es": {
+        "Luma.resources.3u9w9oqq10.wasm": "sha256-yyJoFeLSKIRBGocPKxZDFCNIvXJUWHfirTdl4qaOnn4="
+      },
       "zh-Hans": {
-        "Luma.resources.7kt173hxum.wasm": "sha256-GRHfNgWBw4DEE1HWviqujHfnCUbOj6NZuBCvQkY/Flg="
+        "Luma.resources.eupl5nip71.wasm": "sha256-6kidWiG4S9WxABT8XtRd65FpTxrRTAoqX/yhsQdN2KI="
       },
       "zh-Hant": {
-        "Luma.resources.238gup6o4b.wasm": "sha256-EjGpjh4QLcnZqBObmz2sZS1+SfeA3zky2pugkpNs2ew="
-      },
-      "en": {
-        "Luma.resources.34xf5nrrr4.wasm": "sha256-Y6bCToIJRShtZ3gyv//+dDko/2SykBO9qg4zEgn2HEk="
+        "Luma.resources.9xoz6pzeak.wasm": "sha256-Ex3if/U4ZLjLePftwKh5hjldxuN1zRWntcdPhKLhz6k="
       }
     }
   },
   "cacheBootResources": true,
   "debugLevel": -1,
-  "globalizationMode": "sharded",
+  "globalizationMode": "all",
   "extensions": {
     "blazor": {}
   }

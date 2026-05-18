@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
-using Microsoft.JSInterop;
 using Luma.Models;
 using Luma.Services;
 
@@ -8,9 +7,9 @@ namespace Luma.Pages;
 
 public partial class Settings : ComponentBase
 {
+    [CascadingParameter(Name = "UICulture")] private string UICulture { get; set; } = "";
     [Inject] private SettingsService SettingsService { get; set; } = default!;
     [Inject] private IStringLocalizer<SharedResource> Localizer { get; set; } = default!;
-    [Inject] private IJSRuntime JS { get; set; } = default!;
 
     protected UserSettings CurrentSettings { get; set; } = new();
     protected bool IsSaved { get; set; } = false;
@@ -48,29 +47,17 @@ public partial class Settings : ComponentBase
         new("Experience_Professional", ExperienceLevel.Professional),
     ];
 
-    protected readonly OptionItem<string>[] LanguageOptions =
-    [
-        new("Language_en", "en"),
-        new("Language_zh-Hans", "zh-Hans"),
-        new("Language_zh-Hant", "zh-Hant"),
-    ];
+    protected bool IsLoading { get; set; } = true;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (!firstRender) return;
         CurrentSettings = await SettingsService.LoadAsync();
-        StateHasChanged();
+        IsLoading = false;
     }
 
     protected async Task SaveSettings()
     {
         await SettingsService.SaveAsync(CurrentSettings);
-        // persist a quick culture key and reload so localization takes effect immediately
-        try
-        {
-            await JS.InvokeVoidAsync("blazorCulture.set", CurrentSettings.Language, true);
-        }
-        catch { }
         IsSaved = true;
         await Task.Delay(2000);
         IsSaved = false;

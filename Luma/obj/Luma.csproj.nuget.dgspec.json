@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\leoan\\Luma\\Luma\\Luma.csproj": {}
+    "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj": {}
   },
   "projects": {
-    "C:\\Users\\leoan\\Luma\\Luma\\Luma.csproj": {
+    "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\leoan\\Luma\\Luma\\Luma.csproj",
+        "projectUniqueName": "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj",
         "projectName": "Luma",
-        "projectPath": "C:\\Users\\leoan\\Luma\\Luma\\Luma.csproj",
+        "projectPath": "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj",
         "packagesPath": "C:\\Users\\leoan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\leoan\\Luma\\Luma\\obj\\",
+        "outputPath": "C:\\Users\\leoan\\Luma\\luma\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\leoan\\AppData\\Roaming\\NuGet\\NuGet.Config"
