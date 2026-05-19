@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Luma",
   "resources": {
-    "hash": "sha256-aY4PAe/RM4QozUt5pbZFG5ohA0z1grZAH0bWa0xmtnU=",
+    "hash": "sha256-DOFtsGlFmLrT8fcd2nqxfEa/WWsTws+/eGccredKJss=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Authorization.mss3h30ktc.wasm": "Microsoft.AspNetCore.Authorization.wasm",
       "Microsoft.AspNetCore.Components.m523nak9l1.wasm": "Microsoft.AspNetCore.Components.wasm",
@@ -206,8 +206,8 @@
       "dotnet.native.etgrtk5jba.wasm": "dotnet.native.wasm",
       "dotnet.runtime.2hocyfcbj2.js": "dotnet.runtime.js",
       "icudt.oh1zvcfom8.dat": "icudt.dat",
-      "Luma.07qdegbwow.wasm": "Luma.wasm",
-      "Luma.rlb2bscf2h.pdb": "Luma.pdb"
+      "Luma.reaa7nmdfv.wasm": "Luma.wasm",
+      "Luma.e8yplxd681.pdb": "Luma.pdb"
     },
     "jsModuleNative": {
       "dotnet.native.l1ds2rhypd.js": "sha256-CU8oL4L0VAwGe3hCyxZDy7keJq9dcsWED0JKqrvlUb4="
@@ -422,10 +422,10 @@
       "WindowsBase.p8fley4coh.wasm": "sha256-aRYzLqbGeHVYVMueB/ppfGVKTJ8jPRnWCHEGfFXiSG4=",
       "mscorlib.gr56bjb982.wasm": "sha256-rGm+fePHcRdNKLvNvl2ALv504HZc6ufZZqaXcOLo8HQ=",
       "netstandard.3vbiim3d7s.wasm": "sha256-j+YhS0xT+ZUStadRqdIFX5q3MfD09IJhCcEkJ3y3Kh0=",
-      "Luma.07qdegbwow.wasm": "sha256-JHxPZPniij3I8MdQDDVQv925tV2lpL5q8jiO0PKO97E="
+      "Luma.reaa7nmdfv.wasm": "sha256-zekgfHmI49nUXVeDa/KSnQKewPQFjHqJXX/3SpawYKA="
     },
     "pdb": {
-      "Luma.rlb2bscf2h.pdb": "sha256-wf2ZVGOzPAKvIdYN4D8J8Ye9Me28XHDhyEC3yzvA0Gk="
+      "Luma.e8yplxd681.pdb": "sha256-jiIBB44w/tBsuTpqVH7+ZwOlq58BZENKtiuAWhsM0HA="
     }
   },
   "cacheBootResources": true,

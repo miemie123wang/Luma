@@ -105,8 +105,7 @@ Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行�
 ```
 Luma/
 ├── Layout/
-│   ├── MainLayout.razor          # 主布局、导航和语言切换
-│   └── NavMenu.razor             # 导航菜单
+│   └── MainLayout.razor          # 主布局、导航和语言切换
 ├── Localization/
 │   ├── InMemoryStringLocalizer.cs # 自定义本地化实现
 │   └── Translations.cs            # 多语言文案字典
@@ -193,4 +192,4 @@ dotnet build
 
 ---
 
-*最后更新：2026-05-18*
+*最后更新：2026-05-19*

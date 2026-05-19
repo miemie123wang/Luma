@@ -14,7 +14,7 @@ Local rule-based photography advice, output structure, prompt copy behavior, and
 
 ### Engineering
 
-Build, structure, cleanup, deployment, localization, and resilience notes.
+Build, structure, completed cleanup, deployment, localization, and resilience notes.
 
 - [Codebase review notes](engineering/codebase-review.md)
 

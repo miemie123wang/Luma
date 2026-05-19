@@ -1,6 +1,6 @@
 # Codebase Review Notes
 
-Last reviewed: 2026-05-18
+Last reviewed: 2026-05-19
 
 This document records structural cleanup opportunities found during a project scan. It is not a bug list. Use it to decide what to clean before the project grows.
 
@@ -14,31 +14,16 @@ The project is small and understandable. The main domain services are separated 
 - `SettingsService`: localStorage settings.
 - `ShootingAdviceService`: local rule-based photography advice.
 
-The largest risk is not broken code. It is gradual drift: duplicated UI patterns, old template assets, and runtime-only localization problems.
+The largest risk is not broken code. It is gradual drift: oversized page components, repeated UI patterns, and runtime-only localization problems.
+
+Cleanup completed on 2026-05-19:
+
+- Removed the unused standalone `NavMenu.razor` / `NavMenu.razor.css`; navigation is currently owned by `MainLayout.razor`.
+- Removed unused Bootstrap static assets and unused Bootstrap-style global CSS helpers from `wwwroot/css/app.css`.
 
 ## Highest-Value Cleanup
 
-### 1. Navigation Duplication
-
-`MainLayout.razor` defines the active `MudNavMenu` inline, while `Layout/NavMenu.razor` contains a similar standalone nav component.
-
-Related files:
-
-- `Luma/Layout/MainLayout.razor`
-- `Luma/Layout/NavMenu.razor`
-- `Luma/Layout/NavMenu.razor.css`
-
-Why it matters:
-
-- Future navigation changes can be made in the wrong file.
-- `NavMenu.razor.css` still looks like template-era Bootstrap/sidebar CSS and does not match the active MudBlazor layout.
-
-Recommended options:
-
-1. Remove `NavMenu.razor` and `NavMenu.razor.css` if the layout-owned nav is the intended pattern.
-2. Or make `MainLayout.razor` render `<NavMenu />` so navigation has one source of truth.
-
-### 2. Home Page Responsibility Size
+### 1. Home Page Responsibility Size
 
 `Home.razor` and `Home.razor.cs` currently handle:
 
@@ -62,7 +47,7 @@ Recommended next split:
 - Extract the advice card and capture-context controls into child components when the UI changes again.
 - Keep data loading in the page until the app has more pages that need the same context.
 
-### 3. Localization Guardrails
+### 2. Localization Guardrails
 
 `Translations.cs` is a large in-memory dictionary for four languages. Missing keys can fall back silently, and placeholder mismatches are only found at runtime.
 
@@ -77,27 +62,7 @@ Recommended validation:
 - Validate that placeholders are compatible across languages.
 - Add targeted tests for advice generation in all supported cultures.
 
-### 4. Bootstrap Template Assets
-
-The project uses MudBlazor, but `wwwroot/lib/bootstrap/` is still present with full Bootstrap CSS/JS files. Some global CSS also uses Bootstrap-era names such as `.btn-primary` and `.card`.
-
-Related files:
-
-- `Luma/wwwroot/lib/bootstrap/`
-- `Luma/wwwroot/css/app.css`
-
-Why it matters:
-
-- Unused static files increase noise.
-- Bootstrap class names can confuse future styling work in a MudBlazor-first app.
-
-Recommended action:
-
-- Confirm Bootstrap is not loaded or required.
-- Remove unused Bootstrap files later if no page depends on them.
-- Rename app-specific global classes away from Bootstrap-style names if they are still used.
-
-### 5. Culture Startup Has Two Paths
+### 3. Culture Startup Has Two Paths
 
 Culture is read in JavaScript before `Blazor.start`, and `Program.cs` also reads `localStorage` to set culture before `RunAsync`.
 
@@ -170,11 +135,9 @@ Recommended action:
 ## Suggested Order
 
 1. Add localization validation tests.
-2. Decide whether to remove or reintegrate `NavMenu.razor`.
-3. Add advice audit case generation.
-4. Extract AI prompt building out of `Home.razor.cs`.
-5. Remove unused Bootstrap/template assets after verifying no dependency.
-6. Normalize culture startup.
+2. Add advice audit case generation.
+3. Extract AI prompt building out of `Home.razor.cs`.
+4. Normalize culture startup.
 
 ## Do Not Rush
 
