@@ -13,6 +13,9 @@ public partial class Settings : ComponentBase
 
     protected UserSettings CurrentSettings { get; set; } = new();
     protected bool IsSaved { get; set; } = false;
+    protected bool IsSaving { get; set; } = false;
+    protected string? SaveErrorMessage { get; set; }
+    private int _saveVersion = 0;
 
     protected record OptionItem<T>(string LabelKey, T Value);
 
@@ -23,21 +26,6 @@ public partial class Settings : ComponentBase
         new("CameraOption_APS", CameraType.MirrorlessAPS),
         new("CameraOption_FullFrame", CameraType.FullFrame),
         new("CameraOption_ActionCam", CameraType.ActionCam),
-    ];
-
-    protected readonly OptionItem<ShootingStyle>[] StyleOptions =
-    [
-        new("Style_Landscape", ShootingStyle.Landscape),
-        new("Style_Urban", ShootingStyle.Urban),
-        new("Style_Portrait", ShootingStyle.Portrait),
-        new("Style_NightSky", ShootingStyle.NightSky),
-    ];
-
-    protected readonly OptionItem<TimePreference>[] TimeOptions =
-    [
-        new("Time_EarlyBird", TimePreference.EarlyBird),
-        new("Time_NightOwl", TimePreference.NightOwl),
-        new("Time_Both", TimePreference.Both),
     ];
 
     protected readonly OptionItem<ExperienceLevel>[] ExperienceOptions =
@@ -55,12 +43,50 @@ public partial class Settings : ComponentBase
         IsLoading = false;
     }
 
-    protected async Task SaveSettings()
+    protected async Task UpdateSetting<T>(T currentValue, T newValue, Action<T> applyValue)
     {
-        await SettingsService.SaveAsync(CurrentSettings);
-        IsSaved = true;
-        await Task.Delay(2000);
+        if (EqualityComparer<T>.Default.Equals(currentValue, newValue))
+            return;
+
+        applyValue(newValue);
+        await SaveSettings();
+    }
+
+    private async Task SaveSettings()
+    {
+        var saveVersion = ++_saveVersion;
+        IsSaving = true;
         IsSaved = false;
+        SaveErrorMessage = null;
         StateHasChanged();
+
+        try
+        {
+            await SettingsService.SaveAsync(CurrentSettings);
+        }
+        catch
+        {
+            if (saveVersion != _saveVersion)
+                return;
+
+            IsSaving = false;
+            SaveErrorMessage = Localizer["Settings_SaveStatus_Failed"];
+            StateHasChanged();
+            return;
+        }
+
+        if (saveVersion != _saveVersion)
+            return;
+
+        IsSaving = false;
+        IsSaved = true;
+        StateHasChanged();
+
+        await Task.Delay(1500);
+        if (saveVersion == _saveVersion)
+        {
+            IsSaved = false;
+            StateHasChanged();
+        }
     }
 }

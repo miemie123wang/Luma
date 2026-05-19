@@ -543,13 +543,13 @@
           }
         }
       },
-      "Microsoft.NET.ILLink.Tasks/9.0.16": {
+      "Microsoft.NET.ILLink.Tasks/9.0.15": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
         }
       },
-      "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.16": {
+      "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.14": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.Sdk.WebAssembly.Pack.props": {},
@@ -1140,13 +1140,13 @@
           }
         }
       },
-      "Microsoft.NET.ILLink.Tasks/9.0.16": {
+      "Microsoft.NET.ILLink.Tasks/9.0.15": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.ILLink.Tasks.props": {}
         }
       },
-      "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.16": {
+      "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.14": {
         "type": "package",
         "build": {
           "build/Microsoft.NET.Sdk.WebAssembly.Pack.props": {},
@@ -2143,10 +2143,10 @@
         "microsoft.jsinterop.webassembly.nuspec"
       ]
     },
-    "Microsoft.NET.ILLink.Tasks/9.0.16": {
-      "sha512": "ccPBYGLPJt8DeJTUzQ0JzOh/iuUAgnjayU63PokVywAhUOx+dzDKSPTL7AG94U/VpvNXflTT2AjsFAIF1+bXBw==",
+    "Microsoft.NET.ILLink.Tasks/9.0.15": {
+      "sha512": "EejcbfCMR77Dthy77qxRbEShmzLApHZUPqXMBVQK+A0pNrRThkaHoGGMGvbq/gTkC/waKcDEgjBkbaejB58Wtw==",
       "type": "package",
-      "path": "microsoft.net.illink.tasks/9.0.16",
+      "path": "microsoft.net.illink.tasks/9.0.15",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -2160,7 +2160,7 @@
         "build/Microsoft.NET.ILLink.Analyzers.props",
         "build/Microsoft.NET.ILLink.Tasks.props",
         "build/Microsoft.NET.ILLink.targets",
-        "microsoft.net.illink.tasks.9.0.16.nupkg.sha512",
+        "microsoft.net.illink.tasks.9.0.15.nupkg.sha512",
         "microsoft.net.illink.tasks.nuspec",
         "tools/net472/ILLink.Tasks.dll",
         "tools/net472/ILLink.Tasks.dll.config",
@@ -2194,10 +2194,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.16": {
-      "sha512": "MI9fow+48epnN+CP4tgN50afl8aLmOWoWojSi9wB7JoYjLP57u+WnMX7BMDcmAtDxSYUFIbmnWWrJJBTNEwkdw==",
+    "Microsoft.NET.Sdk.WebAssembly.Pack/9.0.14": {
+      "sha512": "C69h2ZW0zQf5K389hwVP3oRccYvGaTueidbvsXXcjcLzpFG920Ut4DIF9OsE6AwxdxTGYumGF1kSjHT3VM6t/w==",
       "type": "package",
-      "path": "microsoft.net.sdk.webassembly.pack/9.0.16",
+      "path": "microsoft.net.sdk.webassembly.pack/9.0.14",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
@@ -2228,7 +2228,7 @@
         "build/Microsoft.NET.Sdk.WebAssembly.Pack.targets",
         "build/Wasm.web.config",
         "build/browser.runtimeconfig.template.json",
-        "microsoft.net.sdk.webassembly.pack.9.0.16.nupkg.sha512",
+        "microsoft.net.sdk.webassembly.pack.9.0.14.nupkg.sha512",
         "microsoft.net.sdk.webassembly.pack.nuspec",
         "tools/net472/Microsoft.NET.Sdk.WebAssembly.Pack.Tasks.dll",
         "tools/net472/Microsoft.NET.WebAssembly.Webcil.dll",
@@ -2301,31 +2301,39 @@
       "Microsoft.AspNetCore.Components.WebAssembly >= 9.0.16",
       "Microsoft.AspNetCore.Components.WebAssembly.DevServer >= 9.0.16",
       "Microsoft.Extensions.Http >= 10.0.8",
-      "Microsoft.NET.ILLink.Tasks >= 9.0.16",
-      "Microsoft.NET.Sdk.WebAssembly.Pack >= 9.0.16",
+      "Microsoft.NET.ILLink.Tasks >= 9.0.15",
+      "Microsoft.NET.Sdk.WebAssembly.Pack >= 9.0.14",
       "MudBlazor >= 9.4.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\leoan\\.nuget\\packages\\": {}
+    "C:\\nuget": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj",
+      "projectUniqueName": "C:\\Users\\BianyuWang\\Luma\\Luma\\Luma.csproj",
       "projectName": "Luma",
-      "projectPath": "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj",
-      "packagesPath": "C:\\Users\\leoan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\leoan\\Luma\\luma\\obj\\",
+      "projectPath": "C:\\Users\\BianyuWang\\Luma\\Luma\\Luma.csproj",
+      "packagesPath": "C:\\nuget",
+      "outputPath": "C:\\Users\\BianyuWang\\Luma\\Luma\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\leoan\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\BianyuWang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {}
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
+        "https://pkgs.dev.azure.com/ossiaco/_packaging/chorusdev/nuget/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
@@ -2365,13 +2373,13 @@
           "Microsoft.NET.ILLink.Tasks": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[9.0.16, )",
+            "version": "[9.0.15, )",
             "autoReferenced": true
           },
           "Microsoft.NET.Sdk.WebAssembly.Pack": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "[9.0.16, )",
+            "version": "[9.0.14, )",
             "autoReferenced": true
           },
           "MudBlazor": {
@@ -2392,8 +2400,8 @@
         "warn": true,
         "downloadDependencies": [
           {
-            "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
-            "version": "[9.0.16, 9.0.16]"
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[9.0.14, 9.0.14]"
           }
         ],
         "frameworkReferences": {
@@ -2401,7 +2409,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.314/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

@@ -51,6 +51,21 @@
 
                 <MudDivider Class="divider" />
 
+                <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Style_Label"]</MudText>
+                <MudButtonGroup Variant="Variant.Outlined" Color="Color.Warning" OverrideStyles="false" Style="flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 1.5rem;">
+                    @foreach (var option in StyleOptions)
+                    {
+                        <MudButton Variant="@(SelectedShootingStyle == option.Value ? Variant.Filled : Variant.Outlined)"
+                                   Color="Color.Warning"
+                                   Size="Size.Small"
+                                   OnClick="@(() => SelectShootingStyle(option.Value))">
+                            @Localizer[option.LabelKey]
+                        </MudButton>
+                    }
+                </MudButtonGroup>
+
+                <MudDivider Class="divider" />
+
                 @if (Weather != null)
                 {
                     <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
@@ -68,6 +83,12 @@
                         @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), FormattedVisibility]
                     </MudText>
                 }
+                else if (!string.IsNullOrEmpty(WeatherWarningMessage))
+                {
+                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location" Style="color: var(--mud-palette-warning);">
+                        ⚠️ @WeatherWarningMessage
+                    </MudText>
+                }
 
                 <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location">
                     @if (Location != null)
@@ -79,6 +100,13 @@
                         @Localizer["Location_Info", LocationName, "", ""]
                     }
                 </MudText>
+
+                @if (!string.IsNullOrEmpty(LocationWarningMessage))
+                {
+                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location" Style="color: var(--mud-palette-warning);">
+                        ⚠️ @LocationWarningMessage
+                    </MudText>
+                }
 
                 @if (Location?.Altitude != null)
                 {

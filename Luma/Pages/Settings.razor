@@ -8,6 +8,25 @@
         @Localizer["Settings_Subtitle"]
     </MudText>
 
+    @if (!IsLoading)
+    {
+        <MudText Typo="Typo.caption" Align="Align.Right" Class="phase-location" Style="min-height: 24px; display: block; margin-bottom: 8px;">
+            @if (IsSaving)
+            {
+                <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Warning" Style="vertical-align: middle; margin-right: 6px;" />
+                @Localizer["Settings_SaveStatus_Saving"]
+            }
+            else if (IsSaved)
+            {
+                <span style="color: var(--mud-palette-warning);">@Localizer["Settings_SaveStatus_Saved"]</span>
+            }
+            else if (!string.IsNullOrEmpty(SaveErrorMessage))
+            {
+                <span style="color: var(--mud-palette-error);">@SaveErrorMessage</span>
+            }
+        </MudText>
+    }
+
     @if (IsLoading)
     {
         <MudProgressCircular Indeterminate="true" Color="Color.Warning" Class="d-block mx-auto mt-6" />
@@ -25,37 +44,8 @@
                     <MudButton Variant="@(CurrentSettings.Camera == option.Value ? Variant.Filled : Variant.Outlined)"
                                Color="Color.Warning"
                                Size="Size.Small"
-                               OnClick="@(() => { CurrentSettings.Camera = option.Value; })">
-                        @Localizer[option.LabelKey]
-                    </MudButton>
-                }
-            </MudButtonGroup>
-
-            <MudDivider Class="divider" />
-
-            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Style_Label"]</MudText>
-            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Warning" OverrideStyles="false" Style="flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem;">
-                @foreach (var option in StyleOptions)
-                {
-                    <MudButton Variant="@(CurrentSettings.Style == option.Value ? Variant.Filled : Variant.Outlined)"
-                               Color="Color.Warning"
-                               Size="Size.Small"
-                               OnClick="@(() => { CurrentSettings.Style = option.Value; })">
-                        @Localizer[option.LabelKey]
-                    </MudButton>
-                }
-            </MudButtonGroup>
-
-            <MudDivider Class="divider" />
-
-            <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Time_Label"]</MudText>
-            <MudButtonGroup Variant="Variant.Outlined" Color="Color.Warning" OverrideStyles="false" Style="flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem;">
-                @foreach (var option in TimeOptions)
-                {
-                    <MudButton Variant="@(CurrentSettings.TimePreference == option.Value ? Variant.Filled : Variant.Outlined)"
-                               Color="Color.Warning"
-                               Size="Size.Small"
-                               OnClick="@(() => { CurrentSettings.TimePreference = option.Value; })">
+                               Disabled="IsSaving"
+                               OnClick="@(async () => await UpdateSetting(CurrentSettings.Camera, option.Value, value => CurrentSettings.Camera = value))">
                         @Localizer[option.LabelKey]
                     </MudButton>
                 }
@@ -70,19 +60,12 @@
                     <MudButton Variant="@(CurrentSettings.Experience == option.Value ? Variant.Filled : Variant.Outlined)"
                                Color="Color.Warning"
                                Size="Size.Small"
-                               OnClick="@(() => { CurrentSettings.Experience = option.Value; })">
+                               Disabled="IsSaving"
+                               OnClick="@(async () => await UpdateSetting(CurrentSettings.Experience, option.Value, value => CurrentSettings.Experience = value))">
                         @Localizer[option.LabelKey]
                     </MudButton>
                 }
             </MudButtonGroup>
-
-            <MudButton FullWidth="true"
-                       Variant="Variant.Filled"
-                       Color="Color.Warning"
-                       OnClick="SaveSettings"
-                       Style="margin-top: 8px;">
-                @(IsSaved ? Localizer["SaveButton_Saved"] : Localizer["SaveButton_Save"])
-            </MudButton>
 
         </MudCardContent>
     </MudCard>

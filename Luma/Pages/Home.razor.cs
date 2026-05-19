@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using Microsoft.JSInterop;
 using Luma.Services;
 using Luma.Models;
 
@@ -18,6 +19,19 @@ public partial class Home : ComponentBase
     protected string LocationName { get; set; } = "";
     protected WeatherInfo? Weather { get; set; }
     protected bool IsLoading { get; set; } = true;
+    protected ShootingStyle SelectedShootingStyle { get; set; } = ShootingStyle.Landscape;
+    protected string? LocationWarningMessage { get; set; }
+    protected string? WeatherWarningMessage { get; set; }
+
+    protected record OptionItem<T>(string LabelKey, T Value);
+
+    protected readonly OptionItem<ShootingStyle>[] StyleOptions =
+    [
+        new("Style_Landscape", ShootingStyle.Landscape),
+        new("Style_Urban", ShootingStyle.Urban),
+        new("Style_Portrait", ShootingStyle.Portrait),
+        new("Style_NightSky", ShootingStyle.NightSky),
+    ];
 
     protected string FormattedVisibility => Weather == null ? "" :
         Weather.Visibility >= 1000
@@ -25,31 +39,96 @@ public partial class Home : ComponentBase
             : $"{Weather.Visibility.ToString("F0", System.Globalization.CultureInfo.InvariantCulture)} m";
     protected string? ErrorMessage { get; set; }
 
+    protected void SelectShootingStyle(ShootingStyle style)
+    {
+        SelectedShootingStyle = style;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
+        await LoadCurrentLightAsync();
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadCurrentLightAsync()
+    {
         try
         {
             Location = await SunCalcService.GetCurrentPositionAsync();
-            if (Location != null)
-            {
-                var sunTimes = await SunCalcService.GetSunTimesAsync(Location.Lat, Location.Lng);
-                if (sunTimes != null)
-                    CurrentPhase = LightPhaseService.GetCurrentPhase(sunTimes);
+        }
+        catch (JSException ex)
+        {
+            ErrorMessage = GetLocationErrorMessage(ex.Message);
+            return;
+        }
+        catch
+        {
+            ErrorMessage = Localizer["Error_LocationUnavailable"];
+            return;
+        }
 
-                LocationName = await SunCalcService.GetLocationNameAsync(Location.Lat, Location.Lng);
-                Weather = await WeatherService.GetCurrentWeatherAsync(Location.Lat, Location.Lng);
+        if (Location == null)
+        {
+            ErrorMessage = Localizer["Error_LocationUnavailable"];
+            return;
+        }
+
+        try
+        {
+            var sunTimes = await SunCalcService.GetSunTimesAsync(Location.Lat, Location.Lng);
+            if (sunTimes == null)
+            {
+                ErrorMessage = Localizer["Error_SunCalcUnavailable"];
+                return;
+            }
+
+            CurrentPhase = LightPhaseService.GetCurrentPhase(sunTimes);
+        }
+        catch
+        {
+            ErrorMessage = Localizer["Error_SunCalcUnavailable"];
+            return;
+        }
+
+        try
+        {
+            LocationName = await SunCalcService.GetLocationNameAsync(Location.Lat, Location.Lng);
+            if (string.IsNullOrWhiteSpace(LocationName))
+            {
+                LocationName = Localizer["Location_Unknown"];
+                LocationWarningMessage = Localizer["Warning_LocationNameUnavailable"];
             }
         }
-        catch (Exception)
+        catch
         {
-            ErrorMessage = Localizer["Error_LocationDenied"];
+            LocationName = Localizer["Location_Unknown"];
+            LocationWarningMessage = Localizer["Warning_LocationNameUnavailable"];
         }
-        finally
+
+        try
         {
-            IsLoading = false;
-            StateHasChanged();
+            Weather = await WeatherService.GetCurrentWeatherAsync(Location.Lat, Location.Lng);
+            if (Weather == null)
+                WeatherWarningMessage = Localizer["Warning_WeatherUnavailable"];
         }
+        catch
+        {
+            WeatherWarningMessage = Localizer["Warning_WeatherUnavailable"];
+        }
+    }
+
+    private LocalizedString GetLocationErrorMessage(string errorMessage)
+    {
+        if (errorMessage.Contains("LUMA_GEO_PERMISSION_DENIED", StringComparison.OrdinalIgnoreCase))
+            return Localizer["Error_LocationDenied"];
+        if (errorMessage.Contains("LUMA_GEO_UNSUPPORTED", StringComparison.OrdinalIgnoreCase))
+            return Localizer["Error_GeolocationUnsupported"];
+        if (errorMessage.Contains("LUMA_GEO_TIMEOUT", StringComparison.OrdinalIgnoreCase))
+            return Localizer["Error_LocationTimeout"];
+
+        return Localizer["Error_LocationUnavailable"];
     }
 }

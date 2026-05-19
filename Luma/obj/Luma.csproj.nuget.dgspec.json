@@ -1,26 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj": {}
+    "C:\\Users\\BianyuWang\\Luma\\Luma\\Luma.csproj": {}
   },
   "projects": {
-    "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj": {
+    "C:\\Users\\BianyuWang\\Luma\\Luma\\Luma.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj",
+        "projectUniqueName": "C:\\Users\\BianyuWang\\Luma\\Luma\\Luma.csproj",
         "projectName": "Luma",
-        "projectPath": "C:\\Users\\leoan\\Luma\\luma\\Luma.csproj",
-        "packagesPath": "C:\\Users\\leoan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\leoan\\Luma\\luma\\obj\\",
+        "projectPath": "C:\\Users\\BianyuWang\\Luma\\Luma\\Luma.csproj",
+        "packagesPath": "C:\\nuget",
+        "outputPath": "C:\\Users\\BianyuWang\\Luma\\Luma\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\leoan\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\BianyuWang\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://pkgs.dev.azure.com/ossiaco/_packaging/chorusdev/nuget/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
@@ -60,13 +67,13 @@
             "Microsoft.NET.ILLink.Tasks": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.16, )",
+              "version": "[9.0.15, )",
               "autoReferenced": true
             },
             "Microsoft.NET.Sdk.WebAssembly.Pack": {
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.16, )",
+              "version": "[9.0.14, )",
               "autoReferenced": true
             },
             "MudBlazor": {
@@ -87,8 +94,8 @@
           "warn": true,
           "downloadDependencies": [
             {
-              "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
-              "version": "[9.0.16, 9.0.16]"
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.14, 9.0.14]"
             }
           ],
           "frameworkReferences": {
@@ -96,7 +103,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.314/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {

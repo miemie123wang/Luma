@@ -5,7 +5,7 @@
 
 ## 项目简介
 
-Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行期间找到最佳拍摄时间和光线条件。
+Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行期间判断当前光线阶段、天气条件和下一段适合拍摄的时间窗口。
 
 目标用户是带着相机旅行、不想错过好光线但也不想研究太多的普通摄影爱好者。
 
@@ -13,59 +13,46 @@ Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行�
 
 | 现有工具（工具型） | Luma（助手型） |
 |---|---|
-| PhotoPills、The Photographer's Ephemeris、GoldenHour.One | 主动结合行程 + 天气 + 光线 |
-| 告诉你"某地几点日出" | 告诉你"这次旅行哪天哪个时间段最值得早起拍" |
+| PhotoPills、The Photographer's Ephemeris、GoldenHour.One | 主动结合位置 + 天气 + 光线 |
+| 告诉你“某地几点日出” | 告诉你“现在是什么光线，接下来什么时候更值得拍” |
 
 ---
 
-## 核心功能
+## 当前功能
 
-### 1. 实时光线助手
-- 自动获取用户当前时间和位置
-- 显示当前所处光线阶段（蓝调 / 黄金时段 / 正午 / 日落等）
-- 告知用户现在该怎么拍，下一个好时段是什么时候
-- 根据器材类型和经验级别给出具体参数建议
+### 实时光线助手
+- 自动获取浏览器当前位置
+- 使用 SunCalc 计算日出、日落、蓝调时段、黄金时段等太阳时间
+- 根据当前时间判断光线阶段，并显示名称、说明、下一阶段和 1-5 星拍摄评级
+- 调用 Open-Meteo 显示当前云量、降水、天气、温度、风速和能见度
+- 使用 OpenStreetMap Nominatim 反向地理编码显示城市 / 区县名称
+- 支持高海拔提示
+- 在首页选择当前拍摄类型，供后续参数建议使用（不写入长期设置）
 
-### 2. 行程规划
-- 输入地点 + 日期范围
+### 用户设置
+所有设置存储于 `localStorage`，无需账号注册。
+
+- 器材类型：手机、手机 Pro、APS-C、全幅、运动相机
+- 经验级别：入门、进阶、专业
+- 界面语言：英文、西班牙文、简体中文、繁体中文
+
+### 行程规划
+行程规划页面已占位，完整规划逻辑尚未实现。
+
+---
+
+## 待实现方向
+
+### 摄影参数建议
+- 纯本地逻辑，无需额外 API
+- 根据光线阶段 × 器材类型 × 当前拍摄类型 × 经验级别输出建议
+- 入门用户显示一句话建议，进阶用户显示参数范围，专业用户显示更完整的数据
+
+### 行程规划
+- 输入地点和日期范围
 - 自动分析每天的光线质量和天气状况
 - 标出最佳拍摄日和时间窗口
-- 卡片式展示，一眼看出哪天值得早起
-
----
-
-## 用户设置
-
-> 所有设置存储于 `localStorage`，无需账号注册。
-
-### 器材类型
-- 📱 手机（有无 Pro 模式）
-- 📷 入门单反 / 微单（APS-C）
-- 🎞️ 全幅相机
-- 🏄 运动相机
-
-### 拍摄类型
-风景 / 城市 / 人像 / 星空夜景
-
-### 时间偏好
-早鸟（日出）/ 夜猫（日落）/ 两者都行
-
-### 经验级别
-| 级别 | 显示内容 |
-|---|---|
-| 🌱 入门 | 评级 + 一句话建议 |
-| 📷 进阶 | 参数范围建议 |
-| 🎯 专业 | 完整数据（EV 值、色温、曝光补偿建议等） |
-
----
-
-## 参数建议逻辑
-
-- 纯本地逻辑，**无需任何 API**
-- 根据光线条件 × 器材类型 × 经验级别硬编码规则
-- 所有建议底部统一注明：
-
-> *以上为参考建议，实际效果因场景而异*
+- 卡片式展示，一眼看出哪天值得早起或等待日落
 
 ---
 
@@ -73,21 +60,23 @@ Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行�
 
 | 模块 | 技术选型 | 说明 |
 |---|---|---|
-| 框架 | Blazor WASM | 静态部署，无需服务器 |
-| UI 组件库 | MudBlazor | 深色主题，Material Design |
-| 托管 | GitHub Pages | 免费，零维护 |
-| 天气 + 云量 | Open-Meteo | 完全免费，无需 API Key |
-| 日出日落 + 太阳方向 | SunCalc（JS 库） | 本地运行，无需 API |
+| 框架 | Blazor WebAssembly / .NET 9 | 静态前端应用，无需自建服务器 |
+| UI 组件库 | MudBlazor | 深色主题，Material Design 组件 |
+| 天气 + 云量 | Open-Meteo | 免费，无需 API Key |
+| 日出日落 + 光线阶段 | 本地 SunCalc + C# 服务 | 浏览器端计算太阳时间，C# 判断当前光线阶段 |
+| 定位 | Browser Geolocation API | 通过 JS interop 获取当前位置 |
+| 地名 | OpenStreetMap Nominatim | 反向地理编码；失败时降级为坐标显示 |
 | 用户数据 | localStorage | 无需账号 |
-| 多语言 | 待实现 | 简体中文 / 繁体中文 / 英文 |
+| 多语言 | 自定义 `IStringLocalizer` + `Translations.cs` | 英文 / 西班牙文 / 简体中文 / 繁体中文 |
+| 托管 | GitHub Pages（计划） | 静态部署 |
 
 ---
 
 ## 视觉风格
 
 - **色调**：深色背景（夜晚 / 黄昏感）+ 暖橙色调（黄金时段）
-- **风格参考**：Dark Sky / Slopes——简洁有质感
-- **布局**：卡片式结果展示，每天一张，最佳拍摄日高亮显示
+- **风格参考**：Dark Sky / Slopes，简洁、有质感
+- **布局**：移动端优先，卡片式展示当前光线、天气和位置
 
 ---
 
@@ -96,22 +85,36 @@ Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行�
 ```
 Luma/
 ├── Layout/
-│   ├── MainLayout.razor          # 主布局 UI
-│   └── MainLayout.razor.cs       # 主布局逻辑
+│   ├── MainLayout.razor          # 主布局、导航和语言切换
+│   └── NavMenu.razor             # 导航菜单
+├── Localization/
+│   ├── InMemoryStringLocalizer.cs # 自定义本地化实现
+│   └── Translations.cs            # 多语言文案字典
+├── Models/                        # 地理位置、光线阶段、天气、设置模型
 ├── Pages/
-│   ├── Home.razor                # 实时光线页面 UI
-│   ├── Home.razor.cs             # 实时光线页面逻辑
-│   ├── Planner.razor             # 行程规划页面 UI
-│   ├── Planner.razor.cs          # 行程规划页面逻辑
-│   ├── Settings.razor            # 设置页面 UI
-│   └── Settings.razor.cs         # 设置页面逻辑
+│   ├── Home.razor                 # 实时光线页面 UI
+│   ├── Home.razor.cs              # 实时光线页面逻辑
+│   ├── Planner.razor              # 行程规划页面 UI（占位）
+│   ├── Planner.razor.cs           # 行程规划页面逻辑（占位）
+│   ├── Settings.razor             # 设置页面 UI
+│   └── Settings.razor.cs          # 设置页面逻辑
+├── Services/
+│   ├── LightPhaseService.cs       # 光线阶段判断
+│   ├── SettingsService.cs         # localStorage 设置读写
+│   ├── SunCalcService.cs          # SunCalc / 定位 / 地名 JS interop
+│   └── WeatherService.cs          # Open-Meteo 天气数据
 ├── wwwroot/
-│   ├── css/app.css               # 全局样式
-│   ├── js/luma.js                # JS interop（SunCalc）
-│   └── index.html                # 入口 HTML
-├── Program.cs                    # 应用入口
-└── _Imports.razor                # 全局引用
+│   ├── css/app.css                # 全局样式
+│   ├── js/blazorCulture.js        # 语言持久化
+│   ├── js/luma.js                 # JS interop
+│   ├── lib/suncalc/               # 本地 SunCalc 依赖
+│   └── index.html                 # 入口 HTML
+├── Program.cs                     # 应用入口和服务注册
+├── Luma.csproj                    # 项目文件
+└── _Imports.razor                 # 全局 Razor 引用
 ```
+
+根目录的 `global.json` 将 SDK 锁定到 .NET 9，避免本机默认 .NET 10 SDK 造成构建差异。
 
 ---
 
@@ -122,13 +125,19 @@ Luma/
 - VS Code + C# Dev Kit 插件
 
 ### 启动项目
-```bash
+```powershell
 git clone https://github.com/miemie123wang/Luma.git
 cd Luma/Luma
 dotnet run
 ```
 
-浏览器访问 `http://localhost:5284`
+默认开发地址为 `http://localhost:5284`。
+
+### 构建检查
+```powershell
+cd Luma/Luma
+dotnet build
+```
 
 ---
 
@@ -137,13 +146,14 @@ dotnet run
 - [x] 基础框架搭建（Blazor WASM + MudBlazor）
 - [x] 深色主题 + 暖橙色视觉风格
 - [x] 页面结构（实时光线 / 行程规划 / 设置）
-- [ ] SunCalc JS interop 接入
-- [ ] 实时光线阶段计算
-- [ ] 获取用户地理位置
+- [x] SunCalc JS interop 接入
+- [x] 实时光线阶段计算
+- [x] 获取用户地理位置
+- [x] 用户设置 + localStorage
+- [x] Open-Meteo 天气接入
+- [x] 多语言支持（英文 / 西班牙文 / 简体中文 / 繁体中文）
+- [ ] 摄影参数建议逻辑
 - [ ] 行程规划功能
-- [ ] 用户设置 + localStorage
-- [ ] Open-Meteo 天气接入
-- [ ] 多语言支持（简体 / 繁体 / 英文）
 - [ ] GitHub Pages 部署
 
 **暂不做：** 拍摄点推荐、社区功能（后期 UGC）
