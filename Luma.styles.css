@@ -388,6 +388,11 @@ main[b-ldpqpgxpuh] {
     border-color: #3a3328;
 }
 
+.advice-section-warning[b-gmztu9n84s] {
+    background: #241b13;
+    border-color: rgba(245, 166, 35, 0.6);
+}
+
 .advice-list[b-gmztu9n84s] {
     color: #d8d8d8;
     margin: 0;
