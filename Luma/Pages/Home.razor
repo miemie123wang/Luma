@@ -34,8 +34,9 @@
     }
     else if (CurrentPhase != null)
     {
-        <MudCard Class="light-card">
-            <MudCardContent>
+        <div class="card-stack">
+            <MudCard Class="light-card">
+                <MudCardContent>
                 <MudText Typo="Typo.h4" Align="Align.Center" Class="phase-title">
                     @CurrentPhase.Icon @Localizer[CurrentPhase.Name]
                 </MudText>
@@ -48,81 +49,183 @@
                 <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
                     @Localizer["NextPhase_Text", Localizer[CurrentPhase.NextPhase]]
                 </MudText>
+                </MudCardContent>
+            </MudCard>
 
-                <MudDivider Class="divider" />
-
-                <MudText Typo="Typo.subtitle2" Class="phase-next" Style="margin-bottom: 8px;">@Localizer["Style_Label"]</MudText>
-                <MudButtonGroup Variant="Variant.Outlined" Color="Color.Warning" OverrideStyles="false" Style="flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 1.5rem;">
-                    @foreach (var option in StyleOptions)
-                    {
-                        <MudButton Variant="@(SelectedShootingStyle == option.Value ? Variant.Filled : Variant.Outlined)"
-                                   Color="Color.Warning"
-                                   Size="Size.Small"
-                                   OnClick="@(() => SelectShootingStyle(option.Value))">
-                            @Localizer[option.LabelKey]
-                        </MudButton>
-                    }
-                </MudButtonGroup>
-
-                <MudDivider Class="divider" />
-
-                @if (Weather != null)
-                {
-                    <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
-                        @Localizer["Weather_Summary", Weather.Icon, Localizer[Weather.Description], Weather.CloudCover]
-                        @if (Weather.IsGoodForPhoto)
+            <MudCard Class="info-card">
+                <MudCardContent>
+                <div class="style-section">
+                    <MudText Typo="Typo.subtitle2" Class="section-label">@Localizer["Style_Label"]</MudText>
+                    <MudRadioGroup T="ShootingStyle" Value="SelectedShootingStyle" ValueChanged="SelectShootingStyle" Class="radio-group">
+                        @foreach (var option in StyleOptions)
                         {
-                            <span style="color: var(--mud-palette-warning)"> @Localizer["SuitableForPhoto"]</span>
+                            <MudRadio T="ShootingStyle" Value="option.Value" Color="Color.Warning" Size="Size.Small">
+                                @Localizer[option.LabelKey]
+                            </MudRadio>
+                        }
+                    </MudRadioGroup>
+                </div>
+                </MudCardContent>
+            </MudCard>
+
+            @if (Advice != null)
+            {
+                <MudCard Class="advice-card">
+                    <MudCardContent>
+                        <MudText Typo="Typo.subtitle2" Class="advice-title">@Advice.Title</MudText>
+                        <MudText Typo="Typo.caption" Class="advice-meta">
+                            @Localizer["Advice_Context", Localizer[$"CameraOption_{GetCameraKey(CurrentSettings.Camera)}"], Localizer[$"Experience_{GetExperienceKey(CurrentSettings.Experience)}"], Localizer[$"Style_{GetStyleKey(SelectedShootingStyle)}"]]
+                        </MudText>
+
+                        <div class="advice-toggle-grid">
+                            <div>
+                                <MudText Typo="Typo.caption" Class="advice-section-title">@Localizer["Advice_Support_Label"]</MudText>
+                                <MudRadioGroup T="CameraSupportMode" Value="SelectedSupportMode" ValueChanged="SelectSupportMode" Class="radio-group compact-radio-group">
+                                    @foreach (var option in SupportModeOptions)
+                                    {
+                                        <MudRadio T="CameraSupportMode" Value="option.Value" Color="Color.Warning" Size="Size.Small">
+                                            @Localizer[option.LabelKey]
+                                        </MudRadio>
+                                    }
+                                </MudRadioGroup>
+                            </div>
+
+                            <div>
+                                <MudText Typo="Typo.caption" Class="advice-section-title">@Localizer["Advice_Subject_Label"]</MudText>
+                                <MudRadioGroup T="SubjectMotion" Value="SelectedSubjectMotion" ValueChanged="SelectSubjectMotion" Class="radio-group compact-radio-group">
+                                    @foreach (var option in SubjectMotionOptions)
+                                    {
+                                        <MudRadio T="SubjectMotion" Value="option.Value" Color="Color.Warning" Size="Size.Small">
+                                            @Localizer[option.LabelKey]
+                                        </MudRadio>
+                                    }
+                                </MudRadioGroup>
+                            </div>
+                        </div>
+
+                        <div class="advice-section">
+                            <MudText Typo="Typo.caption" Class="advice-section-title">@Localizer["Advice_StartingPoint_Title"]</MudText>
+                            <ul class="advice-list">
+                                @foreach (var item in Advice.StartingPoints)
+                                {
+                                    <li>@item</li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="advice-section">
+                            <MudText Typo="Typo.caption" Class="advice-section-title">@Localizer["Advice_RiskWarnings_Title"]</MudText>
+                            <ul class="advice-list advice-list-muted">
+                                @foreach (var item in Advice.RiskWarnings)
+                                {
+                                    <li>@item</li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="advice-section">
+                            <MudText Typo="Typo.caption" Class="advice-section-title">@Localizer["Advice_Adjustments_Title"]</MudText>
+                            <ul class="advice-list">
+                                @foreach (var item in Advice.AdjustmentSteps)
+                                {
+                                    <li>@item</li>
+                                }
+                            </ul>
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+            }
+
+            <MudCard Class="info-card">
+                <MudCardContent>
+                <div class="detail-section">
+                    @if (Weather != null)
+                    {
+                        <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
+                            @Localizer["Weather_Summary", Weather.Icon, Localizer[Weather.Description], Weather.CloudCover]
+                            @if (Weather.IsGoodForPhoto)
+                            {
+                                <span class="weather-good"> @Localizer["SuitableForPhoto"]</span>
+                            }
+                            else
+                            {
+                                <span class="weather-muted"> @Localizer["UnsuitableForPhoto"]</span>
+                            }
+                        </MudText>
+                        <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+                            @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), FormattedVisibility]
+                        </MudText>
+                    }
+                    else if (!string.IsNullOrEmpty(WeatherWarningMessage))
+                    {
+                        <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning">
+                            ⚠️ @WeatherWarningMessage
+                        </MudText>
+                    }
+
+                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+                        @if (Location != null)
+                        {
+                            @Localizer["Location_Info", LocationName, Location.Lat.ToString("F4", CultureInfo.InvariantCulture), Location.Lng.ToString("F4", CultureInfo.InvariantCulture)]
                         }
                         else
                         {
-                            <span style="color: var(--mud-palette-text-secondary)"> @Localizer["UnsuitableForPhoto"]</span>
+                            @Localizer["Location_Info", LocationName, "", ""]
                         }
                     </MudText>
-                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location" Style="margin-top: 4px;">
-                        @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), FormattedVisibility]
-                    </MudText>
-                }
-                else if (!string.IsNullOrEmpty(WeatherWarningMessage))
-                {
-                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location" Style="color: var(--mud-palette-warning);">
-                        ⚠️ @WeatherWarningMessage
-                    </MudText>
-                }
 
-                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location">
-                    @if (Location != null)
+                    @if (!string.IsNullOrEmpty(LocationWarningMessage))
                     {
-                        @Localizer["Location_Info", LocationName, Location.Lat.ToString("F4", CultureInfo.InvariantCulture), Location.Lng.ToString("F4", CultureInfo.InvariantCulture)]
-                    }
-                    else
-                    {
-                        @Localizer["Location_Info", LocationName, "", ""]
-                    }
-                </MudText>
-
-                @if (!string.IsNullOrEmpty(LocationWarningMessage))
-                {
-                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location" Style="color: var(--mud-palette-warning);">
-                        ⚠️ @LocationWarningMessage
-                    </MudText>
-                }
-
-                @if (Location?.Altitude != null)
-                {
-                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location">
-                        @string.Format(Localizer["Altitude_Display"], (int)Location.Altitude.Value)
-                    </MudText>
-                    @if (Location.Altitude.Value > 2000)
-                    {
-                        <MudText Typo="Typo.caption" Align="Align.Center" Style="color: var(--mud-palette-warning);">
-                            ⚠️ @Localizer["Altitude_Warning"]
+                        <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning detail-line">
+                            ⚠️ @LocationWarningMessage
                         </MudText>
                     }
-                }
 
-            </MudCardContent>
-        </MudCard>
+                    @if (Location?.Altitude != null)
+                    {
+                        <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+                            @string.Format(Localizer["Altitude_Display"], (int)Location.Altitude.Value)
+                        </MudText>
+                        @if (Location.Altitude.Value > 2000)
+                        {
+                            <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning detail-line">
+                                ⚠️ @Localizer["Altitude_Warning"]
+                            </MudText>
+                        }
+                    }
+                </div>
+                </MudCardContent>
+            </MudCard>
+        </div>
     }
 
 </MudContainer>
+
+@code {
+    private static string GetCameraKey(CameraType camera) => camera switch
+    {
+        CameraType.PhoneBasic => "Phone",
+        CameraType.PhonePro => "PhonePro",
+        CameraType.MirrorlessAPS => "APS",
+        CameraType.FullFrame => "FullFrame",
+        CameraType.ActionCam => "ActionCam",
+        _ => "PhonePro"
+    };
+
+    private static string GetExperienceKey(ExperienceLevel experience) => experience switch
+    {
+        ExperienceLevel.Beginner => "Beginner",
+        ExperienceLevel.Intermediate => "Intermediate",
+        ExperienceLevel.Professional => "Professional",
+        _ => "Beginner"
+    };
+
+    private static string GetStyleKey(ShootingStyle style) => style switch
+    {
+        ShootingStyle.Landscape => "Landscape",
+        ShootingStyle.Urban => "Urban",
+        ShootingStyle.Portrait => "Portrait",
+        ShootingStyle.NightSky => "NightSky",
+        _ => "Landscape"
+    };
+}

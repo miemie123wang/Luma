@@ -12,14 +12,20 @@ public partial class Home : ComponentBase
     [Inject] private SunCalcService SunCalcService { get; set; } = default!;
     [Inject] private LightPhaseService LightPhaseService { get; set; } = default!;
     [Inject] private WeatherService WeatherService { get; set; } = default!;
+    [Inject] private SettingsService SettingsService { get; set; } = default!;
+    [Inject] private ShootingAdviceService ShootingAdviceService { get; set; } = default!;
     
 
     protected LightPhaseInfo? CurrentPhase { get; set; }
     protected GeoLocation? Location { get; set; }
     protected string LocationName { get; set; } = "";
     protected WeatherInfo? Weather { get; set; }
+    protected UserSettings CurrentSettings { get; set; } = new();
+    protected ShootingAdvice? Advice { get; set; }
     protected bool IsLoading { get; set; } = true;
     protected ShootingStyle SelectedShootingStyle { get; set; } = ShootingStyle.Landscape;
+    protected CameraSupportMode SelectedSupportMode { get; set; } = CameraSupportMode.Handheld;
+    protected SubjectMotion SelectedSubjectMotion { get; set; } = SubjectMotion.Still;
     protected string? LocationWarningMessage { get; set; }
     protected string? WeatherWarningMessage { get; set; }
 
@@ -33,6 +39,18 @@ public partial class Home : ComponentBase
         new("Style_NightSky", ShootingStyle.NightSky),
     ];
 
+    protected readonly OptionItem<CameraSupportMode>[] SupportModeOptions =
+    [
+        new("Advice_Support_Handheld", CameraSupportMode.Handheld),
+        new("Advice_Support_Tripod", CameraSupportMode.Tripod),
+    ];
+
+    protected readonly OptionItem<SubjectMotion>[] SubjectMotionOptions =
+    [
+        new("Advice_Subject_Still", SubjectMotion.Still),
+        new("Advice_Subject_Moving", SubjectMotion.Moving),
+    ];
+
     protected string FormattedVisibility => Weather == null ? "" :
         Weather.Visibility >= 1000
             ? $"{(Weather.Visibility / 1000).ToString("F1", System.Globalization.CultureInfo.InvariantCulture)} km"
@@ -42,12 +60,26 @@ public partial class Home : ComponentBase
     protected void SelectShootingStyle(ShootingStyle style)
     {
         SelectedShootingStyle = style;
+        UpdateShootingAdvice();
+    }
+
+    protected void SelectSupportMode(CameraSupportMode supportMode)
+    {
+        SelectedSupportMode = supportMode;
+        UpdateShootingAdvice();
+    }
+
+    protected void SelectSubjectMotion(SubjectMotion subjectMotion)
+    {
+        SelectedSubjectMotion = subjectMotion;
+        UpdateShootingAdvice();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
+        CurrentSettings = await SettingsService.LoadAsync();
         await LoadCurrentLightAsync();
         IsLoading = false;
         StateHasChanged();
@@ -86,6 +118,7 @@ public partial class Home : ComponentBase
             }
 
             CurrentPhase = LightPhaseService.GetCurrentPhase(sunTimes);
+            UpdateShootingAdvice();
         }
         catch
         {
@@ -113,11 +146,30 @@ public partial class Home : ComponentBase
             Weather = await WeatherService.GetCurrentWeatherAsync(Location.Lat, Location.Lng);
             if (Weather == null)
                 WeatherWarningMessage = Localizer["Warning_WeatherUnavailable"];
+            UpdateShootingAdvice();
         }
         catch
         {
             WeatherWarningMessage = Localizer["Warning_WeatherUnavailable"];
+            UpdateShootingAdvice();
         }
+    }
+
+    private void UpdateShootingAdvice()
+    {
+        if (CurrentPhase == null)
+            return;
+
+        Advice = ShootingAdviceService.GetAdvice(new ShootingAdviceContext
+        {
+            Phase = CurrentPhase.Phase,
+            Weather = Weather,
+            Style = SelectedShootingStyle,
+            Camera = CurrentSettings.Camera,
+            Experience = CurrentSettings.Experience,
+            SupportMode = SelectedSupportMode,
+            SubjectMotion = SelectedSubjectMotion
+        });
     }
 
     private LocalizedString GetLocationErrorMessage(string errorMessage)
