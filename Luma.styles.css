@@ -303,7 +303,32 @@ main[b-ldpqpgxpuh] {
 .advice-meta[b-gmztu9n84s] {
     color: #8f8f8f;
     display: block;
+    margin-bottom: 0;
+}
+
+.advice-card-header[b-gmztu9n84s] {
     margin-bottom: 1rem;
+}
+
+.advice-card-heading[b-gmztu9n84s] {
+    min-width: 0;
+}
+
+.prompt-action-column[b-gmztu9n84s] {
+    z-index: 1;
+}
+
+.prompt-copy-status[b-gmztu9n84s] {
+    color: #aaa;
+    font-size: 0.78rem;
+    text-align: right;
+}
+
+@media (max-width: 430px) {
+    .advice-card-header[b-gmztu9n84s] {
+        padding-right: 0 !important;
+        padding-top: 2.8rem;
+    }
 }
 
 .advice-section-title[b-gmztu9n84s] {
@@ -399,4 +424,14 @@ main[b-ldpqpgxpuh] {
 
 .weather-muted[b-gmztu9n84s] {
     color: var(--mud-palette-text-secondary);
+}
+
+.weather-summary-line[b-gmztu9n84s] {
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.weather-status[b-gmztu9n84s] {
+    display: inline;
+    margin-left: 0.25rem;
 }
