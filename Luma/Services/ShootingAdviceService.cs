@@ -25,6 +25,7 @@ public class ShootingAdviceService
         var primaryRisk = GetPrimaryRisk(context);
         var startingPoints = new List<string>
         {
+            GetParameterRange(context),
             GetSafeStartingPoint(context),
             GetDeviceOperation(context)
         };
@@ -52,6 +53,117 @@ public class ShootingAdviceService
             RiskWarnings = riskWarnings,
             AdjustmentSteps = adjustmentSteps
         };
+    }
+
+    private string GetParameterRange(ShootingAdviceContext context)
+    {
+        return context.Camera switch
+        {
+            CameraType.PhoneBasic or CameraType.PhonePro => GetPhoneParameterRange(context),
+            CameraType.ActionCam => GetActionCamParameterRange(context),
+            CameraType.MirrorlessAPS or CameraType.FullFrame => GetCameraParameterRange(context),
+            _ => GetPhoneParameterRange(context)
+        };
+    }
+
+    private string GetCameraParameterRange(ShootingAdviceContext context)
+    {
+        var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
+        var harshLight = IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20;
+        var fullFrame = context.Camera == CameraType.FullFrame;
+
+        var mode = context.Experience == ExperienceLevel.Beginner
+            ? _localizer["Advice_Params_Mode_Beginner"]
+            : context.Experience == ExperienceLevel.Intermediate
+                ? _localizer["Advice_Params_Mode_Intermediate"]
+                : _localizer["Advice_Params_Mode_Professional"];
+
+        var iso = context.Style switch
+        {
+            ShootingStyle.NightSky when context.SupportMode == CameraSupportMode.Tripod => fullFrame ? "ISO 800-3200" : "ISO 1600-3200",
+            ShootingStyle.NightSky => fullFrame ? "ISO 1600-6400" : "ISO 3200-6400",
+            _ when harshLight => "ISO 100",
+            _ when lowLight && context.SupportMode == CameraSupportMode.Tripod => "ISO 100-800",
+            _ when lowLight => fullFrame ? "ISO 800-3200" : "ISO 800-6400",
+            _ => "ISO 100-400"
+        };
+
+        var aperture = context.Style switch
+        {
+            ShootingStyle.Portrait when fullFrame => "f/1.8-f/4",
+            ShootingStyle.Portrait => "f/2.8-f/5.6",
+            ShootingStyle.Landscape => "f/8-f/11",
+            ShootingStyle.Urban when lowLight => fullFrame ? "f/2-f/4" : "f/2.8-f/5.6",
+            ShootingStyle.Urban => "f/4-f/8",
+            ShootingStyle.NightSky when fullFrame => "f/1.4-f/2.8",
+            ShootingStyle.NightSky => "f/2-f/3.5",
+            _ => "f/4-f/8"
+        };
+
+        var shutter = context.Style switch
+        {
+            ShootingStyle.NightSky when context.SupportMode == CameraSupportMode.Tripod => "10-20s",
+            ShootingStyle.NightSky => "1/30s-1/60s",
+            _ when context.SubjectMotion == SubjectMotion.Moving => "1/500s-1/1000s",
+            _ when lowLight && context.SupportMode == CameraSupportMode.Tripod => "1/4s-2s",
+            _ when lowLight => fullFrame ? "1/60s-1/125s" : "1/125s-1/250s",
+            ShootingStyle.Portrait => "1/125s-1/250s",
+            _ => "1/125s or faster"
+        };
+
+        var exposure = harshLight
+            ? "-0.3 to -1 EV"
+            : lowLight
+                ? "0 EV, protect bright signs or sky"
+                : "0 to -0.3 EV if highlights blink";
+
+        return _localizer["Advice_Params_Camera", mode, iso, aperture, shutter, exposure];
+    }
+
+    private string GetPhoneParameterRange(ShootingAdviceContext context)
+    {
+        var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
+        var harshLight = IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20;
+        var proPhone = context.Camera == CameraType.PhonePro;
+
+        var lens = context.Style switch
+        {
+            ShootingStyle.Portrait when proPhone => _localizer["Advice_Params_Phone_Lens_PortraitPro"],
+            ShootingStyle.Urban when proPhone => _localizer["Advice_Params_Phone_Lens_UrbanPro"],
+            _ => _localizer["Advice_Params_Phone_Lens_Default"]
+        };
+
+        var mode = lowLight
+            ? _localizer["Advice_Params_Phone_Mode_LowLight"]
+            : harshLight
+                ? _localizer["Advice_Params_Phone_Mode_Harsh"]
+                : _localizer["Advice_Params_Phone_Mode_Default"];
+
+        var exposure = harshLight
+            ? _localizer["Advice_Params_Phone_Exposure_Harsh"]
+            : lowLight
+                ? _localizer["Advice_Params_Phone_Exposure_LowLight"]
+                : _localizer["Advice_Params_Phone_Exposure_Default"];
+
+        var stability = context.SupportMode == CameraSupportMode.Tripod
+            ? _localizer["Advice_Params_Phone_Stability_Tripod"]
+            : context.SubjectMotion == SubjectMotion.Moving
+                ? _localizer["Advice_Params_Phone_Stability_Moving"]
+                : _localizer["Advice_Params_Phone_Stability_Handheld"];
+
+        return _localizer["Advice_Params_Phone", lens, mode, exposure, stability];
+    }
+
+    private string GetActionCamParameterRange(ShootingAdviceContext context)
+    {
+        var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
+        var harshLight = IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20;
+
+        var frameRate = context.SubjectMotion == SubjectMotion.Moving ? "4K 60fps" : "4K 30fps";
+        var exposure = harshLight ? "-0.5 EV" : lowLight ? "0 EV, avoid fast motion" : "0 EV";
+        var stabilization = context.SupportMode == CameraSupportMode.Tripod ? "stabilization low/off on tripod" : "stabilization on";
+
+        return _localizer["Advice_Params_ActionCam", frameRate, exposure, stabilization];
     }
 
     private string GetSafeStartingPoint(ShootingAdviceContext context)

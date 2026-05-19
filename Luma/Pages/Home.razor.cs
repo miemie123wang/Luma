@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Microsoft.JSInterop;
@@ -14,6 +15,8 @@ public partial class Home : ComponentBase
     [Inject] private WeatherService WeatherService { get; set; } = default!;
     [Inject] private SettingsService SettingsService { get; set; } = default!;
     [Inject] private ShootingAdviceService ShootingAdviceService { get; set; } = default!;
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
+    private string? _lastUICulture;
     
 
     protected LightPhaseInfo? CurrentPhase { get; set; }
@@ -28,6 +31,7 @@ public partial class Home : ComponentBase
     protected SubjectMotion SelectedSubjectMotion { get; set; } = SubjectMotion.Still;
     protected string? LocationWarningMessage { get; set; }
     protected string? WeatherWarningMessage { get; set; }
+    protected string? PromptCopyStatusMessage { get; set; }
 
     protected record OptionItem<T>(string LabelKey, T Value);
 
@@ -73,6 +77,44 @@ public partial class Home : ComponentBase
     {
         SelectedSubjectMotion = subjectMotion;
         UpdateShootingAdvice();
+    }
+
+    protected async Task CopyAiPromptAsync()
+    {
+        if (Advice == null || CurrentPhase == null)
+            return;
+
+        string statusMessage;
+
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("lumaJS.copyText", BuildAiPrompt());
+            statusMessage = Localizer["Advice_CopyPrompt_Copied"];
+        }
+        catch
+        {
+            statusMessage = Localizer["Advice_CopyPrompt_Failed"];
+        }
+
+        PromptCopyStatusMessage = statusMessage;
+        await Task.Delay(2000);
+
+        if (PromptCopyStatusMessage == statusMessage)
+        {
+            PromptCopyStatusMessage = null;
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_lastUICulture == UICulture)
+            return;
+
+        _lastUICulture = UICulture;
+
+        if (CurrentPhase != null)
+            UpdateShootingAdvice();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -170,7 +212,59 @@ public partial class Home : ComponentBase
             SupportMode = SelectedSupportMode,
             SubjectMotion = SelectedSubjectMotion
         });
+
+        PromptCopyStatusMessage = null;
     }
+
+    private string BuildAiPrompt()
+    {
+        var lines = new List<string>
+        {
+            Localizer["Advice_Prompt_Intro"],
+            "",
+            $"{Localizer["Advice_Prompt_Time"]}: {DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm zzz", CultureInfo.CurrentCulture)}",
+            $"{Localizer["Advice_Prompt_Phase"]}: {Localizer[CurrentPhase!.Name]} - {Localizer[CurrentPhase.Description]}",
+            $"{Localizer["Advice_Prompt_Location"]}: {GetPromptLocation()}",
+            $"{Localizer["Advice_Prompt_Weather"]}: {GetPromptWeather()}",
+            $"{Localizer["Camera_Label"]}: {Localizer[$"CameraOption_{GetCameraKey(CurrentSettings.Camera)}"]}",
+            $"{Localizer["Experience_Label"]}: {Localizer[$"Experience_{GetExperienceKey(CurrentSettings.Experience)}"]}",
+            $"{Localizer["Style_Label"]}: {Localizer[$"Style_{GetStyleKey(SelectedShootingStyle)}"]}",
+            $"{Localizer["Advice_Support_Label"]}: {Localizer[GetSupportLabelKey(SelectedSupportMode)]}",
+            $"{Localizer["Advice_Subject_Label"]}: {Localizer[GetSubjectLabelKey(SelectedSubjectMotion)]}"
+        };
+
+        return string.Join(Environment.NewLine, lines);
+    }
+
+    private string GetPromptLocation()
+    {
+        if (Location == null)
+            return Localizer["Location_Unknown"];
+
+        return $"{LocationName} ({Location.Lat.ToString("F4", CultureInfo.InvariantCulture)}, {Location.Lng.ToString("F4", CultureInfo.InvariantCulture)})";
+    }
+
+    private string GetPromptWeather()
+    {
+        if (Weather == null)
+            return WeatherWarningMessage ?? Localizer["Warning_WeatherUnavailable"];
+
+        return Localizer["Weather_Summary", Weather.Icon, Localizer[Weather.Description], Weather.CloudCover];
+    }
+
+    private static string GetSupportLabelKey(CameraSupportMode supportMode) => supportMode switch
+    {
+        CameraSupportMode.Handheld => "Advice_Support_Handheld",
+        CameraSupportMode.Tripod => "Advice_Support_Tripod",
+        _ => "Advice_Support_Handheld"
+    };
+
+    private static string GetSubjectLabelKey(SubjectMotion subjectMotion) => subjectMotion switch
+    {
+        SubjectMotion.Still => "Advice_Subject_Still",
+        SubjectMotion.Moving => "Advice_Subject_Moving",
+        _ => "Advice_Subject_Still"
+    };
 
     private LocalizedString GetLocationErrorMessage(string errorMessage)
     {
