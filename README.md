@@ -27,7 +27,14 @@ Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行�
 - 调用 Open-Meteo 显示当前云量、降水、天气、温度、风速和能见度
 - 使用 OpenStreetMap Nominatim 反向地理编码显示城市 / 区县名称
 - 支持高海拔提示
-- 在首页选择当前拍摄类型，供后续参数建议使用（不写入长期设置）
+- 在首页选择当前拍摄类型、拍摄方式（手持 / 三脚架）和主体状态（静态 / 运动），这些选择不写入长期设置
+
+### 本地拍摄建议
+- 纯本地规则式逻辑，无需 AI API 或额外付费服务
+- 根据当前光线、天气、拍摄类型、器材、经验级别、拍摄方式和主体状态生成建议
+- 使用三段式建议结构：安全起点、先注意的风险、如果不对先调什么
+- 对手机、手机 Pro、APS-C、全幅和运动相机使用不同的操作语言
+- 设计原则记录在 [docs/shooting-advice-design.md](docs/shooting-advice-design.md)
 
 ### 用户设置
 所有设置存储于 `localStorage`，无需账号注册。
@@ -43,10 +50,10 @@ Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行�
 
 ## 待实现方向
 
-### 摄影参数建议
-- 纯本地逻辑，无需额外 API
-- 根据光线阶段 × 器材类型 × 当前拍摄类型 × 经验级别输出建议
-- 入门用户显示一句话建议，进阶用户显示参数范围，专业用户显示更完整的数据
+### Copy AI Prompt
+- 基于当前光线、天气、地点、拍摄类型、器材、经验级别和本地建议生成 prompt
+- 用户可以一键复制到外部 AI 工具，不需要 Luma 接入付费 AI API
+- Prompt 功能应复用本地建议上下文，而不是重新维护一套逻辑
 
 ### 行程规划
 - 输入地点和日期范围
@@ -90,7 +97,7 @@ Luma/
 ├── Localization/
 │   ├── InMemoryStringLocalizer.cs # 自定义本地化实现
 │   └── Translations.cs            # 多语言文案字典
-├── Models/                        # 地理位置、光线阶段、天气、设置模型
+├── Models/                        # 地理位置、光线阶段、天气、设置和建议模型
 ├── Pages/
 │   ├── Home.razor                 # 实时光线页面 UI
 │   ├── Home.razor.cs              # 实时光线页面逻辑
@@ -101,6 +108,7 @@ Luma/
 ├── Services/
 │   ├── LightPhaseService.cs       # 光线阶段判断
 │   ├── SettingsService.cs         # localStorage 设置读写
+│   ├── ShootingAdviceService.cs   # 本地规则式拍摄建议
 │   ├── SunCalcService.cs          # SunCalc / 定位 / 地名 JS interop
 │   └── WeatherService.cs          # Open-Meteo 天气数据
 ├── wwwroot/
@@ -152,8 +160,9 @@ dotnet build
 - [x] 用户设置 + localStorage
 - [x] Open-Meteo 天气接入
 - [x] 多语言支持（英文 / 西班牙文 / 简体中文 / 繁体中文）
-- [ ] 摄影参数建议逻辑
+- [x] 本地规则式拍摄建议逻辑
 - [ ] 行程规划功能
+- [ ] Copy AI Prompt
 - [ ] GitHub Pages 部署
 
 **暂不做：** 拍摄点推荐、社区功能（后期 UGC）
@@ -163,6 +172,8 @@ dotnet build
 ## 未来扩展路线图
 
 - [ ] 离线地图
+- [ ] 更多拍摄类型（食物、建筑、野生动物、视频）
+- [ ] 外部 AI Prompt 一键复制
 - [ ] 拍摄点收藏和笔记
 - [ ] 社区上传拍摄点（UGC）
 - [ ] MAUI 版本（iOS / Android）

@@ -27,7 +27,14 @@ The target users are photographers on the go who want to catch good light withou
 - Uses Open-Meteo for cloud cover, precipitation, weather condition, temperature, wind speed, and visibility
 - Uses OpenStreetMap Nominatim for reverse geocoding
 - Shows a high-altitude warning when relevant
-- Lets the user choose the current shooting style on the home page for future advice logic; this choice is not stored as a long-term setting
+- Lets the user choose the current shooting style, support mode (handheld / tripod), and subject motion (still / moving) on the home page; these choices are not stored as long-term settings
+
+### Local Shooting Advice
+- Uses local rule-based logic with no AI API or paid service required
+- Generates advice from current light, weather, shooting style, camera type, experience level, support mode, and subject motion
+- Uses a three-part advice flow: safe starting point, what to watch first, and what to adjust if the shot is not working
+- Translates the same photography logic into different actions for phone, phone pro, APS-C, full frame, and action camera users
+- Design notes are documented in [docs/shooting-advice-design.md](docs/shooting-advice-design.md)
 
 ### User Settings
 All settings are stored in `localStorage`; no account is required.
@@ -43,10 +50,10 @@ The planner page exists as a placeholder. Full planning logic is not implemented
 
 ## Planned Work
 
-### Photo Advice
-- Local rule-based logic, no extra API required
-- Uses light phase × camera type × current shooting style × experience level
-- Shows short advice for beginners, parameter ranges for intermediate users, and fuller data for professional users
+### Copy AI Prompt
+- Generate a prompt from current light, weather, place, shooting style, camera type, experience level, and local advice
+- Let users copy it into an external AI tool without Luma paying for an AI API
+- Reuse the same local advice context instead of maintaining a separate prompt-only logic path
 
 ### Trip Planner
 - Enter a location and date range
@@ -77,9 +84,9 @@ The planner page exists as a placeholder. Full planning logic is not implemented
 Luma/
 ├── Layout/        # App layout and navigation
 ├── Localization/  # In-memory localization implementation and translations
-├── Models/        # Location, light phase, weather, and settings models
+├── Models/        # Location, light phase, weather, settings, and advice models
 ├── Pages/         # Home, planner, and settings pages
-├── Services/      # Light phase, settings, SunCalc, and weather services
+├── Services/      # Light phase, settings, shooting advice, SunCalc, and weather services
 ├── wwwroot/       # CSS, JavaScript interop, local SunCalc, and entry HTML
 ├── Program.cs     # App startup and service registration
 └── Luma.csproj    # Project file
@@ -123,8 +130,9 @@ dotnet build
 - [x] User settings + localStorage
 - [x] Open-Meteo weather integration
 - [x] Localization for English, Spanish, Simplified Chinese, and Traditional Chinese
-- [ ] Photo advice rules
+- [x] Local rule-based shooting advice
 - [ ] Trip planner
+- [ ] Copy AI Prompt
 - [ ] GitHub Pages deployment
 
 ---
