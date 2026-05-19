@@ -33,8 +33,16 @@ The target users are photographers on the go who want to catch good light withou
 - Uses local rule-based logic with no AI API or paid service required
 - Generates advice from current light, weather, shooting style, camera type, experience level, support mode, and subject motion
 - Uses a three-part advice flow: safe starting point, what to watch first, and what to adjust if the shot is not working
+- Starts with concrete, usable ranges: camera users get ISO, aperture, shutter speed, and exposure compensation; phone users get lens, mode, exposure action, and stability guidance
 - Translates the same photography logic into different actions for phone, phone pro, APS-C, full frame, and action camera users
+- Experience level changes the operating mode and explanation depth: beginners get safer A/Av guidance, intermediate users can use A/Av or M, and professional users get RAW/manual/bracketing-oriented tradeoffs
 - Design notes are documented in [docs/shooting-advice-design.md](docs/shooting-advice-design.md)
+
+### Copy AI Prompt
+- The advice card includes a `Copy AI prompt` button in the top-right corner
+- Copies current time, light phase, place, weather, camera, experience level, shooting style, support mode, and subject motion
+- Copies only the real context, not the local hard-coded advice, so external AI tools can reason independently
+- Shows a short copied/failed status that disappears automatically
 
 ### User Settings
 All settings are stored in `localStorage`; no account is required.
@@ -48,12 +56,14 @@ The planner page exists as a placeholder. Full planning logic is not implemented
 
 ---
 
-## Planned Work
+## Future Work
 
-### Copy AI Prompt
-- Generate a prompt from current light, weather, place, shooting style, camera type, experience level, and local advice
-- Let users copy it into an external AI tool without Luma paying for an AI API
-- Reuse the same local advice context instead of maintaining a separate prompt-only logic path
+### Shooting Advice Improvements
+- Add focal length context: wide, standard, telephoto
+- Add maximum aperture context: f/1.8, f/2.8, f/4, f/5.6
+- Add RAW / JPEG preference
+- Adjust advice based on remaining time before sunrise or sunset
+- Split broad styles into more specific scenes, such as street, architecture, traffic trails, single/group/child portraits, moon phase, and light pollution
 
 ### Trip Planner
 - Enter a location and date range
@@ -131,8 +141,8 @@ dotnet build
 - [x] Open-Meteo weather integration
 - [x] Localization for English, Spanish, Simplified Chinese, and Traditional Chinese
 - [x] Local rule-based shooting advice
+- [x] Copy AI Prompt
 - [ ] Trip planner
-- [ ] Copy AI Prompt
 - [ ] GitHub Pages deployment
 
 ---

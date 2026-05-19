@@ -4,10 +4,11 @@
 
 Luma should give real-time photography advice without relying on an AI API in the MVP stage.
 
-The goal is not to hard-code one exact camera setting. The goal is to hard-code a reliable photography decision process:
+The goal is not to hard-code one exact camera setting. The goal is to hard-code a reliable photography decision process with practical starting ranges:
 
 ```text
 Based on current light and shooting style, give a safe starting point.
+Based on camera type and experience level, provide usable parameter ranges.
 Based on the user's device, translate that into usable actions.
 Based on weather, warn about exposure, stability, and contrast risks.
 Based on experience level, adjust explanation depth.
@@ -29,10 +30,47 @@ Best settings: ISO 200, f/2.8, 1/250s.
 Prefer advice like:
 
 ```text
+Suggested range: use A/Av mode; ISO 100-400, aperture f/8-f/11, shutter 1/125s or faster, exposure 0 to -0.3 EV if highlights blink.
+```
+
+and:
+
+```text
 Start by exposing for the face. If the highlights clip, lower exposure first. If the subject blurs, raise shutter speed or stabilize the camera before trying to lower ISO.
 ```
 
 The app does not know the user's exact lens, focal length, maximum aperture, hand stability, subject speed, or creative intent. Therefore, advice should use safe ranges, priorities, and adjustment order.
+
+## Current Coverage Estimate
+
+The current local rules are useful for common MVP scenarios, but they are not a full photography teacher.
+
+Estimated coverage:
+
+```text
+Beginner travel users: 70%
+Serious hobbyists: 50-60%
+Advanced/pro users: 35-45%
+```
+
+Strongest cases:
+
+- Phone or camera users shooting landscape, urban, portrait, or night sky
+- Daylight, golden hour, blue hour, night, harsh light, and low light
+- Handheld versus tripod
+- Still versus moving subjects
+- Simple weather modifiers such as clear sky, rain, fog, heavy cloud, and low visibility
+
+Known weak spots:
+
+- No exact focal length
+- No maximum lens aperture
+- No stabilization capability
+- No RAW/JPEG preference
+- No distinction between single/group/child portraits
+- No split between street, architecture, traffic trails, or skyline scenes
+- No moon phase, light pollution, or focal-length-based star exposure rule
+- Time is copied into the AI prompt, but local advice does not yet use distance to sunrise or sunset
 
 ## Inputs
 
@@ -59,7 +97,25 @@ The advice card should have three user-facing sections.
 
 ### Safe Starting Point
 
-What to try first so the user gets a usable shot.
+What to try first so the user gets a usable shot. The first bullet should be a concrete parameter or operation range.
+
+Camera examples:
+
+```text
+Suggested range: use A/Av mode; ISO 100-400, aperture f/8-f/11, shutter 1/125s or faster, exposure 0 to -0.3 EV if highlights blink.
+```
+
+```text
+Suggested range: use A/Av mode; ISO 800-3200, aperture f/2-f/4, shutter 1/60s-1/125s, exposure 0 EV, protect bright signs or sky.
+```
+
+Phone example:
+
+```text
+Suggested phone setup: use the 1x main lens; keep HDR on; tap the subject and lower exposure slightly if the sky is bright; brace with both hands.
+```
+
+After that, add compositional or risk-aware starting advice.
 
 Examples:
 
@@ -105,6 +161,7 @@ The first version should stay intentionally small.
 
 ```text
 GetPrimaryRisk()
+GetParameterRange()
 GetSafeStartingPoint()
 GetDeviceOperation()
 GetWeatherNote()
@@ -246,9 +303,13 @@ Use operational language:
 Use parameter ranges:
 
 - ISO 100-400 as a starting point.
-- Portrait: f/2.8-f/4 or wider if needed.
+- Portrait: full frame f/1.8-f/4, APS-C f/2.8-f/5.6.
 - Landscape: f/8-f/11.
+- Urban: f/4-f/8 in normal light, wider in low light.
+- Night sky: full frame f/1.4-f/2.8, APS-C f/2-f/3.5.
 - Protect shutter speed for handheld or moving subjects.
+- Use 1/500s-1/1000s for moving subjects when light allows.
+- Use 10-20s for tripod night sky as a first test range.
 - Use RAW when useful.
 - Use exposure compensation when highlights are at risk.
 
@@ -298,25 +359,48 @@ Mixed cloud can change quickly; take a test shot and be ready when light breaks 
 
 ## Experience Level
 
-Experience level should change explanation depth, not photography facts.
+Experience level should change operation mode and explanation depth, not the underlying photography facts.
 
 ### Beginner
 
 ```text
+Use A/Av mode first. Keep ranges narrow and safe.
 Keep it simple: take one safe shot first, then adjust exposure or composition.
 ```
 
 ### Intermediate
 
 ```text
+Use A/Av or M mode. Allow more deliberate exposure and composition variations.
 Try one exposure variation and one composition variation before leaving the spot.
 ```
 
 ### Professional
 
 ```text
+Use M mode, RAW, bracketing, highlight protection, and deliberate tradeoffs.
 Use RAW, protect highlight detail, and make a deliberate technical tradeoff for the final look.
 ```
+
+Current limitation: parameter ranges are only lightly adjusted by experience level. The next iteration should make beginner ranges narrower and pro guidance more flexible.
+
+## Copy AI Prompt
+
+The Home page advice card includes a top-right `Copy AI prompt` button.
+
+The copied prompt includes:
+
+- Current local time and time zone offset
+- Current light phase and description
+- Location name and coordinates
+- Weather summary
+- Camera type
+- Experience level
+- Shooting style
+- Camera support mode
+- Subject motion
+
+The copied prompt should not include the local hard-coded advice. External AI tools should receive the real context and reason independently instead of repeating or being biased by Luma's local rules.
 
 ## Home Page Controls
 
@@ -366,11 +450,13 @@ Do not start with a full rule engine. Keep the first version in C# methods.
 
 Possible future steps:
 
-1. Add more shooting styles, such as food, wildlife, architecture, and video.
-2. Add a generated prompt that users can copy into an external AI tool.
-3. Split hard-coded rules into data tables only after the rules become hard to maintain.
-4. Track which advice sections users copy or interact with most.
-5. Add optional Pro/BYOK AI advice only after product validation.
+1. Add focal length context: wide, standard, telephoto.
+2. Add maximum aperture context: f/1.8, f/2.8, f/4, f/5.6.
+3. Add RAW/JPEG preference.
+4. Add more shooting styles, such as food, wildlife, architecture, and video.
+5. Split hard-coded rules into data tables only after the rules become hard to maintain.
+6. Track which advice sections users copy or interact with most.
+7. Add optional Pro/BYOK AI advice only after product validation.
 
 ## One-Sentence Summary
 
