@@ -26,7 +26,9 @@ public class ShootingAdviceContext
 public class ShootingAdvice
 {
     public string Title { get; set; } = "";
-    public IReadOnlyList<string> StartingPoints { get; set; } = [];
+    public string? FeasibilityWarning { get; set; }
+    public IReadOnlyList<string> ExposureSteps { get; set; } = [];
     public IReadOnlyList<string> RiskWarnings { get; set; } = [];
     public IReadOnlyList<string> AdjustmentSteps { get; set; } = [];
+    public IReadOnlyList<string> FieldSteps { get; set; } = [];
 }

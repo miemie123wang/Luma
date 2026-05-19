@@ -225,6 +225,11 @@
     border-color: #3a3328;
 }
 
+.advice-section-warning {
+    background: #241b13;
+    border-color: rgba(245, 166, 35, 0.6);
+}
+
 .advice-list {
     color: #d8d8d8;
     margin: 0;

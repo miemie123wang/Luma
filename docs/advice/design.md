@@ -1,5 +1,9 @@
 # Luma Shooting Advice Design
 
+Category index: [Advice Docs](README.md)
+
+Related review workflow: [Advice Audit Workflow](audit.md)
+
 ## Goal
 
 Luma should give real-time photography advice without relying on an AI API in the MVP stage.
@@ -93,20 +97,36 @@ Shooting style, support mode, and subject motion should stay on the Home page. T
 
 ## Output Structure
 
-The advice card should have three user-facing sections.
+The advice card now uses modular user-facing sections instead of one broad three-part answer.
 
-### Safe Starting Point
+### Feasibility Warning
 
-What to try first so the user gets a usable shot. The first bullet should be a concrete parameter or operation range.
+Only shown when the selected shooting plan is likely to fail.
+
+Examples:
+
+```text
+Handheld night landscape is not reliable. Find a tripod, railing, wall, car roof, or other stable support before chasing cleaner settings.
+```
+
+```text
+Night sky needs stability. Treat tripod or a solid surface as part of the setup, not an optional accessory.
+```
+
+This section should not appear for every case. It is for combinations such as handheld night landscape or night sky without support.
+
+### First Test Shot
+
+What to try first so the user gets a usable shot. This should be a conservative test setting, not a broad parameter range.
 
 Camera examples:
 
 ```text
-Suggested range: use A/Av mode; ISO 100-400, aperture f/8-f/11, shutter 1/125s or faster, exposure 0 to -0.3 EV if highlights blink.
+First test: use A/Av mode; ISO 100, aperture f/8-f/11, shutter 1/125s; adjust after checking highlights.
 ```
 
 ```text
-Suggested range: use A/Av mode; ISO 800-3200, aperture f/2-f/4, shutter 1/60s-1/125s, exposure 0 EV, protect bright signs or sky.
+If you must handhold: use A/Av mode; ISO 3200, open to f/2.8-f/4, keep shutter at least 1/60s; expect noise and prioritize support over low ISO.
 ```
 
 Phone example:
@@ -155,21 +175,37 @@ If it looks blurry, raise shutter speed, stabilize the camera, or accept higher 
 If highlights clip, lower exposure first; then change angle or add light to the subject instead of brightening everything.
 ```
 
+### Steps
+
+Only shown for beginner users. Professional and intermediate users do not need step-by-step field instructions on every card.
+
+Examples:
+
+```text
+Find stable support first: tripod, railing, wall, table, or car roof.
+Use a 2-second timer so pressing the shutter does not shake the camera.
+Take one test shot, check brightness and blur, then adjust only one thing.
+```
+
 ## Decision Flow
 
 The first version should stay intentionally small.
 
 ```text
+GetFeasibility()
+GetExposure()
 GetPrimaryRisk()
-GetParameterRange()
 GetSafeStartingPoint()
 GetDeviceOperation()
 GetWeatherNote()
 GetAdjustmentStep()
 GetExperienceNote()
+GetFieldSteps()
 ```
 
 Each method should do one thing. Avoid building a large rule engine until the product direction is clearer.
+
+Critical rule: low light and night scenes must branch before daytime style rules. A night landscape must never inherit daylight landscape defaults such as ISO 100 + f/8 + 1/60s handheld.
 
 ## Primary Risks
 
@@ -382,7 +418,7 @@ Use M mode, RAW, bracketing, highlight protection, and deliberate tradeoffs.
 Use RAW, protect highlight detail, and make a deliberate technical tradeoff for the final look.
 ```
 
-Current limitation: parameter ranges are only lightly adjusted by experience level. The next iteration should make beginner ranges narrower and pro guidance more flexible.
+Current behavior: beginners receive field steps; intermediate and professional users receive parameter and risk guidance without step-by-step instructions. Parameters should be framed as first-test settings rather than large ranges.
 
 ## Copy AI Prompt
 
@@ -441,7 +477,7 @@ Instead, Luma gives:
 
 - A safe starting point
 - The most likely failure risk
-- Device-specific操作 language
+- Device-specific operational language
 - The first adjustment to make when the shot is wrong
 
 ## Future Expansion

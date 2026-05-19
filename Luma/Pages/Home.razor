@@ -193,10 +193,20 @@
                             </div>
                         </div>
 
+                        @if (!string.IsNullOrEmpty(Advice.FeasibilityWarning))
+                        {
+                            <div class="advice-section advice-section-warning">
+                                <div class="advice-section-title pt-2">@Localizer["Advice_Feasibility_Title"]</div>
+                                <ul class="advice-list pl-2">
+                                    <li>@Advice.FeasibilityWarning</li>
+                                </ul>
+                            </div>
+                        }
+
                         <div class="advice-section advice-section-primary">
-                            <div class="advice-section-title pt-2">@Localizer["Advice_StartingPoint_Title"]</div>
+                            <div class="advice-section-title pt-2">@Localizer["Advice_FirstShot_Title"]</div>
                             <ul class="advice-list pl-2">
-                                @foreach (var item in Advice.StartingPoints)
+                                @foreach (var item in Advice.ExposureSteps)
                                 {
                                     <li>@item</li>
                                 }
@@ -222,6 +232,19 @@
                                 }
                             </ul>
                         </div>
+
+                        @if (Advice.FieldSteps.Count > 0)
+                        {
+                            <div class="advice-section advice-section-primary">
+                                <div class="advice-section-title pt-2">@Localizer["Advice_FieldSteps_Title"]</div>
+                                <ul class="advice-list pl-2">
+                                    @foreach (var item in Advice.FieldSteps)
+                                    {
+                                        <li>@item</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
                     </MudCardContent>
                 </MudCard>
             }

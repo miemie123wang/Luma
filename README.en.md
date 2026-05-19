@@ -32,11 +32,12 @@ The target users are photographers on the go who want to catch good light withou
 ### Local Shooting Advice
 - Uses local rule-based logic with no AI API or paid service required
 - Generates advice from current light, weather, shooting style, camera type, experience level, support mode, and subject motion
-- Uses a three-part advice flow: safe starting point, what to watch first, and what to adjust if the shot is not working
-- Starts with concrete, usable ranges: camera users get ISO, aperture, shutter speed, and exposure compensation; phone users get lens, mode, exposure action, and stability guidance
+- Uses a modular advice flow: feasibility warning, first test shot, what to watch first, what to adjust if the shot is not working, and beginner-only steps
+- Starts with conservative test settings: camera users get ISO, aperture, shutter speed, and exposure compensation; phone users get lens, mode, exposure action, and stability guidance
+- Low light and night scenes branch first by light phase and handheld/tripod support, so night scenes do not reuse daylight landscape settings; handheld night scenes prioritize stable support
 - Translates the same photography logic into different actions for phone, phone pro, APS-C, full frame, and action camera users
 - Experience level changes the operating mode and explanation depth: beginners get safer A/Av guidance, intermediate users can use A/Av or M, and professional users get RAW/manual/bracketing-oriented tradeoffs
-- Design notes are documented in [docs/shooting-advice-design.md](docs/shooting-advice-design.md)
+- Docs are organized by feature area. Advice design lives in [docs/advice/design.md](docs/advice/design.md), and the AI review workflow lives in [docs/advice/audit.md](docs/advice/audit.md)
 
 ### Copy AI Prompt
 - The advice card includes a `Copy AI prompt` button in the top-right corner
@@ -73,6 +74,8 @@ The planner page exists as a placeholder. Full planning logic is not implemented
 ---
 
 ## Tech Stack
+
+See [docs/README.md](docs/README.md) for the categorized documentation index.
 
 | Module | Choice | Notes |
 |---|---|---|
