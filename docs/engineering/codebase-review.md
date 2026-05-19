@@ -20,6 +20,7 @@ Cleanup completed on 2026-05-19:
 
 - Removed the unused standalone `NavMenu.razor` / `NavMenu.razor.css`; navigation is currently owned by `MainLayout.razor`.
 - Removed unused Bootstrap static assets and unused Bootstrap-style global CSS helpers from `wwwroot/css/app.css`.
+- Added `TranslationValidator` and `tools/Luma.LocalizationCheck` to catch missing translation keys and incompatible format placeholders.
 
 ## Highest-Value Cleanup
 
@@ -56,10 +57,14 @@ Why it matters:
 - Advice text is changing quickly.
 - Missing keys or wrong `{0}` placeholders can slip through visual testing.
 
-Recommended validation:
+Current validation:
 
-- Add a small test or build-time check that every language has the same keys.
-- Validate that placeholders are compatible across languages.
+- Run `dotnet run --project tools/Luma.LocalizationCheck/Luma.LocalizationCheck.csproj` from the repository root.
+- The check validates that every language has the same keys as English.
+- The check validates compatible `{0}`, `{1}`-style placeholders across languages.
+
+Recommended next validation:
+
 - Add targeted tests for advice generation in all supported cultures.
 
 ### 3. Culture Startup Has Two Paths
@@ -134,10 +139,9 @@ Recommended action:
 
 ## Suggested Order
 
-1. Add localization validation tests.
-2. Add advice audit case generation.
-3. Extract AI prompt building out of `Home.razor.cs`.
-4. Normalize culture startup.
+1. Add advice audit case generation.
+2. Extract AI prompt building out of `Home.razor.cs`.
+3. Normalize culture startup.
 
 ## Do Not Rush
 

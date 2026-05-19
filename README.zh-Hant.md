@@ -123,6 +123,14 @@ cd Luma/Luma
 dotnet build
 ```
 
+本地化校驗：
+```powershell
+cd Luma
+dotnet run --project tools/Luma.LocalizationCheck/Luma.LocalizationCheck.csproj
+```
+
+此檢查會確認所有語言擁有同一組翻譯 key，並校驗 `{0}`、`{1}` 等格式化佔位符是否一致。
+
 ---
 
 ## MVP 狀態

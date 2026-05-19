@@ -130,6 +130,14 @@ cd Luma/Luma
 dotnet build
 ```
 
+Localization check:
+```powershell
+cd Luma
+dotnet run --project tools/Luma.LocalizationCheck/Luma.LocalizationCheck.csproj
+```
+
+This verifies that every language has the same translation keys and compatible `{0}`, `{1}`-style format placeholders.
+
 ---
 
 ## MVP Status
