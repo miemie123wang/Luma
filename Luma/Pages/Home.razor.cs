@@ -43,18 +43,6 @@ public partial class Home : ComponentBase
         new("Style_NightSky", ShootingStyle.NightSky),
     ];
 
-    protected readonly OptionItem<CameraSupportMode>[] SupportModeOptions =
-    [
-        new("Advice_Support_Handheld", CameraSupportMode.Handheld),
-        new("Advice_Support_Tripod", CameraSupportMode.Tripod),
-    ];
-
-    protected readonly OptionItem<SubjectMotion>[] SubjectMotionOptions =
-    [
-        new("Advice_Subject_Still", SubjectMotion.Still),
-        new("Advice_Subject_Moving", SubjectMotion.Moving),
-    ];
-
     protected string FormattedVisibility => Weather == null ? "" :
         Weather.Visibility >= 1000
             ? $"{(Weather.Visibility / 1000).ToString("F1", System.Globalization.CultureInfo.InvariantCulture)} km"

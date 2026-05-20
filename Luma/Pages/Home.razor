@@ -63,37 +63,10 @@
 
             @if (Advice != null)
             {
-                <MudCard Class="info-card content-card mt-3"
-                         Style="background:#1b1b1b; border:1px solid #4a4a4a; box-shadow:0 10px 24px rgba(0,0,0,.25); border-radius:12px;">
-                    <MudCardContent>
-                        <MudText Typo="Typo.caption" Class="card-kicker">@Localizer["Advice_Context_Title"]</MudText>
-                        <div class="capture-context-section">
-                            <div class="capture-context-control">
-                            <MudText Typo="Typo.caption" Class="section-label">@Localizer["Advice_Support_Label"]</MudText>
-                            <MudRadioGroup T="CameraSupportMode" Value="SelectedSupportMode" ValueChanged="SelectSupportMode" Class="radio-group compact-radio-group">
-                                @foreach (var option in SupportModeOptions)
-                                {
-                                    <MudRadio T="CameraSupportMode" Value="option.Value" Color="Color.Warning" Size="Size.Small">
-                                        @Localizer[option.LabelKey]
-                                    </MudRadio>
-                                }
-                            </MudRadioGroup>
-                        </div>
-
-                        <div class="capture-context-control">
-                            <MudText Typo="Typo.caption" Class="section-label">@Localizer["Advice_Subject_Label"]</MudText>
-                            <MudRadioGroup T="SubjectMotion" Value="SelectedSubjectMotion" ValueChanged="SelectSubjectMotion" Class="radio-group compact-radio-group">
-                                @foreach (var option in SubjectMotionOptions)
-                                {
-                                    <MudRadio T="SubjectMotion" Value="option.Value" Color="Color.Warning" Size="Size.Small">
-                                        @Localizer[option.LabelKey]
-                                    </MudRadio>
-                                }
-                            </MudRadioGroup>
-                        </div>
-                        </div>
-                    </MudCardContent>
-                </MudCard>
+                <HomeAdviceContextCard SelectedSupportMode="SelectedSupportMode"
+                                       OnSupportModeChanged="SelectSupportMode"
+                                       SelectedSubjectMotion="SelectedSubjectMotion"
+                                       OnSubjectMotionChanged="SelectSubjectMotion" />
 
                 <MudCard Class="advice-card content-card mt-3"
                          Style="background:#211d17; border:1px solid rgba(245,166,35,.55); box-shadow:0 14px 30px rgba(0,0,0,.35); border-radius:12px;">

@@ -1,0 +1,53 @@
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Luma.SharedResource> Localizer
+
+<MudCard Class="info-card content-card mt-3">
+    <MudCardContent>
+        <MudText Typo="Typo.caption" Class="card-kicker">@Localizer["Advice_Context_Title"]</MudText>
+        <div class="capture-context-section">
+            <div class="capture-context-control">
+                <MudText Typo="Typo.caption" Class="section-label">@Localizer["Advice_Support_Label"]</MudText>
+                <MudRadioGroup T="CameraSupportMode" Value="SelectedSupportMode" ValueChanged="OnSupportModeChanged" Class="radio-group compact-radio-group">
+                    @foreach (var option in SupportModeOptions)
+                    {
+                        <MudRadio T="CameraSupportMode" Value="option.Value" Color="Color.Warning" Size="Size.Small">
+                            @Localizer[option.LabelKey]
+                        </MudRadio>
+                    }
+                </MudRadioGroup>
+            </div>
+
+            <div class="capture-context-control">
+                <MudText Typo="Typo.caption" Class="section-label">@Localizer["Advice_Subject_Label"]</MudText>
+                <MudRadioGroup T="SubjectMotion" Value="SelectedSubjectMotion" ValueChanged="OnSubjectMotionChanged" Class="radio-group compact-radio-group">
+                    @foreach (var option in SubjectMotionOptions)
+                    {
+                        <MudRadio T="SubjectMotion" Value="option.Value" Color="Color.Warning" Size="Size.Small">
+                            @Localizer[option.LabelKey]
+                        </MudRadio>
+                    }
+                </MudRadioGroup>
+            </div>
+        </div>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter] public CameraSupportMode SelectedSupportMode { get; set; }
+    [Parameter] public EventCallback<CameraSupportMode> OnSupportModeChanged { get; set; }
+    [Parameter] public SubjectMotion SelectedSubjectMotion { get; set; }
+    [Parameter] public EventCallback<SubjectMotion> OnSubjectMotionChanged { get; set; }
+
+    private readonly record struct ContextOption<T>(string LabelKey, T Value);
+
+    private static readonly ContextOption<CameraSupportMode>[] SupportModeOptions =
+    [
+        new("Advice_Support_Handheld", CameraSupportMode.Handheld),
+        new("Advice_Support_Tripod", CameraSupportMode.Tripod),
+    ];
+
+    private static readonly ContextOption<SubjectMotion>[] SubjectMotionOptions =
+    [
+        new("Advice_Subject_Still", SubjectMotion.Still),
+        new("Advice_Subject_Moving", SubjectMotion.Moving),
+    ];
+}
