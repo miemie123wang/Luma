@@ -83,9 +83,13 @@ Priority order:
 
 1. Add `--check-invariants` to `tools/Luma.AdviceAudit`.
 2. Use the invariant checker to scan a broad generated matrix and report only failures.
-3. Split advice rules by device capability when a shared category becomes too broad.
+3. Split advice rules by device capability only when a shared category changes the user's real action.
 4. Add metadata to generated audit output so each case can show which advice keys were used.
 5. Continue external review by theme instead of asking for one broad overall review.
+
+Complexity control rule:
+
+Do not split rules just to make the model look more precise. Split only when shared wording would make the user do something different, impossible, or misleading for the selected device or scene. Prefer adding an invariant first; let repeated invariant failures justify new branches.
 
 Initial invariants to implement:
 
@@ -109,6 +113,14 @@ HasRemoteOrTimerTrigger
 ```
 
 This does not mean creating a separate hand-written case for every input combination. It means splitting only the dimensions that change the meaning of the advice.
+
+Keep the rule system in three layers:
+
+1. Broad rules for common photographic realities such as low light, harsh light, moving subjects, tripod, handheld, and night sky.
+2. Capability overrides for manual cameras, phones, action cameras, tripod workflow, handheld workflow, and video-preferred motion capture.
+3. Small exception rules only when review or invariants show a real mismatch, such as `ActionCam + Moving`, `NightSky + Tripod`, `PhoneBasic + LowLight`, or `Beginner + Handheld Night`.
+
+Layer 3 should stay small. If a proposed branch only makes wording more polished but does not prevent a real user-facing mismatch, leave it out until review or invariant output proves it matters.
 
 ## Review Prompt
 

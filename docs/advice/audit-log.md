@@ -439,6 +439,25 @@ The ActionCam re-review is the reason this should be the next step. The first fi
 
 After the checker exists, the next structural improvement is to separate device capability questions from device family checks. `IsAutoExposureDevice` should remain useful for broad manual-control avoidance, but specific advice should use narrower intent such as phone workflow, action-camera workflow, manual-exposure support, tap exposure, burst support, or video-preferred motion capture.
 
+Complexity control note:
+
+There is a real risk of over-splitting the advice system. The goal is not to create a branch for every device, light phase, style, support mode, and experience combination. The rule for splitting should be: split only when shared wording changes the user's real action or creates a device/scene mismatch.
+
+Good split:
+
+- Phone moving-subject advice can mention burst, action mode, sport mode, or video.
+- ActionCam moving-subject advice should prefer video, high-frame-rate capture, stabilization, and pulling a frame later.
+
+This split is justified because the user workflow is different.
+
+Bad split:
+
+- Splitting two daylight still-landscape branches only because one wording could sound slightly more tailored.
+
+This should wait until review or invariant output shows a real problem.
+
+The preferred process is: write an invariant first, observe repeated failures, then add the smallest rule branch that fixes the real mismatch.
+
 Theme-based external reviews should come after that. Good themes:
 
 - Device-language review.
