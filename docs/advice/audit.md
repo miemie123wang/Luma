@@ -8,6 +8,37 @@ Use a small set of representative cases to review the exact text Luma generates.
 
 We are not asking an AI to redesign the whole rule system. We are asking it to sanity-check whether the local output is too unreasonable.
 
+## Current Audit Strategy
+
+The advice system is a rule-composition system, not a table of fully hand-written scenarios. The theoretical input matrix is large:
+
+```text
+14 light phases * about 6 weather states * 4 shooting styles * 5 camera types * 3 experience levels * 2 support modes * 2 subject states = about 20,160 combinations
+```
+
+This does not mean Luma has 20,000 separate advice cases. Most inputs fold into broader rule groups such as low light, harsh light, clear weather, fog, tripod, handheld, moving subject, and device type.
+
+The practical audit target is therefore smaller:
+
+- First pass: review the 7 high-risk cases below.
+- Second pass: expand to about 24-36 representative regression cases.
+- Full matrix generation is not useful yet unless we need to find duplicate text, missing branches, or unexpected rule collisions.
+
+Current hard-coded advice is roughly 50-plus localized advice fragments that are assembled into a card:
+
+- Feasibility warnings.
+- First test exposure guidance.
+- Safe starting point guidance.
+- Device-specific operation guidance.
+- Risk warnings.
+- Adjustment steps.
+- Weather notes.
+- Experience-level notes.
+- Capture-condition notes for support mode and subject movement.
+- Beginner field steps.
+
+Audit should focus on combinations where these fragments can conflict, especially night or low-light scenes, phone versus camera wording, handheld versus tripod guidance, and moving subjects.
+
 ## Review Prompt
 
 Copy this prompt into an external AI tool, then paste the cases below it.

@@ -26,3 +26,7 @@ The local advice should prioritize:
 3. Generate the local advice for those cases.
 4. Review the output with the audit prompt.
 5. Change only the smallest rule needed to fix the issue.
+
+## Current Audit Plan
+
+Start with a small case generator for the 7 high-risk cases in [Audit workflow](audit.md). After reviewing those outputs, expand to about 24-36 representative regression cases instead of trying to exhaust the full input matrix.
