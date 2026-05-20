@@ -52,6 +52,47 @@ The local advice is one of the most user-facing parts of Luma. If it is wrong, t
 
 The goal of audit is not to make every suggestion perfect. The goal is to catch advice that is obviously wrong, mismatched to the user's device, unsafe for the light level, or internally contradictory.
 
+## Developer Framing
+
+This work is not just editing photography copy. It is turning a subjective product capability into an engineering system that can be reviewed, improved, and protected from regression.
+
+The advice module has several difficult qualities:
+
+- It is user-visible and affects trust quickly.
+- It is partly subjective because photography guidance depends on taste, equipment, skill, and scene context.
+- It has a large theoretical input matrix.
+- It cannot honestly promise 100% correct advice.
+- It still needs to avoid advice that is obviously wrong, impossible on the selected device, or misleading in high-risk scenes.
+
+The engineering task is to convert vague quality judgment into explicit boundaries:
+
+- Which scenarios are high risk.
+- Which outputs are clearly wrong.
+- Which device-language mismatches are unacceptable.
+- Which findings must be fixed before commit.
+- Which findings are optional polish.
+- Which repeated review findings should become automated invariants.
+- When a shared rule should be split.
+- When splitting would only add complexity without preventing a real user-facing mismatch.
+
+In practical terms, this work is building a review-driven quality workflow for a rule-composition advice engine:
+
+- Generate representative high-risk and regression cases.
+- Use external AI review as a discovery step, not as proof.
+- Triage findings manually.
+- Convert meaningful findings into small rule or wording changes.
+- Validate localization and builds.
+- Record product and engineering decisions in docs.
+- Convert repeated failures into future invariant checks.
+
+This is the useful part of AI-assisted development: AI helps discover issue classes in subjective output, while engineering judgment decides what is a real bug, what is acceptable risk, what should become a rule, and what should not be over-engineered.
+
+A concise resume-style summary of this work:
+
+```text
+Built a review-driven quality workflow for a rule-based photography advice engine: designed representative audit sets, integrated external AI review as a discovery step, triaged findings into rule-level fixes, added localization validation, documented correctness limits, and planned invariant-based regression checks to prevent known advice-quality failures across a large input matrix.
+```
+
 ## First-Layer Review Summary
 
 Initial review result:
