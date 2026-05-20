@@ -13,6 +13,7 @@ First-layer high-risk audit is complete.
 Scope completed:
 
 - Generated 7 high-risk advice outputs with `tools/Luma.AdviceAudit`.
+- Added `--out` support so audit outputs can be written to local review files.
 - Reviewed those outputs with the audit prompt.
 - Fixed all `Wrong` findings.
 - Fixed high-value `Risky` findings that affected common or confusing paths.
@@ -26,6 +27,23 @@ dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
 dotnet run --project .\tools\Luma.LocalizationCheck\Luma.LocalizationCheck.csproj
 dotnet build .\Luma\Luma.csproj
 ```
+
+Local generated output and external review files should live under:
+
+```text
+docs/advice/generated/
+```
+
+This folder is ignored by git. Use it for temporary review artifacts such as:
+
+```text
+high-risk-output.md
+high-risk-review.md
+regression-output.md
+regression-review.md
+```
+
+The useful findings from those files should be summarized in this log before committing code or documentation changes.
 
 ## Why This Audit Exists
 
@@ -288,7 +306,8 @@ Useful additions to `tools/Luma.AdviceAudit` later:
 
 - Add `--set high-risk` and `--set regression` switches.
 - Add `--culture en|es|zh-Hans|zh-Hant` for translation spot checks.
-- Add markdown output that can be pasted directly into `audit.md` or an external reviewer.
+- Add richer markdown output with stable headings and optional metadata for each case.
+- Add a `--review-template` option that writes an empty review file next to the generated output.
 - Add a simple duplicate-line detector to find repeated generic bullets.
 - Add a device-language check that flags shutter-speed strings in phone/action-cam moving-subject cases.
 

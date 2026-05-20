@@ -180,6 +180,16 @@ cd Luma
 dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
 ```
 
+输出较长时，可以直接写入文件：
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out .\docs\advice\generated\high-risk-output.md
+```
+
+外部 review 结果也建议保存到同一目录，例如 `docs/advice/generated/high-risk-review.md`，方便后续直接读取和整理。
+
+`docs/advice/generated/` 是本地审阅产物目录，不需要提交。
+
 如果当前终端已经在 `Luma/Luma` app 目录内，请使用：
 
 ```powershell

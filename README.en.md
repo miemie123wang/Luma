@@ -149,6 +149,16 @@ cd Luma
 dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
 ```
 
+For longer output, write directly to a file:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out .\docs\advice\generated\high-risk-output.md
+```
+
+Save external review results in the same folder, for example `docs/advice/generated/high-risk-review.md`, so they can be read and triaged directly later.
+
+`docs/advice/generated/` is for local review artifacts and should not be committed.
+
 If your terminal is already in the `Luma/Luma` app folder, use:
 
 ```powershell

@@ -41,7 +41,9 @@ Audit should focus on combinations where these fragments can conflict, especiall
 
 ## Review Prompt
 
-Copy this prompt into an external AI tool, then paste the cases below it.
+Copy this prompt into an external AI tool, then paste or upload the generated case output file after it.
+
+Ask the reviewer to return Markdown content that can be saved as `docs/advice/generated/high-risk-review.md`.
 
 ```text
 You are a photography coach. Review these local hard-coded photography advice outputs.
@@ -52,6 +54,9 @@ For each case, respond with:
 - Verdict: OK / Risky / Wrong
 - Main issue: one sentence describing the largest problem
 - Suggested fix: the smallest rule or wording change needed
+- Must fix before commit: yes/no
+
+Return the review as Markdown suitable for saving to a local review file. Do not rewrite the advice text unless a short quote is needed to identify the issue.
 
 Rules for judging:
 1. Night and low-light scenes must not reuse daylight landscape settings.
@@ -96,13 +101,91 @@ Run this command from the repository root to generate the current local outputs 
 dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
 ```
 
+For longer reviews, write the output to a file instead of copying from the terminal:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out .\docs\advice\generated\high-risk-output.md
+```
+
+Ask the reviewer to return Markdown content for a review file too. Save that file next to the generated output, for example:
+
+```text
+docs/advice/generated/high-risk-review.md
+```
+
+This lets the coding agent read the review file directly and convert only meaningful findings into small rule changes.
+
+The external reviewer does not need access to this repository; it only needs to return Markdown that you save at that path.
+
 If your terminal is already inside the app folder (`Luma/Luma`), use this path instead:
 
 ```powershell
 dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
 ```
 
-Paste the generated text after the review prompt above when asking for review. The generator currently uses English output so the photography review can focus on advice quality instead of translation quality.
+From the app folder, write output to a file with:
+
+```powershell
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out ..\docs\advice\generated\high-risk-output.md
+```
+
+Paste or upload the generated output file after the review prompt above when asking for review. The generator currently uses English output so the photography review can focus on advice quality instead of translation quality.
+
+Recommended file pair for a review pass:
+
+```text
+docs/advice/generated/high-risk-output.md
+docs/advice/generated/high-risk-review.md
+```
+
+For the second-layer regression pass, use:
+
+```text
+docs/advice/generated/regression-output.md
+docs/advice/generated/regression-review.md
+```
+
+Do not commit files under `docs/advice/generated/`; they are local review artifacts.
+
+## Review Result File Format
+
+Ask the reviewer to use this format when returning a review file:
+
+```text
+# Advice Audit Review: high-risk
+
+Overall summary:
+- OK: N
+- Risky: N
+- Wrong: N
+- Must-fix before commit: yes/no
+
+## Case 1: case name
+
+Verdict: OK / Risky / Wrong
+Main issue: one sentence, or none
+Suggested fix: smallest rule or wording change, or none
+Must fix before commit: yes/no
+
+## Case 2: case name
+
+Verdict: OK / Risky / Wrong
+Main issue: one sentence, or none
+Suggested fix: smallest rule or wording change, or none
+Must fix before commit: yes/no
+```
+
+For targeted re-audits, use this shorter format:
+
+```text
+# Advice Audit Re-Review: high-risk
+
+## Case N: case name
+
+Resolved: yes/no
+Remaining issue: one sentence, or none
+Must fix before commit: yes/no
+```
 
 ## High-Risk Cases For Next Review
 
@@ -278,7 +361,9 @@ Targeted re-audit result:
 
 ## Next Starting Point
 
-1. Run `tools/Luma.AdviceAudit` and paste the generated outputs into an external review prompt.
-2. Record only meaningful `Wrong` and high-value `Risky` findings.
-3. Convert findings into small rule or wording changes.
-4. Re-run the same cases after each fix.
+1. Run `tools/Luma.AdviceAudit -- --out ...` to create a generated output file.
+2. Send the review prompt and generated output file to an external reviewer.
+3. Save the returned Markdown review as `docs/advice/generated/*-review.md`.
+4. Let the coding agent read the review file and triage only meaningful `Wrong` and high-value `Risky` findings.
+5. Convert findings into small rule or wording changes.
+6. Re-run the same cases after each fix.

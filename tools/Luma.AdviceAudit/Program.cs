@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using Luma.Localization;
 using Luma.Models;
 using Luma.Services;
@@ -7,41 +8,81 @@ CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en");
 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
 
 var adviceService = new ShootingAdviceService(new InMemoryStringLocalizer());
+var output = new StringBuilder();
 
 foreach (var auditCase in GetHighRiskCases())
 {
     var advice = adviceService.GetAdvice(auditCase.Context);
 
-    Console.WriteLine($"Case {auditCase.Number}: {auditCase.Name}");
-    Console.WriteLine($"Phase: {auditCase.Context.Phase}");
-    Console.WriteLine($"Weather: {auditCase.WeatherLabel}");
-    Console.WriteLine($"Style: {auditCase.Context.Style}");
-    Console.WriteLine($"Camera: {auditCase.Context.Camera}");
-    Console.WriteLine($"Experience: {auditCase.Context.Experience}");
-    Console.WriteLine($"Support: {auditCase.Context.SupportMode}");
-    Console.WriteLine($"Subject: {auditCase.Context.SubjectMotion}");
-    Console.WriteLine();
-    Console.WriteLine("Local output:");
-    Console.WriteLine($"Feasibility: {advice.FeasibilityWarning ?? "(none)"}");
-    WriteList("First test shot", advice.ExposureSteps);
-    WriteList("Watch first", advice.RiskWarnings);
-    WriteList("If it is not working", advice.AdjustmentSteps);
-    WriteList("Steps", advice.FieldSteps);
-    Console.WriteLine();
+    output.AppendLine($"Case {auditCase.Number}: {auditCase.Name}");
+    output.AppendLine($"Phase: {auditCase.Context.Phase}");
+    output.AppendLine($"Weather: {auditCase.WeatherLabel}");
+    output.AppendLine($"Style: {auditCase.Context.Style}");
+    output.AppendLine($"Camera: {auditCase.Context.Camera}");
+    output.AppendLine($"Experience: {auditCase.Context.Experience}");
+    output.AppendLine($"Support: {auditCase.Context.SupportMode}");
+    output.AppendLine($"Subject: {auditCase.Context.SubjectMotion}");
+    output.AppendLine();
+    output.AppendLine("Local output:");
+    output.AppendLine($"Feasibility: {advice.FeasibilityWarning ?? "(none)"}");
+    AppendList(output, "First test shot", advice.ExposureSteps);
+    AppendList(output, "Watch first", advice.RiskWarnings);
+    AppendList(output, "If it is not working", advice.AdjustmentSteps);
+    AppendList(output, "Steps", advice.FieldSteps);
+    output.AppendLine();
 }
 
-static void WriteList(string heading, IReadOnlyList<string> items)
+var outputText = output.ToString();
+var outputPath = GetOutputPath(args);
+
+if (outputPath is null)
 {
-    Console.WriteLine($"{heading}:");
+    Console.Write(outputText);
+}
+else
+{
+    var directory = Path.GetDirectoryName(outputPath);
+    if (!string.IsNullOrEmpty(directory))
+        Directory.CreateDirectory(directory);
+
+    File.WriteAllText(outputPath, outputText, Encoding.UTF8);
+    Console.WriteLine($"Advice audit output written to {outputPath}");
+}
+
+static void AppendList(StringBuilder output, string heading, IReadOnlyList<string> items)
+{
+    output.AppendLine($"{heading}:");
 
     if (items.Count == 0)
     {
-        Console.WriteLine("- (none)");
+        output.AppendLine("- (none)");
         return;
     }
 
     foreach (var item in items)
-        Console.WriteLine($"- {item}");
+        output.AppendLine($"- {item}");
+}
+
+static string? GetOutputPath(string[] args)
+{
+    for (var index = 0; index < args.Length; index++)
+    {
+        var arg = args[index];
+
+        if (arg == "--out" || arg == "-o")
+        {
+            if (index + 1 >= args.Length)
+                throw new ArgumentException("Missing value for --out.");
+
+            return args[index + 1];
+        }
+
+        const string outPrefix = "--out=";
+        if (arg.StartsWith(outPrefix, StringComparison.Ordinal))
+            return arg[outPrefix.Length..];
+    }
+
+    return null;
 }
 
 static IReadOnlyList<AuditCase> GetHighRiskCases() =>
