@@ -142,6 +142,46 @@ Keep the rule system in three layers:
 
 Layer 3 should stay small. If a proposed branch only makes wording more polished but does not prevent a real user-facing mismatch, leave it out until review or invariant output proves it matters.
 
+## Pre-Trip Full-Frame Landscape Check
+
+Before the upcoming travel use case, prioritize a practical field check for full-frame landscape shooting. This is a real user path, so it should come before another broad advice review.
+
+Goal:
+
+- Make Luma useful as a travel landscape starting-point assistant for a full-frame camera.
+- Confirm common landscape paths have reasonable first-shot guidance, risk warnings, and adjustment steps.
+- Avoid spending this pass on lower-priority device paths such as ActionCam unless an invariant catches a known issue.
+
+Suggested audit set name:
+
+```text
+travel-fullframe-landscape
+```
+
+Suggested cases:
+
+1. FullFrame + Daylight + Landscape + Handheld + Still + Clear.
+2. FullFrame + Midday + Landscape + Handheld + Still + Harsh clear light.
+3. FullFrame + GoldenHour + Landscape + Handheld + Still + Mixed cloud.
+4. FullFrame + Sunset + Landscape + Tripod + Still + Clear or mixed cloud.
+5. FullFrame + BlueHour + Landscape + Handheld + Still + Clear.
+6. FullFrame + BlueHour + Landscape + Handheld + Still + Fog or low visibility.
+7. FullFrame + Night + Landscape + Tripod + Still + Clear or mixed cloud.
+8. FullFrame + Night + Urban + Tripod + Still + Bright signs or mixed city light.
+9. FullFrame + NightSky + Tripod + Still + Clear.
+10. FullFrame + HeavyCloud + Landscape + Handheld + Still.
+
+Review focus:
+
+- Daylight and harsh light should protect highlights without overcomplicating the field workflow.
+- Fog and heavy cloud should prioritize contrast, shape, and separation instead of simply brightening the frame.
+- Blue hour should stay stable and avoid over-brightening signs, fog, or sky.
+- Night tripod landscape should lead with noise, focus, stability, or long-exposure concerns before highlight risk.
+- Night sky tripod should prioritize focus, star trailing, exposure length, and noise.
+- Handheld night or blue-hour landscape should be honest about stability limits.
+
+This travel set should be treated as a targeted product-readiness pass, not a replacement for the broader invariant checker. If time is short, run this set manually first, then implement `--check-invariants` after the trip-focused path is usable.
+
 ## Review Prompt
 
 Copy this prompt into an external AI tool, then paste or upload the generated case output file after it.

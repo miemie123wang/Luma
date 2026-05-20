@@ -467,7 +467,38 @@ Useful additions to `tools/Luma.AdviceAudit` later:
 
 ## Next Session Plan
 
-The next work session should start with automation, not another manual review.
+The durable quality plan should start with automation, not another broad manual review.
+
+Travel-priority adjustment:
+
+The user expects to travel next week with a full-frame camera and mostly shoot landscapes. Before expanding the general audit, add a targeted `travel-fullframe-landscape` pass so the app is useful for the near-term real field use case.
+
+Recommended travel set:
+
+- Daylight clear landscape handheld.
+- Midday harsh landscape handheld.
+- Golden-hour landscape handheld.
+- Sunset tripod landscape.
+- Blue-hour landscape handheld.
+- Blue-hour foggy landscape handheld.
+- Night landscape tripod.
+- Night urban tripod with mixed city light.
+- Night-sky tripod.
+- Heavy-cloud landscape handheld.
+
+This set should check whether Luma gives a sensible first shot, a useful leading risk, and a practical first adjustment for full-frame landscape work. The most important risks are highlight clipping, fog/contrast, blue-hour over-brightening, night stability, tripod focus, star trailing, and noise.
+
+If time is limited before the trip, run the travel set first and use external review only on that focused output. Then return to `--check-invariants` as the durable quality gate.
+
+Immediate order before travel:
+
+1. Add a `travel-fullframe-landscape` set to `tools/Luma.AdviceAudit`.
+2. Generate its output to `docs/advice/generated/travel-fullframe-landscape-output.md`.
+3. Review only those travel cases for field usefulness.
+4. Fix must-fix or high-value risky findings that affect full-frame landscape use.
+5. Run localization check and app build.
+
+Durable quality order after the travel set:
 
 Recommended order:
 
