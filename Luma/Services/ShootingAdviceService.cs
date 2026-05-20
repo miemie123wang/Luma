@@ -10,7 +10,8 @@ public class ShootingAdviceService
         Blur,
         Highlight,
         Noise,
-        Contrast
+        Contrast,
+        NightSky
     }
 
     private readonly IStringLocalizer<SharedResource> _localizer;
@@ -23,19 +24,24 @@ public class ShootingAdviceService
     public ShootingAdvice GetAdvice(ShootingAdviceContext context)
     {
         var primaryRisk = GetPrimaryRisk(context);
+        var feasibilityWarning = GetFeasibility(context);
         var exposureSteps = new List<string>
         {
-            GetExposure(context),
-            GetSafeStartingPoint(context),
-            GetDeviceOperation(context)
+            GetExposure(context)
         };
+
+        if (!ShouldKeepFirstTestFocused(context))
+        {
+            exposureSteps.Add(GetSafeStartingPoint(context));
+            exposureSteps.Add(GetDeviceOperation(context));
+        }
 
         var riskWarnings = new List<string> { GetRiskWarning(primaryRisk) };
         riskWarnings.AddRange(GetCaptureConditionSettings(context));
 
         if (context.Weather != null)
         {
-            var weatherNote = GetWeatherNote(context.Weather);
+            var weatherNote = GetWeatherNote(context, context.Weather);
             if (!string.IsNullOrEmpty(weatherNote))
                 riskWarnings.Add(weatherNote);
         }
@@ -49,7 +55,7 @@ public class ShootingAdviceService
         return new ShootingAdvice
         {
             Title = _localizer["Advice_Title"],
-            FeasibilityWarning = GetFeasibility(context),
+            FeasibilityWarning = feasibilityWarning,
             ExposureSteps = exposureSteps,
             RiskWarnings = riskWarnings,
             AdjustmentSteps = adjustmentSteps,
@@ -61,6 +67,12 @@ public class ShootingAdviceService
     {
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
 
+        if (context.Camera == CameraType.ActionCam && context.Phase == LightPhase.Night && context.SubjectMotion == SubjectMotion.Moving)
+            return _localizer["Advice_Feasibility_ActionCamNightMoving"];
+
+        if (context.Experience == ExperienceLevel.Beginner && context.SubjectMotion == SubjectMotion.Moving)
+            return _localizer["Advice_Feasibility_BeginnerMoving"];
+
         if (lowLight && context.SupportMode == CameraSupportMode.Handheld &&
             context.Style is ShootingStyle.Landscape or ShootingStyle.NightSky)
             return _localizer["Advice_Feasibility_HandheldNight"];
@@ -69,6 +81,15 @@ public class ShootingAdviceService
             return _localizer["Advice_Feasibility_NightSkyNeedsTripod"];
 
         return null;
+    }
+
+    private static bool ShouldKeepFirstTestFocused(ShootingAdviceContext context)
+    {
+        var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
+
+        return lowLight &&
+            context.SupportMode == CameraSupportMode.Handheld &&
+            context.Style is ShootingStyle.Landscape or ShootingStyle.NightSky;
     }
 
     private string GetExposure(ShootingAdviceContext context)
@@ -84,6 +105,7 @@ public class ShootingAdviceService
 
     private string GetCameraExposure(ShootingAdviceContext context)
     {
+        var blueHour = IsBlueHour(context.Phase);
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
         var harshLight = IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20;
         var fullFrame = context.Camera == CameraType.FullFrame;
@@ -102,6 +124,9 @@ public class ShootingAdviceService
 
         if (lowLight && context.SupportMode == CameraSupportMode.Tripod)
             return _localizer["Advice_Exposure_Camera_LowLightTripod", mode, "ISO 200", context.Style == ShootingStyle.Landscape ? "f/5.6" : "f/4", "2s", cameraAssumption];
+
+        if (blueHour && context.SupportMode == CameraSupportMode.Handheld)
+            return _localizer["Advice_Exposure_Camera_BlueHourHandheld", mode, fullFrame ? "ISO 800-1600" : "ISO 1600-3200", fullFrame ? "f/2.8-f/4" : "f/3.5-f/5.6", context.SubjectMotion == SubjectMotion.Moving ? "1/250s" : "1/80s", cameraAssumption];
 
         if (lowLight)
             return _localizer["Advice_Exposure_Camera_LowLightHandheld", mode, fullFrame ? "ISO 3200" : "ISO 6400", fullFrame ? "f/2.8-f/4" : "f/3.5-f/5.6", "1/60s", cameraAssumption];
@@ -257,11 +282,13 @@ public class ShootingAdviceService
 
         if (context.SubjectMotion == SubjectMotion.Moving)
         {
-            yield return context.Style == ShootingStyle.Urban
+            yield return context.Camera is CameraType.PhoneBasic or CameraType.PhonePro or CameraType.ActionCam
+                ? _localizer["Advice_Condition_Moving_AutoDevice"]
+                : context.Style == ShootingStyle.Urban
                 ? _localizer["Advice_Condition_Moving_Urban"]
                 : _localizer["Advice_Condition_Moving_Default"];
         }
-        else if (context.SupportMode == CameraSupportMode.Tripod)
+        else if (context.SupportMode == CameraSupportMode.Tripod && context.Style != ShootingStyle.NightSky)
         {
             yield return _localizer["Advice_Condition_Still_Tripod"];
         }
@@ -271,14 +298,18 @@ public class ShootingAdviceService
     {
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
 
-        if (context.SubjectMotion == SubjectMotion.Moving || context.SupportMode == CameraSupportMode.Handheld && lowLight)
+        if (context.Style == ShootingStyle.NightSky && context.SupportMode == CameraSupportMode.Tripod)
+            return AdviceRisk.NightSky;
+        if (context.SubjectMotion == SubjectMotion.Moving)
+            return AdviceRisk.Blur;
+        if (context.Weather?.CloudCover >= 75 || context.Weather?.Visibility is > 0 and < 5000)
+            return AdviceRisk.Contrast;
+        if (context.SupportMode == CameraSupportMode.Handheld && lowLight)
             return AdviceRisk.Blur;
         if (IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20)
             return AdviceRisk.Highlight;
         if (lowLight)
             return AdviceRisk.Noise;
-        if (context.Weather?.CloudCover >= 75 || context.Weather?.Visibility is > 0 and < 5000)
-            return AdviceRisk.Contrast;
 
         return AdviceRisk.Highlight;
     }
@@ -289,6 +320,7 @@ public class ShootingAdviceService
         AdviceRisk.Highlight => _localizer["Advice_Risk_Highlight"],
         AdviceRisk.Noise => _localizer["Advice_Risk_Noise"],
         AdviceRisk.Contrast => _localizer["Advice_Risk_Contrast"],
+        AdviceRisk.NightSky => _localizer["Advice_Risk_NightSky"],
         _ => _localizer["Advice_Risk_Highlight"]
     };
 
@@ -298,10 +330,11 @@ public class ShootingAdviceService
         AdviceRisk.Highlight => _localizer["Advice_Adjust_Highlight"],
         AdviceRisk.Noise => _localizer["Advice_Adjust_Noise"],
         AdviceRisk.Contrast => _localizer["Advice_Adjust_Contrast"],
+        AdviceRisk.NightSky => _localizer["Advice_Adjust_NightSky"],
         _ => _localizer["Advice_Adjust_Highlight"]
     };
 
-    private string GetWeatherNote(WeatherInfo weather)
+    private string GetWeatherNote(ShootingAdviceContext context, WeatherInfo weather)
     {
         if (weather.Precipitation > 0)
             return _localizer["Advice_Weather_Rain"];
@@ -310,7 +343,7 @@ public class ShootingAdviceService
         if (weather.CloudCover >= 75)
             return _localizer["Advice_Weather_Cloudy"];
         if (weather.CloudCover <= 20)
-            return _localizer["Advice_Weather_Clear"];
+            return context.Style == ShootingStyle.NightSky ? "" : _localizer["Advice_Weather_Clear"];
 
         return _localizer["Advice_Weather_Mixed"];
     }
@@ -331,6 +364,10 @@ public class ShootingAdviceService
         LightPhase.BlueDusk or
         LightPhase.NauticalDusk or
         LightPhase.AstronomicalDusk;
+
+    private static bool IsBlueHour(LightPhase phase) => phase is
+        LightPhase.BlueHour or
+        LightPhase.BlueDusk;
 
     private static bool IsHarshLight(LightPhase phase) => phase is
         LightPhase.Morning or

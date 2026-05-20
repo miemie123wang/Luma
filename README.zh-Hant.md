@@ -99,6 +99,7 @@ Luma/
 └── Luma.csproj    # 專案檔
 
 tools/
+├── Luma.AdviceAudit/       # 拍攝建議高風險場景輸出生成器
 └── Luma.LocalizationCheck/ # 本地化 key 與佔位符校驗工具
 ```
 
@@ -134,6 +135,18 @@ dotnet run --project tools/Luma.LocalizationCheck/Luma.LocalizationCheck.csproj
 ```
 
 此檢查會確認所有語言擁有同一組翻譯 key，並校驗 `{0}`、`{1}` 等格式化佔位符是否一致。
+
+拍攝建議 audit 輸出：
+```powershell
+cd Luma
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+```
+
+如果目前終端已經在 `Luma/Luma` app 目錄內，請使用：
+
+```powershell
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+```
 
 ---
 

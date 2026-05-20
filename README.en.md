@@ -106,6 +106,7 @@ Luma/
 └── Luma.csproj    # Project file
 
 tools/
+├── Luma.AdviceAudit/       # High-risk shooting advice output generator
 └── Luma.LocalizationCheck/ # Localization key and placeholder validator
 ```
 
@@ -141,6 +142,18 @@ dotnet run --project tools/Luma.LocalizationCheck/Luma.LocalizationCheck.csproj
 ```
 
 This verifies that every language has the same translation keys and compatible `{0}`, `{1}`-style format placeholders.
+
+Advice audit output:
+```powershell
+cd Luma
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+```
+
+If your terminal is already in the `Luma/Luma` app folder, use:
+
+```powershell
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+```
 
 ---
 

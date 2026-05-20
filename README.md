@@ -137,6 +137,7 @@ Luma/
 └── _Imports.razor                 # 全局 Razor 引用
 
 tools/
+├── Luma.AdviceAudit/              # 拍摄建议高风险场景输出生成器
 └── Luma.LocalizationCheck/        # 本地化 key 和占位符校验工具
 ```
 
@@ -172,6 +173,18 @@ dotnet run --project tools/Luma.LocalizationCheck/Luma.LocalizationCheck.csproj
 ```
 
 此检查会确认所有语言拥有同一组翻译 key，并校验 `{0}`、`{1}` 等格式化占位符是否一致。
+
+### 拍摄建议 audit 输出
+```powershell
+cd Luma
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+```
+
+如果当前终端已经在 `Luma/Luma` app 目录内，请使用：
+
+```powershell
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+```
 
 ---
 

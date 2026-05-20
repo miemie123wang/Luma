@@ -88,6 +88,22 @@ If it is not working:
 Steps:
 ```
 
+## Generate Local Outputs
+
+Run this command from the repository root to generate the current local outputs for the high-risk cases:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+```
+
+If your terminal is already inside the app folder (`Luma/Luma`), use this path instead:
+
+```powershell
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+```
+
+Paste the generated text after the review prompt above when asking for review. The generator currently uses English output so the photography review can focus on advice quality instead of translation quality.
+
 ## High-Risk Cases For Next Review
 
 Start with these cases before expanding the matrix.
@@ -228,9 +244,41 @@ Use this triage:
 
 When fixing, prefer changing one rule branch or one localized phrase. Avoid rewriting the whole service because one case sounds awkward.
 
-## Tomorrow's Starting Point
+## First Review Findings
 
-1. Add a quick way to generate these cases from `ShootingAdviceService`.
-2. Paste the generated outputs into this file under each case.
-3. Run the review prompt with an external AI.
-4. Convert only the meaningful findings into small rule changes.
+First high-risk review summary:
+
+- 2 cases were OK.
+- 4 cases were Risky.
+- 1 case was Wrong.
+
+The largest systemic issue was generic fallback bullets appearing beside more specific scenario guidance. This is risky because the specific branch may be correct while the extra generic bullet gives the user a conflicting priority.
+
+Priority fixes from this pass:
+
+- Case 6, Foggy Urban Scene: treat blue hour camera exposure as distinct from night handheld exposure.
+- Case 1, Night Handheld Landscape: when feasibility warning triggers, keep the first test shot focused on the matching exposure branch instead of appending generic safe-start and device-operation bullets.
+
+Detailed findings:
+
+- Case 1, Night Handheld Landscape: Risky. First test shot mixed the correct handheld branch with generic low-ISO fallback bullets. Fixed by keeping first test focused when a handheld low-light feasibility warning is active.
+- Case 2, Night Sky Tripod: Risky. Clear weather pushed the leading risk toward blown highlights, which is misleading for night sky. Fixed by giving tripod night sky its own star-trailing, focus, and noise risk.
+- Case 3, Night Sky Handheld: OK. Keep as-is for now; optional future wording can mention laying the phone flat or propping it securely.
+- Case 4, Golden Hour Moving Portrait: Risky. Beginner moving-subject scenarios need a short heads-up about burst or continuous capture. Fixed with a beginner moving-subject feasibility note.
+- Case 5, Midday Landscape: OK. Keep as-is.
+- Case 6, Foggy Blue Hour Urban: Wrong. Blue hour should not reuse the full night handheld exposure template, and fog should be a leading concern. Fixed with a blue-hour handheld exposure branch and contrast-first risk ordering for fog or low visibility.
+- Case 7, Action Cam Night Urban: Risky. Beginner action cam users in full night with moving subjects need an explicit high-failure-rate warning. Fixed with an action-cam night moving-subject feasibility note.
+
+Targeted re-audit result:
+
+- No remaining issue was marked as must-fix before commit.
+- Case 2 had a minor remaining generic tripod bullet about low ISO and depth of field. Fixed by not appending still-subject tripod guidance to night sky tripod cases.
+- Case 3 had a low-priority daylight clear-sky weather note. Fixed by suppressing generic clear-sky weather notes for night sky cases.
+- Case 4 and Case 7 still had a device-mismatched `1/500s` moving-subject note for phone or action cam users. Fixed by using a phone/action-cam friendly burst, action mode, sport mode, or video note for auto-exposure devices.
+
+## Next Starting Point
+
+1. Run `tools/Luma.AdviceAudit` and paste the generated outputs into an external review prompt.
+2. Record only meaningful `Wrong` and high-value `Risky` findings.
+3. Convert findings into small rule or wording changes.
+4. Re-run the same cases after each fix.
