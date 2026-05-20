@@ -85,6 +85,16 @@ In practical terms, this work is building a review-driven quality workflow for a
 - Record product and engineering decisions in docs.
 - Convert repeated failures into future invariant checks.
 
+The case sets are manually selected, but they are not arbitrary. They are risk-guided samples chosen around dimensions where rule composition is likely to collide: low light, night sky, handheld support, tripod support, phone wording, action cam wording, moving subjects, beginner guidance, professional concision, fog, harsh light, and clear weather. This is representative coverage, not exhaustive coverage. It can miss extreme combinations such as `ActionCam + NightSky + Tripod`.
+
+The quality strategy has three layers:
+
+- Manual review finds semantic and product-judgment issues: wrong advice direction, misleading tone, confusing priorities, or guidance that a human photographer would flag even if no simple text rule catches it.
+- Invariant machine scans prevent known structural failures from returning: device-language mismatches, forbidden manual controls for auto devices, highlight-first night tripod guidance, handheld-only rules in tripod contexts, or missing feasibility warnings in known hard scenarios.
+- Full matrix generation should come after invariants are stable. Its job is coverage and collision discovery: missing output, empty sections, duplicate output, or neighboring cases that collapse into the same advice when they should differ.
+
+The important sequence is: use manual review to discover issue classes, use invariants to lock known classes down, then use full matrix generation to broaden coverage. Running a full matrix too early would produce many unranked findings without enough rules to triage them.
+
 This is the useful part of AI-assisted development: AI helps discover issue classes in subjective output, while engineering judgment decides what is a real bug, what is acceptable risk, what should become a rule, and what should not be over-engineered.
 
 A concise resume-style summary of this work:
@@ -473,6 +483,7 @@ First invariant group:
 - PhoneBasic manual-control language check.
 - ActionCam moving-language check.
 - NightSky daylight-highlight lead check.
+- Night tripod landscape should not lead with highlight risk; it should lead with noise, focus, stability, or long-exposure concerns.
 - Tripod low-light handheld-rule check.
 - Beginner handheld night feasibility-warning check.
 

@@ -24,6 +24,17 @@ The practical audit target is therefore smaller:
 - Second pass: expand to about 24-36 representative regression cases.
 - Full matrix generation is not useful yet unless we need to find duplicate text, missing branches, or unexpected rule collisions.
 
+The current case sets are risk-guided manual samples, not random samples and not formal combinatorial coverage. They are chosen by looking at dimensions where rule-composed advice is most likely to conflict:
+
+- Low light, night, and night sky.
+- Handheld versus tripod support.
+- Phone, manual camera, and action cam wording.
+- Still versus moving subjects.
+- Beginner versus professional guidance depth.
+- Weather modifiers such as fog, heavy cloud, clear sky, and harsh light.
+
+This means the audit has coverage logic, but it does not claim exhaustive coverage. Extreme combinations such as `ActionCam + NightSky + Tripod` can still be blind spots until invariant checks and broader matrix scans exist.
+
 Current hard-coded advice is roughly 50-plus localized advice fragments that are assembled into a card:
 
 - Feasibility warnings.
@@ -75,6 +86,14 @@ Full matrix generation is useful for machine checks, not for manual review. The 
 4. Convert repeated issues into automated invariant checks.
 5. Use full or large-matrix generation only to run those checks and report failures.
 
+Use three quality layers for different error types:
+
+1. Risk-guided manual review catches semantic and product-judgment problems, such as misleading direction, mismatched tone, or advice that is technically possible but unhelpful.
+2. Invariant machine scans catch known structural rule violations, such as `PhoneBasic` output containing `ISO`, `ActionCam` output containing manual shutter-speed guidance, or night tripod landscape leading with daylight highlight risk.
+3. Full matrix generation catches coverage and collision problems, such as missing output, empty sections, duplicate output, or adjacent cases that should differ but do not.
+
+Do not start with full matrix review as the main quality gate. Run full or broad matrix checks after invariants are stable; otherwise the output can be too noisy to triage well.
+
 ## Next Development Direction
 
 The next stage should move from case-by-case fixing to explicit quality gates.
@@ -97,6 +116,7 @@ Initial invariants to implement:
 - `ActionCam` advice must not use tap-to-focus, manual ISO, manual shutter speed, burst-still, action-mode, or sport-mode language as the primary moving-subject path.
 - `ActionCam` moving-subject advice should prefer video, high-frame-rate capture, stabilization, and pulling a frame later.
 - `NightSky` advice should not lead with daylight highlight-protection guidance.
+- Night tripod landscape should not use highlight risk as the first watch item; it should lead with noise, focus, stability, or long-exposure concerns.
 - Tripod low-light advice should not contain handheld-only `1/focal length` guidance.
 - Beginner handheld night manual-camera advice should include a feasibility warning.
 
