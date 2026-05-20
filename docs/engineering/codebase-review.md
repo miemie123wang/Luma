@@ -22,6 +22,7 @@ Cleanup completed on 2026-05-19:
 - Removed unused Bootstrap static assets and unused Bootstrap-style global CSS helpers from `wwwroot/css/app.css`.
 - Added `TranslationValidator` and `tools/Luma.LocalizationCheck` to catch missing translation keys and incompatible format placeholders.
 - Extracted AI prompt generation from `Home.razor.cs` into `AiPromptBuilder`.
+- Extracted the Home phase and detail cards into small child components.
 
 ## Highest-Value Cleanup
 
@@ -46,6 +47,7 @@ Why it matters:
 Current split:
 
 - AI prompt generation now lives in `AiPromptBuilder`.
+- Current phase and location/weather details now live in small Home child components.
 
 Recommended next split:
 

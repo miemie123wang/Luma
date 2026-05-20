@@ -1,0 +1,71 @@
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Luma.SharedResource> Localizer
+
+<MudCard Class="info-card content-card detail-card mt-3">
+    <MudCardContent>
+        <div class="detail-section">
+            @if (Weather != null)
+            {
+                <div class="weather-summary-line phase-next">
+                    @Localizer["Weather_Summary", Weather.Icon, Localizer[Weather.Description], Weather.CloudCover]
+                    @if (Weather.IsGoodForPhoto)
+                    {
+                        <div class="weather-status weather-good">@Localizer["SuitableForPhoto"]</div>
+                    }
+                    else
+                    {
+                        <div class="weather-status weather-muted">@Localizer["UnsuitableForPhoto"]</div>
+                    }
+                </div>
+                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+                    @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), FormattedVisibility]
+                </MudText>
+            }
+            else if (!string.IsNullOrEmpty(WeatherWarningMessage))
+            {
+                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning">
+                    ⚠️ @WeatherWarningMessage
+                </MudText>
+            }
+
+            <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+                @if (Location != null)
+                {
+                    @Localizer["Location_Info", LocationName, Location.Lat.ToString("F4", CultureInfo.InvariantCulture), Location.Lng.ToString("F4", CultureInfo.InvariantCulture)]
+                }
+                else
+                {
+                    @Localizer["Location_Info", LocationName, "", ""]
+                }
+            </MudText>
+
+            @if (!string.IsNullOrEmpty(LocationWarningMessage))
+            {
+                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning detail-line">
+                    ⚠️ @LocationWarningMessage
+                </MudText>
+            }
+
+            @if (Location?.Altitude != null)
+            {
+                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+                    @string.Format(Localizer["Altitude_Display"], (int)Location.Altitude.Value)
+                </MudText>
+                @if (Location.Altitude.Value > 2000)
+                {
+                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning detail-line">
+                        ⚠️ @Localizer["Altitude_Warning"]
+                    </MudText>
+                }
+            }
+        </div>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter] public WeatherInfo? Weather { get; set; }
+    [Parameter] public GeoLocation? Location { get; set; }
+    [Parameter] public string LocationName { get; set; } = "";
+    [Parameter] public string FormattedVisibility { get; set; } = "";
+    [Parameter] public string? WeatherWarningMessage { get; set; }
+    [Parameter] public string? LocationWarningMessage { get; set; }
+}

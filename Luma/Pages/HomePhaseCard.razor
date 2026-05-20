@@ -1,0 +1,22 @@
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Luma.SharedResource> Localizer
+
+<MudCard Class="light-card content-card phase-card">
+    <MudCardContent>
+        <MudText Typo="Typo.h4" Align="Align.Center" Class="phase-title">
+            @Phase.Icon @Localizer[Phase.Name]
+        </MudText>
+        <MudText Typo="Typo.body1" Align="Align.Center" Class="phase-description">
+            @Localizer[Phase.Description]
+        </MudText>
+
+        <MudDivider Class="divider" />
+
+        <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
+            @Localizer["NextPhase_Text", Localizer[Phase.NextPhase]]
+        </MudText>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Parameter, EditorRequired] public LightPhaseInfo Phase { get; set; } = default!;
+}
