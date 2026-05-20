@@ -11,6 +11,7 @@ Local rule-based photography advice, output structure, prompt copy behavior, and
 - [Advice overview](advice/README.md)
 - [Advice design](advice/design.md)
 - [Advice audit workflow](advice/audit.md)
+- [Advice audit log](advice/audit-log.md)
 
 ### Engineering
 

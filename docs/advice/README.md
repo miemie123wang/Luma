@@ -6,6 +6,7 @@ This category covers Luma's local photography advice system.
 
 - [Design](design.md): product principles, inputs, output structure, decision flow, and known limits.
 - [Audit workflow](audit.md): how to enumerate hard-coded outputs and ask an external AI or human reviewer whether they are too unreasonable.
+- [Audit log](audit-log.md): detailed findings, fixes, and working notes from completed advice audit passes.
 
 ## Current Direction
 
@@ -29,4 +30,6 @@ The local advice should prioritize:
 
 ## Current Audit Plan
 
-Start with a small case generator for the 7 high-risk cases in [Audit workflow](audit.md). After reviewing those outputs, expand to about 24-36 representative regression cases instead of trying to exhaust the full input matrix.
+The first 7 high-risk cases have been reviewed and fixed. See [Audit log](audit-log.md) for the detailed findings and decisions.
+
+Next, expand to about 24-36 representative regression cases instead of trying to exhaust the full input matrix.
