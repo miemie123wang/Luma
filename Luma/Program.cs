@@ -17,6 +17,7 @@ builder.Services.AddScoped<LightPhaseService>();
 builder.Services.AddHttpClient<WeatherService>();
 builder.Services.AddScoped<SettingsService>();
 builder.Services.AddScoped<ShootingAdviceService>();
+builder.Services.AddScoped<AiPromptBuilder>();
 
 builder.Services.AddLocalization();
 builder.Services.AddSingleton<Microsoft.Extensions.Localization.IStringLocalizer<SharedResource>,

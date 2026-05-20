@@ -21,6 +21,7 @@ Cleanup completed on 2026-05-19:
 - Removed the unused standalone `NavMenu.razor` / `NavMenu.razor.css`; navigation is currently owned by `MainLayout.razor`.
 - Removed unused Bootstrap static assets and unused Bootstrap-style global CSS helpers from `wwwroot/css/app.css`.
 - Added `TranslationValidator` and `tools/Luma.LocalizationCheck` to catch missing translation keys and incompatible format placeholders.
+- Extracted AI prompt generation from `Home.razor.cs` into `AiPromptBuilder`.
 
 ## Highest-Value Cleanup
 
@@ -42,9 +43,12 @@ Why it matters:
 - The page is still manageable, but advice/prompt work will keep growing.
 - Testing prompt generation and advice context will be harder while they live inside the page component.
 
+Current split:
+
+- AI prompt generation now lives in `AiPromptBuilder`.
+
 Recommended next split:
 
-- Extract prompt generation into a small service or helper.
 - Extract the advice card and capture-context controls into child components when the UI changes again.
 - Keep data loading in the page until the app has more pages that need the same context.
 
@@ -140,8 +144,7 @@ Recommended action:
 ## Suggested Order
 
 1. Add advice audit case generation.
-2. Extract AI prompt building out of `Home.razor.cs`.
-3. Normalize culture startup.
+2. Normalize culture startup.
 
 ## Do Not Rush
 

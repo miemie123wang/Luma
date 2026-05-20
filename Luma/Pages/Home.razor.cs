@@ -1,4 +1,3 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Microsoft.JSInterop;
@@ -15,6 +14,7 @@ public partial class Home : ComponentBase
     [Inject] private WeatherService WeatherService { get; set; } = default!;
     [Inject] private SettingsService SettingsService { get; set; } = default!;
     [Inject] private ShootingAdviceService ShootingAdviceService { get; set; } = default!;
+    [Inject] private AiPromptBuilder AiPromptBuilder { get; set; } = default!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
     private string? _lastUICulture;
     
@@ -88,7 +88,17 @@ public partial class Home : ComponentBase
 
         try
         {
-            await JSRuntime.InvokeVoidAsync("lumaJS.copyText", BuildAiPrompt());
+            await JSRuntime.InvokeVoidAsync("lumaJS.copyText", AiPromptBuilder.Build(new AiPromptContext(
+                DateTimeOffset.Now,
+                CurrentPhase,
+                Location,
+                LocationName,
+                Weather,
+                WeatherWarningMessage,
+                CurrentSettings,
+                SelectedShootingStyle,
+                SelectedSupportMode,
+                SelectedSubjectMotion)));
             statusMessage = Localizer["Advice_CopyPrompt_Copied"];
         }
         catch
@@ -215,56 +225,6 @@ public partial class Home : ComponentBase
 
         PromptCopyStatusMessage = null;
     }
-
-    private string BuildAiPrompt()
-    {
-        var lines = new List<string>
-        {
-            Localizer["Advice_Prompt_Intro"],
-            "",
-            $"{Localizer["Advice_Prompt_Time"]}: {DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm zzz", CultureInfo.CurrentCulture)}",
-            $"{Localizer["Advice_Prompt_Phase"]}: {Localizer[CurrentPhase!.Name]} - {Localizer[CurrentPhase.Description]}",
-            $"{Localizer["Advice_Prompt_Location"]}: {GetPromptLocation()}",
-            $"{Localizer["Advice_Prompt_Weather"]}: {GetPromptWeather()}",
-            $"{Localizer["Camera_Label"]}: {Localizer[$"CameraOption_{GetCameraKey(CurrentSettings.Camera)}"]}",
-            $"{Localizer["Experience_Label"]}: {Localizer[$"Experience_{GetExperienceKey(CurrentSettings.Experience)}"]}",
-            $"{Localizer["Style_Label"]}: {Localizer[$"Style_{GetStyleKey(SelectedShootingStyle)}"]}",
-            $"{Localizer["Advice_Support_Label"]}: {Localizer[GetSupportLabelKey(SelectedSupportMode)]}",
-            $"{Localizer["Advice_Subject_Label"]}: {Localizer[GetSubjectLabelKey(SelectedSubjectMotion)]}"
-        };
-
-        return string.Join(Environment.NewLine, lines);
-    }
-
-    private string GetPromptLocation()
-    {
-        if (Location == null)
-            return Localizer["Location_Unknown"];
-
-        return $"{LocationName} ({Location.Lat.ToString("F4", CultureInfo.InvariantCulture)}, {Location.Lng.ToString("F4", CultureInfo.InvariantCulture)})";
-    }
-
-    private string GetPromptWeather()
-    {
-        if (Weather == null)
-            return WeatherWarningMessage ?? Localizer["Warning_WeatherUnavailable"];
-
-        return Localizer["Weather_Summary", Weather.Icon, Localizer[Weather.Description], Weather.CloudCover];
-    }
-
-    private static string GetSupportLabelKey(CameraSupportMode supportMode) => supportMode switch
-    {
-        CameraSupportMode.Handheld => "Advice_Support_Handheld",
-        CameraSupportMode.Tripod => "Advice_Support_Tripod",
-        _ => "Advice_Support_Handheld"
-    };
-
-    private static string GetSubjectLabelKey(SubjectMotion subjectMotion) => subjectMotion switch
-    {
-        SubjectMotion.Still => "Advice_Subject_Still",
-        SubjectMotion.Moving => "Advice_Subject_Moving",
-        _ => "Advice_Subject_Still"
-    };
 
     private LocalizedString GetLocationErrorMessage(string errorMessage)
     {
