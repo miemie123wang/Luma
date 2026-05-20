@@ -88,6 +88,7 @@ Luma 是一個面向旅行攝影師的光線助手應用，幫助使用者在旅
 
 ```text
 Luma/
+├── Components/    # 功能專用 UI 子元件
 ├── Layout/        # 主版面與導覽
 ├── Localization/  # 記憶體本地化實作與翻譯字典
 ├── Models/        # 位置、光線階段、天氣、設定與建議模型
@@ -96,6 +97,9 @@ Luma/
 ├── wwwroot/       # CSS、JavaScript interop、本地 SunCalc 與入口 HTML
 ├── Program.cs     # 應用啟動與服務註冊
 └── Luma.csproj    # 專案檔
+
+tools/
+└── Luma.LocalizationCheck/ # 本地化 key 與佔位符校驗工具
 ```
 
 根目錄的 `global.json` 將 SDK 鎖定到 .NET 9，避免本機預設 .NET 10 SDK 造成建置差異。

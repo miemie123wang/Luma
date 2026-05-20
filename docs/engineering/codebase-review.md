@@ -51,7 +51,7 @@ Current split:
 
 Recommended next split:
 
-- Extract the advice card and capture-context controls into child components when the UI changes again.
+- Extract the remaining advice card markup into a child component when the advice UI changes again.
 - Keep data loading in the page until the app has more pages that need the same context.
 
 ### 2. Localization Guardrails

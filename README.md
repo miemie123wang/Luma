@@ -104,6 +104,8 @@ Luma 是一个面向旅行摄影师的光线助手 app，帮助用户在旅行�
 
 ```
 Luma/
+├── Components/
+│   └── Home/                       # 首页专用 UI 子组件
 ├── Layout/
 │   └── MainLayout.razor          # 主布局、导航和语言切换
 ├── Localization/
@@ -119,6 +121,7 @@ Luma/
 │   └── Settings.razor.cs          # 设置页面逻辑
 ├── Services/
 │   ├── LightPhaseService.cs       # 光线阶段判断
+│   ├── AiPromptBuilder.cs         # Copy AI Prompt 文本生成
 │   ├── SettingsService.cs         # localStorage 设置读写
 │   ├── ShootingAdviceService.cs   # 本地规则式拍摄建议
 │   ├── SunCalcService.cs          # SunCalc / 定位 / 地名 JS interop
@@ -132,6 +135,9 @@ Luma/
 ├── Program.cs                     # 应用入口和服务注册
 ├── Luma.csproj                    # 项目文件
 └── _Imports.razor                 # 全局 Razor 引用
+
+tools/
+└── Luma.LocalizationCheck/        # 本地化 key 和占位符校验工具
 ```
 
 根目录的 `global.json` 将 SDK 锁定到 .NET 9，避免本机默认 .NET 10 SDK 造成构建差异。

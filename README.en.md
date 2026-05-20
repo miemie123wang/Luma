@@ -95,6 +95,7 @@ See [docs/README.md](docs/README.md) for the categorized documentation index.
 
 ```text
 Luma/
+├── Components/    # Feature-specific UI components
 ├── Layout/        # App layout and navigation
 ├── Localization/  # In-memory localization implementation and translations
 ├── Models/        # Location, light phase, weather, settings, and advice models
@@ -103,6 +104,9 @@ Luma/
 ├── wwwroot/       # CSS, JavaScript interop, local SunCalc, and entry HTML
 ├── Program.cs     # App startup and service registration
 └── Luma.csproj    # Project file
+
+tools/
+└── Luma.LocalizationCheck/ # Localization key and placeholder validator
 ```
 
 The root `global.json` pins the SDK to .NET 9 to avoid local .NET 10 SDK differences.
