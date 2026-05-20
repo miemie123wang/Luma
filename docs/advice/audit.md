@@ -39,11 +39,82 @@ Current hard-coded advice is roughly 50-plus localized advice fragments that are
 
 Audit should focus on combinations where these fragments can conflict, especially night or low-light scenes, phone versus camera wording, handheld versus tripod guidance, and moving subjects.
 
+## Review Limits And Invariants
+
+Layered review is an exploration process, not a proof that every possible combination is correct.
+
+Because the advice is assembled from shared rule fragments, a fix for one reviewed case can affect earlier cases and unreviewed combinations. Re-running previous audit sets lowers that risk, but it cannot guarantee that the full input matrix has no regressions.
+
+This project should not claim that it can give perfect photography advice. The realistic quality target is to make the advice useful, safe, and device-appropriate for common travel-photography paths, while catching obvious rule collisions before they reach users.
+
+Use separate quality bars instead of one vague "correctness" number:
+
+- Basic safety bar: advice should not be obviously wrong, unsafe for the light level, or impossible on the selected device. After the current audit passes, this is the bar Luma should try to push toward roughly 80-90% on common paths, then improve with automated checks.
+- Practical usefulness bar: advice should give a reasonable first test shot, a clear risk to watch, and one useful adjustment. This is likely lower than the safety bar because the app has limited context about lens, exact phone model, subject speed, local lighting, and user skill.
+- Coaching-quality bar: advice should feel like a strong photographer tailored it to the exact scene. This is not the current promise of the app and should not be treated as the release gate.
+
+The product positioning should stay honest: Luma is a travel photography starting-point assistant, not a perfect photography answer engine. It should help the user decide what to try first, what to watch first, and what to change first.
+
+Use review to discover new classes of problems. Once a problem repeats or becomes clear enough to describe as a rule, convert it into an automated invariant check.
+
+Examples of invariants learned from review:
+
+- `PhoneBasic` output should not give manual camera controls such as ISO, aperture, shutter speed, or depth-of-field instructions as the user's action.
+- `ActionCam` output should not depend on tap-to-focus, manual shutter speed, or manual ISO control.
+- `NightSky` output should not reuse daylight highlight-first guidance.
+- Tripod low-light manual-camera output should not contain handheld-only rules such as `1/focal length handheld`.
+- Auto-exposure devices should use mode, bracing, light-source, timer, burst, action-mode, sport-mode, or video language.
+- Night tripod landscape should lead with noise, focus, or long-exposure concerns before daylight-style highlight risk.
+- Beginner handheld night manual-camera scenarios should show a feasibility warning.
+
+Full matrix generation is useful for machine checks, not for manual review. The long-term workflow should be:
+
+1. Use external review to find new quality issues.
+2. Fix meaningful `Wrong` and high-value `Risky` findings with small rules or wording changes.
+3. Re-run prior audit sets as regression samples.
+4. Convert repeated issues into automated invariant checks.
+5. Use full or large-matrix generation only to run those checks and report failures.
+
+## Next Development Direction
+
+The next stage should move from case-by-case fixing to explicit quality gates.
+
+Priority order:
+
+1. Add `--check-invariants` to `tools/Luma.AdviceAudit`.
+2. Use the invariant checker to scan a broad generated matrix and report only failures.
+3. Split advice rules by device capability when a shared category becomes too broad.
+4. Add metadata to generated audit output so each case can show which advice keys were used.
+5. Continue external review by theme instead of asking for one broad overall review.
+
+Initial invariants to implement:
+
+- `PhoneBasic` advice must not ask the user to set ISO, aperture, shutter speed, or depth of field.
+- `ActionCam` advice must not use tap-to-focus, manual ISO, manual shutter speed, burst-still, action-mode, or sport-mode language as the primary moving-subject path.
+- `ActionCam` moving-subject advice should prefer video, high-frame-rate capture, stabilization, and pulling a frame later.
+- `NightSky` advice should not lead with daylight highlight-protection guidance.
+- Tripod low-light advice should not contain handheld-only `1/focal length` guidance.
+- Beginner handheld night manual-camera advice should include a feasibility warning.
+
+The important design lesson from the second-layer audit is that `IsAutoExposureDevice` is useful but too broad for all wording decisions. It is safe for avoiding manual camera controls, but it is not precise enough for motion advice because phones and action cameras have different practical workflows.
+
+Future rule design should prefer capability-style questions when possible:
+
+```text
+CanUseManualExposure
+CanUseTapExposure
+CanUseBurst
+PrefersVideoForMotion
+HasRemoteOrTimerTrigger
+```
+
+This does not mean creating a separate hand-written case for every input combination. It means splitting only the dimensions that change the meaning of the advice.
+
 ## Review Prompt
 
 Copy this prompt into an external AI tool, then paste or upload the generated case output file after it.
 
-Ask the reviewer to return Markdown content that can be saved as `docs/advice/generated/high-risk-review.md`.
+Ask the reviewer to return Markdown content that can be saved as the matching review file, such as `docs/advice/generated/high-risk-review.md` or `docs/advice/generated/regression-review.md`.
 
 ```text
 You are a photography coach. Review these local hard-coded photography advice outputs.
@@ -98,13 +169,19 @@ Steps:
 Run this command from the repository root to generate the current local outputs for the high-risk cases:
 
 ```powershell
-dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk
 ```
 
 For longer reviews, write the output to a file instead of copying from the terminal:
 
 ```powershell
-dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out .\docs\advice\generated\high-risk-output.md
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk --out .\docs\advice\generated\high-risk-output.md
+```
+
+For the second-layer regression pass, use:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --out .\docs\advice\generated\regression-output.md
 ```
 
 Ask the reviewer to return Markdown content for a review file too. Save that file next to the generated output, for example:
@@ -120,13 +197,19 @@ The external reviewer does not need access to this repository; it only needs to 
 If your terminal is already inside the app folder (`Luma/Luma`), use this path instead:
 
 ```powershell
-dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk
 ```
 
 From the app folder, write output to a file with:
 
 ```powershell
-dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out ..\docs\advice\generated\high-risk-output.md
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk --out ..\docs\advice\generated\high-risk-output.md
+```
+
+From the app folder, generate second-layer regression output with:
+
+```powershell
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --out ..\docs\advice\generated\regression-output.md
 ```
 
 Paste or upload the generated output file after the review prompt above when asking for review. The generator currently uses English output so the photography review can focus on advice quality instead of translation quality.
@@ -152,7 +235,7 @@ Do not commit files under `docs/advice/generated/`; they are local review artifa
 Ask the reviewer to use this format when returning a review file:
 
 ```text
-# Advice Audit Review: high-risk
+# Advice Audit Review: audit-set-name
 
 Overall summary:
 - OK: N
@@ -327,6 +410,10 @@ Use this triage:
 
 When fixing, prefer changing one rule branch or one localized phrase. Avoid rewriting the whole service because one case sounds awkward.
 
+After fixing a review result, regenerate both the current set and any earlier set that the change might affect. If a fix changes a shared rule such as device wording, risk selection, exposure selection, or adjustment wording, regenerate at least `high-risk` and `regression` before committing.
+
+For fixes that touch a broad shared rule, ask for a targeted re-review instead of a full manual review. The re-review should check only the affected cases and ask whether the previous must-fix issue is resolved and whether a new must-fix was introduced.
+
 ## First Review Findings
 
 First high-risk review summary:
@@ -361,9 +448,9 @@ Targeted re-audit result:
 
 ## Next Starting Point
 
-1. Run `tools/Luma.AdviceAudit -- --out ...` to create a generated output file.
-2. Send the review prompt and generated output file to an external reviewer.
-3. Save the returned Markdown review as `docs/advice/generated/*-review.md`.
-4. Let the coding agent read the review file and triage only meaningful `Wrong` and high-value `Risky` findings.
-5. Convert findings into small rule or wording changes.
-6. Re-run the same cases after each fix.
+1. Implement `--check-invariants` in `tools/Luma.AdviceAudit`.
+2. Start with known device-language and low-light invariants from the first two review rounds.
+3. Run the invariant checker against `high-risk`, `regression`, and then a broader generated matrix.
+4. Fix only invariant failures that represent real user-facing mismatches.
+5. Add case metadata or advice-key tracing to the generated output after the first invariant checker is working.
+6. Use the next external review as a theme-based review, such as device-language review or night/low-light review, instead of another broad review pass.

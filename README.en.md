@@ -146,13 +146,19 @@ This verifies that every language has the same translation keys and compatible `
 Advice audit output:
 ```powershell
 cd Luma
-dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk
 ```
 
 For longer output, write directly to a file:
 
 ```powershell
-dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out .\docs\advice\generated\high-risk-output.md
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk --out .\docs\advice\generated\high-risk-output.md
+```
+
+For the second-layer regression audit, use:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --out .\docs\advice\generated\regression-output.md
 ```
 
 Save external review results in the same folder, for example `docs/advice/generated/high-risk-review.md`, so they can be read and triaged directly later.
@@ -162,7 +168,7 @@ Save external review results in the same folder, for example `docs/advice/genera
 If your terminal is already in the `Luma/Luma` app folder, use:
 
 ```powershell
-dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk
 ```
 
 ---

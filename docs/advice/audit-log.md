@@ -8,12 +8,13 @@ This file records what we learned while auditing Luma's local shooting advice. I
 
 ## Status
 
-First-layer high-risk audit is complete.
+First-layer high-risk audit is complete. Second-layer regression audit tooling is in place, and the first regression review fixes have been applied.
 
 Scope completed:
 
 - Generated 7 high-risk advice outputs with `tools/Luma.AdviceAudit`.
 - Added `--out` support so audit outputs can be written to local review files.
+- Added `--set high-risk|regression` support so the second-layer case set can be generated separately.
 - Reviewed those outputs with the audit prompt.
 - Fixed all `Wrong` findings.
 - Fixed high-value `Risky` findings that affected common or confusing paths.
@@ -23,7 +24,7 @@ Scope completed:
 Validation completed:
 
 ```powershell
-dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk
 dotnet run --project .\tools\Luma.LocalizationCheck\Luma.LocalizationCheck.csproj
 dotnet build .\Luma\Luma.csproj
 ```
@@ -276,6 +277,59 @@ Use these as guardrails before changing `ShootingAdviceService` again:
 - Night sky should prioritize stability, focus, exposure length, star trailing, and noise.
 - Clear weather means different things in daylight and night sky.
 
+## Review Coverage Limits
+
+Layered external review is useful for discovering problem classes, but it is not enough as the final quality gate.
+
+Reasons:
+
+- The input matrix is large enough that manual review cannot cover it well.
+- Many combinations share the same rule fragments, so a fix in one branch can affect reviewed and unreviewed cases.
+- External review can miss issues or apply standards inconsistently between passes.
+- Full matrix output is too large for high-quality human review.
+
+The long-term direction is to turn repeated review findings into machine-checkable invariants. Review should find new issue classes; invariant checks should prevent known issue classes from coming back.
+
+### Correctness Expectations
+
+Discussion note:
+
+We explicitly decided that Luma should not frame its local advice as 100% correct photography guidance. The input matrix is too large, the real world has more variables than the app currently models, and even expert photographers would disagree on exact settings for some scenes.
+
+The more useful question is which level of correctness the product is promising.
+
+Estimated quality bars:
+
+- Basic safety and device fit: roughly 80-90% on common paths after the current review passes, with the goal of pushing this higher through invariant checks.
+- Practical usefulness as a starting point: roughly 70-85% on common paths, because the app can usually give a sane first attempt and adjustment direction.
+- Coaching-quality scene specificity: roughly 55-70%, because the app does not know exact lens, phone model, subject speed, scene contrast, available supports, local artificial light, wind, crowd movement, or the user's real technique.
+- Full matrix correctness across 20,000-plus theoretical combinations: not a meaningful promise. Even a small percentage of rule collisions can represent many combinations, so manual review cannot be the proof mechanism.
+
+This is a product and engineering decision, not an excuse to accept weak advice. The practical goal is to make bad advice rare, device-mismatched advice unacceptable, high-risk scenarios clearly warned, and common travel-photography paths genuinely useful.
+
+The positioning that best matches the implementation is:
+
+```text
+Luma is a travel photography starting-point assistant.
+It helps the user decide what to try first, what risk to watch first, and what adjustment to make first.
+It should not claim to produce the single best answer for every scene.
+```
+
+This is also an important AI-assisted development record. The advice audit process shows the work moving from subjective review to explicit quality bars, documented assumptions, regression cases, and future automated invariants. That progression is worth preserving because it demonstrates product judgment, risk analysis, and practical use of AI review without pretending that AI review is a formal proof.
+
+Candidate invariants:
+
+- PhoneBasic output must not ask the user to set ISO, shutter speed, aperture, or depth of field.
+- ActionCam output must not use tap-to-focus, manual ISO, or manual shutter-speed instructions.
+- Phone and action cam moving-subject advice should use burst, action mode, sport mode, video, stabilization, or light-source language.
+- Tripod low-light output should not include handheld-only `1/focal length` advice.
+- NightSky output should not lead with daylight highlight-protection rules.
+- Night tripod landscape should lead with noise, focus, or long-exposure risk before highlight risk.
+- Beginner handheld night manual-camera output should include feasibility warning language.
+- Nautical twilight should not blindly reuse full-night handheld ISO values.
+
+When these invariants are implemented, they should run across a broad matrix and output only failures, not every generated advice card.
+
 ## Second-Layer Audit Plan
 
 The next layer should expand from 7 high-risk cases to about 24-36 representative regression cases.
@@ -300,16 +354,100 @@ Suggested case count:
 - 6 cases for weather modifiers.
 - 4-10 cases for experience/support/motion edge cases.
 
+## Second-Layer Regression Review
+
+The first regression review used 24 generated cases from:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --out .\docs\advice\generated\regression-output.md
+```
+
+Review summary:
+
+- 2 cases were marked `Wrong`.
+- 13 cases were marked `Risky`.
+- 9 cases were marked `OK`.
+- 9 cases were marked must-fix before commit.
+
+The recurring root causes were rule bleed between manual cameras and auto-exposure devices, action cam movement language reusing phone/camera concepts, and night/tripod cases inheriting daylight highlight priorities.
+
+Must-fix changes applied:
+
+- PhoneBasic landscape starting points no longer mention ISO or depth of field; they now use tap-to-expose and reframe language.
+- PhoneBasic low-light blur adjustments now suggest bracing, moving toward light, avoiding zoom, or using night/action mode instead of shutter/ISO changes.
+- Phone Pro night-sky tripod output no longer uses daylight highlight pull-down exposure language.
+- ActionCam moving feasibility now uses video, supported burst mode, stabilization, and automatic exposure language instead of tap-to-focus or generic burst still advice.
+- ActionCam night still scenarios now show a feasibility warning about noise, blur, lit areas, and keeping the camera steady.
+- Beginner manual-camera night handheld scenarios now show a general handheld night feasibility warning, including portrait cases.
+- Night tripod landscape now leads with noise instead of blown highlights.
+- Nautical dawn handheld APS-C exposure now uses `ISO 1600-3200` instead of full-night `ISO 6400`.
+- PhoneBasic tripod watch-first guidance now uses automatic exposure plus timer/remote-trigger language instead of ISO/shutter control.
+
+Additional low-cost cleanup applied from non-must-fix findings:
+
+- Auto-exposure devices now get device-appropriate blur risk and adjustment wording.
+- Professional night-sky advice no longer uses the generic highlight-protection experience fallback.
+
+Targeted regression re-review result:
+
+- Cases 7, 8, 10, 13, 15, 21, 22, 23, and 24 were re-reviewed.
+- All 9 original must-fix issues were marked resolved.
+- One new must-fix was found in Case 13, Action Cam Midday Moving Urban: the watch-first text still used phone-like `burst`, `action mode`, or `sport mode` wording for an action cam.
+- Fixed by adding an ActionCam-specific moving-subject condition that recommends video or high-frame-rate capture and pulling a frame later.
+- Also tightened ActionCam moving feasibility wording from video or supported burst mode to video or high-frame-rate capture.
+
+Remaining non-must-fix notes from the re-review:
+
+- Phone Pro night sky tripod could eventually prefer Pro or Manual mode wording over automatic exposure wording.
+- Action cam tripod/still branches could eventually prefer voice control or app trigger wording over a generic timer.
+- Beginner handheld night portrait could be simplified by suppressing the generic `1/focal length` line when a more specific handheld night line already appears.
+
 ## Next Tooling Ideas
 
 Useful additions to `tools/Luma.AdviceAudit` later:
 
-- Add `--set high-risk` and `--set regression` switches.
+- Add `--check-invariants` to scan a broad matrix and report known rule violations.
+- Add a full or large matrix mode for machine checks, not manual review.
 - Add `--culture en|es|zh-Hans|zh-Hant` for translation spot checks.
 - Add richer markdown output with stable headings and optional metadata for each case.
 - Add a `--review-template` option that writes an empty review file next to the generated output.
 - Add a simple duplicate-line detector to find repeated generic bullets.
 - Add a device-language check that flags shutter-speed strings in phone/action-cam moving-subject cases.
+
+## Next Session Plan
+
+The next work session should start with automation, not another manual review.
+
+Recommended order:
+
+1. Implement `--check-invariants` in `tools/Luma.AdviceAudit`.
+2. Make it generate cases internally and print only failures.
+3. Add the first invariant group from known review findings.
+4. Run it against `high-risk` and `regression` sets.
+5. Expand it to a broad matrix only after the known sets pass.
+6. Document any failures as either a true advice bug or an invariant that was too strict.
+
+First invariant group:
+
+- PhoneBasic manual-control language check.
+- ActionCam moving-language check.
+- NightSky daylight-highlight lead check.
+- Tripod low-light handheld-rule check.
+- Beginner handheld night feasibility-warning check.
+
+The ActionCam re-review is the reason this should be the next step. The first fix moved ActionCam out of manual-camera wording, but it still inherited phone-style wording through the broader auto-exposure branch. An invariant checker would catch that class of issue repeatedly and cheaply.
+
+After the checker exists, the next structural improvement is to separate device capability questions from device family checks. `IsAutoExposureDevice` should remain useful for broad manual-control avoidance, but specific advice should use narrower intent such as phone workflow, action-camera workflow, manual-exposure support, tap exposure, burst support, or video-preferred motion capture.
+
+Theme-based external reviews should come after that. Good themes:
+
+- Device-language review.
+- Night and low-light review.
+- Moving-subject review.
+- Beginner clarity review.
+- Professional concision review.
+
+This preserves the useful part of AI review: finding new problem classes. It also avoids using AI review as a false proof that every generated combination is correct.
 
 ## Commit Boundary Guidance
 

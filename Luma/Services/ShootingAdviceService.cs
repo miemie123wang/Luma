@@ -36,7 +36,7 @@ public class ShootingAdviceService
             exposureSteps.Add(GetDeviceOperation(context));
         }
 
-        var riskWarnings = new List<string> { GetRiskWarning(primaryRisk) };
+        var riskWarnings = new List<string> { GetRiskWarning(context, primaryRisk) };
         riskWarnings.AddRange(GetCaptureConditionSettings(context));
 
         if (context.Weather != null)
@@ -48,8 +48,8 @@ public class ShootingAdviceService
 
         var adjustmentSteps = new List<string>
         {
-            GetAdjustmentStep(primaryRisk),
-            GetExperienceNote(context.Experience)
+            GetAdjustmentStep(context, primaryRisk),
+            GetExperienceNote(context)
         };
 
         return new ShootingAdvice
@@ -70,8 +70,18 @@ public class ShootingAdviceService
         if (context.Camera == CameraType.ActionCam && context.Phase == LightPhase.Night && context.SubjectMotion == SubjectMotion.Moving)
             return _localizer["Advice_Feasibility_ActionCamNightMoving"];
 
+        if (context.Camera == CameraType.ActionCam && context.SubjectMotion == SubjectMotion.Moving)
+            return _localizer["Advice_Feasibility_ActionCamMoving"];
+
+        if (context.Camera == CameraType.ActionCam && context.Phase == LightPhase.Night)
+            return _localizer["Advice_Feasibility_ActionCamNight"];
+
         if (context.Experience == ExperienceLevel.Beginner && context.SubjectMotion == SubjectMotion.Moving)
             return _localizer["Advice_Feasibility_BeginnerMoving"];
+
+        if (context.Experience == ExperienceLevel.Beginner && context.Phase == LightPhase.Night &&
+            context.SupportMode == CameraSupportMode.Handheld && IsManualCamera(context.Camera))
+            return _localizer["Advice_Feasibility_BeginnerNightHandheld"];
 
         if (lowLight && context.SupportMode == CameraSupportMode.Handheld &&
             context.Style is ShootingStyle.Landscape or ShootingStyle.NightSky)
@@ -129,7 +139,13 @@ public class ShootingAdviceService
             return _localizer["Advice_Exposure_Camera_BlueHourHandheld", mode, fullFrame ? "ISO 800-1600" : "ISO 1600-3200", fullFrame ? "f/2.8-f/4" : "f/3.5-f/5.6", context.SubjectMotion == SubjectMotion.Moving ? "1/250s" : "1/80s", cameraAssumption];
 
         if (lowLight)
-            return _localizer["Advice_Exposure_Camera_LowLightHandheld", mode, fullFrame ? "ISO 3200" : "ISO 6400", fullFrame ? "f/2.8-f/4" : "f/3.5-f/5.6", "1/60s", cameraAssumption];
+        {
+            var iso = IsNauticalTwilight(context.Phase)
+                ? fullFrame ? "ISO 800-1600" : "ISO 1600-3200"
+                : fullFrame ? "ISO 3200" : "ISO 6400";
+
+            return _localizer["Advice_Exposure_Camera_LowLightHandheld", mode, iso, fullFrame ? "f/2.8-f/4" : "f/3.5-f/5.6", "1/60s", cameraAssumption];
+        }
 
         if (context.SubjectMotion == SubjectMotion.Moving)
             return _localizer["Advice_Exposure_Camera_Moving", mode, "ISO 400", GetDaylightAperture(context, fullFrame), "1/500s", cameraAssumption];
@@ -171,10 +187,10 @@ public class ShootingAdviceService
                 ? _localizer["Advice_Params_Phone_Mode_Harsh"]
                 : _localizer["Advice_Params_Phone_Mode_Default"];
 
-        var exposure = harshLight
-            ? _localizer["Advice_Params_Phone_Exposure_Harsh"]
-            : lowLight
-                ? _localizer["Advice_Params_Phone_Exposure_LowLight"]
+        var exposure = lowLight
+            ? _localizer["Advice_Params_Phone_Exposure_LowLight"]
+            : harshLight
+                ? _localizer["Advice_Params_Phone_Exposure_Harsh"]
                 : _localizer["Advice_Params_Phone_Exposure_Default"];
 
         var stability = context.SupportMode == CameraSupportMode.Tripod
@@ -228,6 +244,9 @@ public class ShootingAdviceService
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
         var harshLight = IsHarshLight(context.Phase);
 
+        if (IsAutoExposureDevice(context.Camera) && context.Style == ShootingStyle.Landscape && !lowLight)
+            return _localizer["Advice_Start_Landscape_AutoDevice"];
+
         return context.Style switch
         {
             ShootingStyle.Portrait when harshLight => _localizer["Advice_Start_Portrait_Harsh"],
@@ -246,6 +265,9 @@ public class ShootingAdviceService
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
         var harshLight = IsHarshLight(context.Phase);
 
+        if (context.SupportMode == CameraSupportMode.Tripod && lowLight && IsManualCamera(context.Camera))
+            return _localizer["Advice_Device_Camera_Tripod_LowLight"];
+
         return context.Camera switch
         {
             CameraType.PhoneBasic when lowLight => _localizer["Advice_Device_PhoneBasic_LowLight"],
@@ -255,6 +277,7 @@ public class ShootingAdviceService
             CameraType.PhonePro when harshLight => _localizer["Advice_Device_PhonePro_Harsh"],
             CameraType.PhonePro => _localizer["Advice_Device_PhonePro_Default"],
             CameraType.MirrorlessAPS when lowLight => _localizer["Advice_Device_APS_LowLight"],
+            CameraType.MirrorlessAPS when harshLight && context.Experience == ExperienceLevel.Professional => _localizer["Advice_Device_Camera_Harsh_Professional"],
             CameraType.MirrorlessAPS when harshLight => _localizer["Advice_Device_APS_Harsh"],
             CameraType.MirrorlessAPS => _localizer["Advice_Device_APS_Default"],
             CameraType.FullFrame when lowLight => _localizer["Advice_Device_FullFrame_LowLight"],
@@ -271,24 +294,30 @@ public class ShootingAdviceService
     {
         if (context.SupportMode == CameraSupportMode.Tripod)
         {
-            yield return context.Style == ShootingStyle.NightSky
+            yield return IsAutoExposureDevice(context.Camera)
+                ? _localizer["Advice_Condition_Tripod_AutoDevice"]
+                : context.Style == ShootingStyle.NightSky
                 ? _localizer["Advice_Condition_Tripod_NightSky"]
                 : _localizer["Advice_Condition_Tripod_Default"];
         }
         else if (IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky)
         {
-            yield return _localizer["Advice_Condition_Handheld_LowLight"];
+            yield return IsAutoExposureDevice(context.Camera)
+                ? _localizer["Advice_Condition_Handheld_LowLight_AutoDevice"]
+                : _localizer["Advice_Condition_Handheld_LowLight"];
         }
 
         if (context.SubjectMotion == SubjectMotion.Moving)
         {
-            yield return context.Camera is CameraType.PhoneBasic or CameraType.PhonePro or CameraType.ActionCam
+            yield return context.Camera == CameraType.ActionCam
+                ? _localizer["Advice_Condition_Moving_ActionCam"]
+                : context.Camera is CameraType.PhoneBasic or CameraType.PhonePro
                 ? _localizer["Advice_Condition_Moving_AutoDevice"]
                 : context.Style == ShootingStyle.Urban
                 ? _localizer["Advice_Condition_Moving_Urban"]
                 : _localizer["Advice_Condition_Moving_Default"];
         }
-        else if (context.SupportMode == CameraSupportMode.Tripod && context.Style != ShootingStyle.NightSky)
+        else if (context.SupportMode == CameraSupportMode.Tripod && context.Style != ShootingStyle.NightSky && !IsAutoExposureDevice(context.Camera))
         {
             yield return _localizer["Advice_Condition_Still_Tripod"];
         }
@@ -306,12 +335,22 @@ public class ShootingAdviceService
             return AdviceRisk.Contrast;
         if (context.SupportMode == CameraSupportMode.Handheld && lowLight)
             return AdviceRisk.Blur;
+        if (context.SupportMode == CameraSupportMode.Tripod && lowLight)
+            return AdviceRisk.Noise;
         if (IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20)
             return AdviceRisk.Highlight;
         if (lowLight)
             return AdviceRisk.Noise;
 
         return AdviceRisk.Highlight;
+    }
+
+    private string GetRiskWarning(ShootingAdviceContext context, AdviceRisk risk)
+    {
+        if (risk == AdviceRisk.Blur && IsAutoExposureDevice(context.Camera))
+            return _localizer["Advice_Risk_Blur_AutoDevice"];
+
+        return GetRiskWarning(risk);
     }
 
     private string GetRiskWarning(AdviceRisk risk) => risk switch
@@ -323,6 +362,14 @@ public class ShootingAdviceService
         AdviceRisk.NightSky => _localizer["Advice_Risk_NightSky"],
         _ => _localizer["Advice_Risk_Highlight"]
     };
+
+    private string GetAdjustmentStep(ShootingAdviceContext context, AdviceRisk risk)
+    {
+        if (risk == AdviceRisk.Blur && IsAutoExposureDevice(context.Camera))
+            return _localizer["Advice_Adjust_Blur_AutoDevice"];
+
+        return GetAdjustmentStep(risk);
+    }
 
     private string GetAdjustmentStep(AdviceRisk risk) => risk switch
     {
@@ -348,6 +395,14 @@ public class ShootingAdviceService
         return _localizer["Advice_Weather_Mixed"];
     }
 
+    private string GetExperienceNote(ShootingAdviceContext context)
+    {
+        if (context.Experience == ExperienceLevel.Professional && context.Style == ShootingStyle.NightSky)
+            return _localizer["Advice_Experience_Professional_NightSky"];
+
+        return GetExperienceNote(context.Experience);
+    }
+
     private string GetExperienceNote(ExperienceLevel experience) => experience switch
     {
         ExperienceLevel.Beginner => _localizer["Advice_Experience_Beginner"],
@@ -369,8 +424,21 @@ public class ShootingAdviceService
         LightPhase.BlueHour or
         LightPhase.BlueDusk;
 
+    private static bool IsNauticalTwilight(LightPhase phase) => phase is
+        LightPhase.NauticalDawn or
+        LightPhase.NauticalDusk;
+
     private static bool IsHarshLight(LightPhase phase) => phase is
         LightPhase.Morning or
         LightPhase.Midday or
         LightPhase.Afternoon;
+
+    private static bool IsAutoExposureDevice(CameraType camera) => camera is
+        CameraType.PhoneBasic or
+        CameraType.PhonePro or
+        CameraType.ActionCam;
+
+    private static bool IsManualCamera(CameraType camera) => camera is
+        CameraType.MirrorlessAPS or
+        CameraType.FullFrame;
 }

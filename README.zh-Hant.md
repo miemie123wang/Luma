@@ -139,13 +139,19 @@ dotnet run --project tools/Luma.LocalizationCheck/Luma.LocalizationCheck.csproj
 拍攝建議 audit 輸出：
 ```powershell
 cd Luma
-dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk
 ```
 
 輸出較長時，可以直接寫入檔案：
 
 ```powershell
-dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out .\docs\advice\generated\high-risk-output.md
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk --out .\docs\advice\generated\high-risk-output.md
+```
+
+第二層 regression audit 可以使用：
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --out .\docs\advice\generated\regression-output.md
 ```
 
 外部 review 結果也建議保存到同一目錄，例如 `docs/advice/generated/high-risk-review.md`，方便後續直接讀取和整理。
@@ -155,7 +161,7 @@ dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --out .
 如果目前終端已經在 `Luma/Luma` app 目錄內，請使用：
 
 ```powershell
-dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj
+dotnet run --project ..\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk
 ```
 
 ---
