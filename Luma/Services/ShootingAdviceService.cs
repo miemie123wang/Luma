@@ -117,7 +117,7 @@ public class ShootingAdviceService
     {
         var blueHour = IsBlueHour(context.Phase);
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
-        var harshLight = IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20;
+        var harshLight = HasHarshLight(context);
         var fullFrame = context.Camera == CameraType.FullFrame;
         var cameraAssumption = fullFrame
             ? _localizer["Advice_Assumption_FullFrame"]
@@ -130,7 +130,7 @@ public class ShootingAdviceService
                 : _localizer["Advice_Params_Mode_Professional"];
 
         if (context.Style == ShootingStyle.NightSky && context.SupportMode == CameraSupportMode.Tripod)
-            return _localizer["Advice_Exposure_Camera_NightSkyTripod", mode, fullFrame ? "ISO 1600" : "ISO 3200", fullFrame ? "f/2.8" : "f/3.5", "10s", cameraAssumption];
+            return _localizer["Advice_Exposure_Camera_NightSkyTripod", _localizer["Advice_Params_Mode_NightSky"], fullFrame ? "ISO 1600" : "ISO 3200", fullFrame ? "f/2.8" : "f/3.5", "10s", cameraAssumption];
 
         if (lowLight && context.SupportMode == CameraSupportMode.Tripod)
             return _localizer["Advice_Exposure_Camera_LowLightTripod", mode, "ISO 200", context.Style == ShootingStyle.Landscape ? "f/5.6" : "f/4", "2s", cameraAssumption];
@@ -150,6 +150,12 @@ public class ShootingAdviceService
         if (context.SubjectMotion == SubjectMotion.Moving)
             return _localizer["Advice_Exposure_Camera_Moving", mode, "ISO 400", GetDaylightAperture(context, fullFrame), "1/500s", cameraAssumption];
 
+        if (context.SupportMode == CameraSupportMode.Tripod && context.Phase == LightPhase.Sunset && context.SubjectMotion == SubjectMotion.Still)
+            return _localizer["Advice_Exposure_Camera_Daylight", mode, "ISO 100", GetDaylightAperture(context, fullFrame), "1/30s", cameraAssumption];
+
+        if (context.Weather?.Precipitation > 0 && context.SupportMode == CameraSupportMode.Handheld)
+            return _localizer["Advice_Exposure_Camera_Daylight", mode, "ISO 400", GetDaylightAperture(context, fullFrame), "1/125s", cameraAssumption];
+
         if (harshLight)
             return _localizer["Advice_Exposure_Camera_Harsh", mode, "ISO 100", GetDaylightAperture(context, fullFrame), "1/250s", "-0.3 EV", cameraAssumption];
 
@@ -161,7 +167,7 @@ public class ShootingAdviceService
         return context.Style switch
         {
             ShootingStyle.Portrait when fullFrame => "f/1.8-f/4",
-            ShootingStyle.Portrait => "f/2.8-f/5.6",
+            ShootingStyle.Portrait => "f/4.5-f/5.6",
             ShootingStyle.Landscape => "f/8-f/11",
             ShootingStyle.Urban => "f/4-f/8",
             _ => "f/4-f/8"
@@ -171,7 +177,7 @@ public class ShootingAdviceService
     private string GetPhoneExposure(ShootingAdviceContext context)
     {
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
-        var harshLight = IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20;
+        var harshLight = HasHarshLight(context);
         var proPhone = context.Camera == CameraType.PhonePro;
 
         var lens = context.Style switch
@@ -205,7 +211,7 @@ public class ShootingAdviceService
     private string GetActionCamExposure(ShootingAdviceContext context)
     {
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
-        var harshLight = IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20;
+        var harshLight = HasHarshLight(context);
 
         var frameRate = context.SubjectMotion == SubjectMotion.Moving ? "4K 60fps" : "4K 30fps";
         var exposure = harshLight ? "-0.5 EV" : lowLight ? "0 EV, avoid fast motion" : "0 EV";
@@ -242,7 +248,7 @@ public class ShootingAdviceService
     private string GetSafeStartingPoint(ShootingAdviceContext context)
     {
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
-        var harshLight = IsHarshLight(context.Phase);
+        var harshLight = HasHarshLight(context);
 
         if (IsAutoExposureDevice(context.Camera) && context.Style == ShootingStyle.Landscape && !lowLight)
             return _localizer["Advice_Start_Landscape_AutoDevice"];
@@ -263,10 +269,13 @@ public class ShootingAdviceService
     private string GetDeviceOperation(ShootingAdviceContext context)
     {
         var lowLight = IsLowLight(context.Phase) || context.Style == ShootingStyle.NightSky;
-        var harshLight = IsHarshLight(context.Phase);
+        var harshLight = HasHarshLight(context);
 
         if (context.SupportMode == CameraSupportMode.Tripod && lowLight && IsManualCamera(context.Camera))
             return _localizer["Advice_Device_Camera_Tripod_LowLight"];
+
+        if (context.SubjectMotion == SubjectMotion.Moving && IsManualCamera(context.Camera))
+            return _localizer["Advice_Device_Camera_Moving"];
 
         return context.Camera switch
         {
@@ -337,7 +346,7 @@ public class ShootingAdviceService
             return AdviceRisk.Blur;
         if (context.SupportMode == CameraSupportMode.Tripod && lowLight)
             return AdviceRisk.Noise;
-        if (IsHarshLight(context.Phase) || context.Weather?.CloudCover <= 20)
+        if (HasHarshLight(context))
             return AdviceRisk.Highlight;
         if (lowLight)
             return AdviceRisk.Noise;
@@ -428,7 +437,15 @@ public class ShootingAdviceService
         LightPhase.NauticalDawn or
         LightPhase.NauticalDusk;
 
-    private static bool IsHarshLight(LightPhase phase) => phase is
+    private static bool HasHarshLight(ShootingAdviceContext context)
+    {
+        if (context.Weather?.CloudCover >= 75)
+            return false;
+
+        return IsHarshLightPhase(context.Phase);
+    }
+
+    private static bool IsHarshLightPhase(LightPhase phase) => phase is
         LightPhase.Morning or
         LightPhase.Midday or
         LightPhase.Afternoon;

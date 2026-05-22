@@ -453,6 +453,138 @@ Remaining non-must-fix notes from the re-review:
 - Action cam tripod/still branches could eventually prefer voice control or app trigger wording over a generic timer.
 - Beginner handheld night portrait could be simplified by suppressing the generic `1/focal length` line when a more specific handheld night line already appears.
 
+## Travel Full-Frame Landscape Pass
+
+Added a focused `travel-fullframe-landscape` audit set for the near-term travel use case: full-frame camera, mostly landscape work, with daylight, harsh midday, golden hour, sunset tripod, blue hour, fog, night tripod, city light, night sky, and heavy cloud cases.
+
+Generated output with:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-fullframe-landscape --out .\docs\advice\generated\travel-fullframe-landscape-output.md
+```
+
+Initial review finding:
+
+- Clear weather was forcing the harsh-light exposure branch outside genuinely harsh daylight phases. This made clear sunset tripod guidance start from the highlight-protection harsh template.
+- Heavy cloud at midday still inherited the harsh-light branch from the phase alone, even though the leading problem should be flat contrast rather than hard highlights.
+
+Fix applied:
+
+- Harsh-light detection now requires a harsh daylight phase and is suppressed by heavy cloud. Clear weather still gets a weather note about strong direction, but it no longer forces harsh exposure/device guidance during sunset or other non-harsh phases.
+
+Validation completed:
+
+```powershell
+dotnet run --project .\tools\Luma.LocalizationCheck\Luma.LocalizationCheck.csproj
+dotnet build .\Luma\Luma.csproj
+```
+
+Current travel-pass follow-up notes:
+
+- Sunset tripod landscape is now more neutral, but could eventually use tripod-specific sunset wording if field review shows it is too generic.
+- Heavy-cloud landscape now leads with flat contrast and uses neutral exposure guidance, which is better for travel landscape use.
+- Blue-hour handheld landscape still correctly warns that handheld night landscape is unreliable and suggests stable support.
+
+## Travel Canon EOS T6 APS-C Landscape Pass
+
+The user's actual travel camera is a Canon EOS T6, which should be treated as an APS-C manual camera in the current model. In code this maps to `CameraType.MirrorlessAPS`, even though the physical camera is a DSLR, because the important advice distinction is APS-C sensor plus manual ISO/aperture/shutter control.
+
+Added a focused `travel-aps-c-landscape` audit set using the same travel scenarios as the full-frame pass, but with APS-C assumptions and Canon EOS T6 case names.
+
+Generated output with:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-aps-c-landscape --out .\docs\advice\generated\travel-aps-c-landscape-output.md
+```
+
+Initial APS-C output notes:
+
+- Blue-hour handheld landscape uses `ISO 1600-3200`, `f/3.5-f/5.6`, and about `1/80s`, with a feasibility warning that handheld night landscape is unreliable. This is directionally right for a kit-lens APS-C travel setup.
+- Night tripod landscape and urban scenes keep ISO low and let shutter speed carry brightness, which is especially useful for older APS-C sensors.
+- Night sky tripod uses `ISO 3200`, `f/3.5`, and `10s`; this is a plausible starting point for a kit zoom, but field review should treat noise and focus as the main risks.
+- The current output still labels the camera as `MirrorlessAPS` because that is the enum name. If this becomes user-visible in generated files or UI, consider renaming the model concept to APS-C camera or adding a display label.
+
+Manual APS-C travel review result:
+
+- 9 cases were OK for the near-term travel use case.
+- 1 case was Risky: Canon EOS T6 night sky tripod used the intermediate camera mode phrase `A/Av or M mode`. For star fields, aperture-priority auto exposure can choose unstable long exposures, so the advice should explicitly use manual exposure.
+
+Fix applied:
+
+- Added a night-sky-specific mode phrase and changed night-sky tripod exposure advice to say `use M mode` across supported cultures.
+
+Validation completed:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-aps-c-landscape --out .\docs\advice\generated\travel-aps-c-landscape-output.md
+dotnet run --project .\tools\Luma.LocalizationCheck\Luma.LocalizationCheck.csproj
+dotnet build .\Luma\Luma.csproj
+```
+
+Remaining travel notes:
+
+- Blue-hour handheld guidance is acceptable because it gives a feasible emergency starting point and clearly warns to find support first.
+- Night-sky kit-lens guidance is a starting point, not a quality promise. In field use, focus accuracy, tripod stability, light pollution, and ISO noise will dominate.
+- A future user-facing improvement would be to rename or display `MirrorlessAPS` as APS-C camera, since DSLR bodies such as Canon EOS T6 belong in the same advice bucket.
+
+## Travel Canon EOS T6 Sept-Iles Pass
+
+The user's actual trip target is Sept-Iles with a Canon EOS T6 and 18-55mm kit zoom. The expected shooting mix is mostly landscape, plus street photography and a small amount of portrait work. Added a focused `travel-t6-sept-iles` audit set for coastal landscapes, foggy blue hour, harbour street scenes, moving street subjects, rainy street scenes, casual portraits, sunset coast tripod, night harbour lights, and clear midday shoreline.
+
+Generated output with:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-t6-sept-iles --out .\docs\advice\generated\travel-t6-sept-iles-output.md
+```
+
+Manual Sept-Iles review findings:
+
+- Moving street scene was Risky because the first exposure correctly used `1/500s`, but the later APS-C harsh-light device note still suggested `ISO 100` and `-0.3 EV`, which could pull the user away from the action-freezing shutter priority.
+- Casual portrait cases were Risky for the user's actual 18-55mm kit zoom because APS-C portrait guidance included `f/2.8`, which is not available on the common kit lens.
+
+Fixes applied:
+
+- Manual-camera moving-subject advice now gets a dedicated device-operation note: use shutter priority or M mode, protect the action shutter first, and raise ISO before letting motion blur take over.
+- APS-C portrait daylight aperture initially moved away from impossible `f/2.8` kit-zoom guidance. External review later tightened this further for portrait distances.
+
+Validation completed:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-t6-sept-iles --out .\docs\advice\generated\travel-t6-sept-iles-output.md
+dotnet run --project .\tools\Luma.LocalizationCheck\Luma.LocalizationCheck.csproj
+dotnet build .\Luma\Luma.csproj
+```
+
+External AI review status:
+
+- Complete for `travel-t6-sept-iles`.
+- External result: 4 OK, 6 Risky, 0 Wrong.
+- Must-fix before commit: 2 cases.
+
+External must-fix findings:
+
+- Case 5, Rainy Street Handheld: `ISO 100` at `1/125s` was too optimistic for rainy afternoon street shooting with an APS-C kit zoom. Fixed by starting rainy handheld manual-camera scenes at `ISO 400` while keeping `1/125s`.
+- Case 8, Sunset Coast Tripod: `1/125s` did not use the tripod advantage for a static sunset coast scene. Fixed by starting sunset tripod still scenes at `1/30s` with `ISO 100`.
+
+External non-must-fix cleanup applied:
+
+- APS-C kit-zoom portrait guidance now uses `f/4.5-f/5.6` for portrait distances instead of implying `f/3.5` is available when zoomed in.
+- APS-C default device wording now says to use the widest aperture the zoom allows at the current focal length for portraits, making the 18-55mm variable-aperture limit explicit.
+
+Post-external-review validation completed:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-t6-sept-iles --out .\docs\advice\generated\travel-t6-sept-iles-output.md
+dotnet run --project .\tools\Luma.LocalizationCheck\Luma.LocalizationCheck.csproj
+dotnet build .\Luma\Luma.csproj
+```
+
+Remaining Sept-Iles notes:
+
+- Rainy still street output now uses a better ISO starting point, but still includes a generic shared APS-C device note that mentions landscape and portrait choices inside an urban case. This is polish, not a must-fix.
+- Blue-hour handheld feasibility is intentionally still conservative. External review considered the tone somewhat strong for blue hour, but the local product choice is to keep support-first advice for travel landscape users with a kit zoom.
+- The audit set does not model wind directly yet, even though coastal wind can matter for tripod stability and subject motion. Future weather-aware advice could use wind speed as a risk input.
+
 ## Next Tooling Ideas
 
 Useful additions to `tools/Luma.AdviceAudit` later:
@@ -471,7 +603,7 @@ The durable quality plan should start with automation, not another broad manual 
 
 Travel-priority adjustment:
 
-The user expects to travel next week with a full-frame camera and mostly shoot landscapes. Before expanding the general audit, add a targeted `travel-fullframe-landscape` pass so the app is useful for the near-term real field use case.
+The user expects to travel next week with a Canon EOS T6 and mostly shoot landscapes. Before expanding the general audit, prioritize the targeted `travel-aps-c-landscape` pass so the app is useful for the near-term real field use case. The earlier `travel-fullframe-landscape` pass can remain as useful coverage, but it is no longer the priority path.
 
 Recommended travel set:
 
@@ -486,16 +618,16 @@ Recommended travel set:
 - Night-sky tripod.
 - Heavy-cloud landscape handheld.
 
-This set should check whether Luma gives a sensible first shot, a useful leading risk, and a practical first adjustment for full-frame landscape work. The most important risks are highlight clipping, fog/contrast, blue-hour over-brightening, night stability, tripod focus, star trailing, and noise.
+This set should check whether Luma gives a sensible first shot, a useful leading risk, and a practical first adjustment for APS-C landscape work. The most important risks are highlight clipping, fog/contrast, blue-hour over-brightening, handheld low-light blur, older-sensor high ISO noise, tripod focus, star trailing, and night noise.
 
 If time is limited before the trip, run the travel set first and use external review only on that focused output. Then return to `--check-invariants` as the durable quality gate.
 
 Immediate order before travel:
 
-1. Add a `travel-fullframe-landscape` set to `tools/Luma.AdviceAudit`.
-2. Generate its output to `docs/advice/generated/travel-fullframe-landscape-output.md`.
+1. Add a `travel-aps-c-landscape` set to `tools/Luma.AdviceAudit`.
+2. Generate its output to `docs/advice/generated/travel-aps-c-landscape-output.md`.
 3. Review only those travel cases for field usefulness.
-4. Fix must-fix or high-value risky findings that affect full-frame landscape use.
+4. Fix must-fix or high-value risky findings that affect Canon EOS T6 / APS-C landscape use.
 5. Run localization check and app build.
 
 Durable quality order after the travel set:

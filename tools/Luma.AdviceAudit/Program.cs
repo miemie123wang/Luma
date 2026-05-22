@@ -110,8 +110,8 @@ static Options ParseOptions(string[] args)
         throw new ArgumentException($"Unknown argument: {arg}");
     }
 
-    if (set is not "high-risk" and not "regression")
-        throw new ArgumentException($"Unknown audit set: {set}. Use high-risk or regression.");
+    if (set is not "high-risk" and not "regression" and not "travel-fullframe-landscape" and not "travel-aps-c-landscape" and not "travel-t6-sept-iles")
+        throw new ArgumentException($"Unknown audit set: {set}. Use high-risk, regression, travel-fullframe-landscape, travel-aps-c-landscape, or travel-t6-sept-iles.");
 
     return new Options(set, outputPath);
 }
@@ -120,6 +120,9 @@ static IReadOnlyList<AuditCase> GetCases(string set) => set switch
 {
     "high-risk" => GetHighRiskCases(),
     "regression" => GetRegressionCases(),
+    "travel-fullframe-landscape" => GetTravelFullFrameLandscapeCases(),
+    "travel-aps-c-landscape" => GetTravelApsCLandscapeCases(),
+    "travel-t6-sept-iles" => GetTravelT6SeptIlesCases(),
     _ => throw new ArgumentOutOfRangeException(nameof(set), set, null)
 };
 
@@ -561,6 +564,438 @@ static IReadOnlyList<AuditCase> GetRegressionCases() =>
             Camera = CameraType.PhoneBasic,
             Experience = ExperienceLevel.Beginner,
             SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        })
+];
+
+static IReadOnlyList<AuditCase> GetTravelFullFrameLandscapeCases() =>
+[
+    new(
+        1,
+        "Daylight Clear Landscape Handheld",
+        "clear",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Morning,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        2,
+        "Midday Harsh Landscape Handheld",
+        "clear, low cloud cover",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Midday,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        3,
+        "Golden Hour Landscape Handheld",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.GoldenHourEvening,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        4,
+        "Sunset Tripod Landscape",
+        "clear",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Sunset,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        5,
+        "Blue Hour Landscape Handheld",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.BlueHour,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        6,
+        "Foggy Blue Hour Landscape Handheld",
+        "fog or low visibility",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.BlueHour,
+            Weather = FoggyWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        7,
+        "Night Landscape Tripod",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Night,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        8,
+        "Night Urban Tripod With Mixed City Light",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Night,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Urban,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        9,
+        "Night Sky Tripod",
+        "clear",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Night,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.NightSky,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        10,
+        "Heavy Cloud Landscape Handheld",
+        "heavy cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Midday,
+            Weather = HeavyCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.FullFrame,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        })
+];
+
+static IReadOnlyList<AuditCase> GetTravelApsCLandscapeCases() =>
+[
+    new(
+        1,
+        "Canon EOS T6 Daylight Clear Landscape Handheld",
+        "clear",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Morning,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        2,
+        "Canon EOS T6 Midday Harsh Landscape Handheld",
+        "clear, low cloud cover",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Midday,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        3,
+        "Canon EOS T6 Golden Hour Landscape Handheld",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.GoldenHourEvening,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        4,
+        "Canon EOS T6 Sunset Tripod Landscape",
+        "clear",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Sunset,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        5,
+        "Canon EOS T6 Blue Hour Landscape Handheld",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.BlueHour,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        6,
+        "Canon EOS T6 Foggy Blue Hour Landscape Handheld",
+        "fog or low visibility",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.BlueHour,
+            Weather = FoggyWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        7,
+        "Canon EOS T6 Night Landscape Tripod",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Night,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        8,
+        "Canon EOS T6 Night Urban Tripod With Mixed City Light",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Night,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Urban,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        9,
+        "Canon EOS T6 Night Sky Tripod",
+        "clear",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Night,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.NightSky,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        10,
+        "Canon EOS T6 Heavy Cloud Landscape Handheld",
+        "heavy cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Midday,
+            Weather = HeavyCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        })
+];
+
+static IReadOnlyList<AuditCase> GetTravelT6SeptIlesCases() =>
+[
+    new(
+        1,
+        "Sept-Iles Coastal Landscape Heavy Cloud Handheld",
+        "heavy cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Midday,
+            Weather = HeavyCloudWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        2,
+        "Sept-Iles Foggy Blue Hour Coast Handheld",
+        "fog or low visibility",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.BlueHour,
+            Weather = FoggyWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        3,
+        "Sept-Iles Golden Hour Harbour Street Handheld",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.GoldenHourEvening,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Urban,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        4,
+        "Sept-Iles Moving Street Scene Afternoon",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Afternoon,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Urban,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Moving
+        }),
+    new(
+        5,
+        "Sept-Iles Rainy Street Handheld",
+        "rain",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Afternoon,
+            Weather = RainyWeather(),
+            Style = ShootingStyle.Urban,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        6,
+        "Sept-Iles Golden Hour Casual Portrait",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.GoldenHourEvening,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Portrait,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        7,
+        "Sept-Iles Heavy Cloud Casual Portrait",
+        "heavy cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Midday,
+            Weather = HeavyCloudWeather(),
+            Style = ShootingStyle.Portrait,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        8,
+        "Sept-Iles Sunset Coast Tripod",
+        "clear",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Sunset,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        9,
+        "Sept-Iles Night Harbour Lights Tripod",
+        "mixed cloud",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Night,
+            Weather = MixedCloudWeather(),
+            Style = ShootingStyle.Urban,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Tripod,
+            SubjectMotion = SubjectMotion.Still
+        }),
+    new(
+        10,
+        "Sept-Iles Clear Midday Shoreline Handheld",
+        "clear",
+        new ShootingAdviceContext
+        {
+            Phase = LightPhase.Midday,
+            Weather = ClearWeather(),
+            Style = ShootingStyle.Landscape,
+            Camera = CameraType.MirrorlessAPS,
+            Experience = ExperienceLevel.Intermediate,
+            SupportMode = CameraSupportMode.Handheld,
             SubjectMotion = SubjectMotion.Still
         })
 ];

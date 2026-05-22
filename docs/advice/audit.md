@@ -142,34 +142,37 @@ Keep the rule system in three layers:
 
 Layer 3 should stay small. If a proposed branch only makes wording more polished but does not prevent a real user-facing mismatch, leave it out until review or invariant output proves it matters.
 
-## Pre-Trip Full-Frame Landscape Check
+## Pre-Trip Canon EOS T6 Travel Check
 
-Before the upcoming travel use case, prioritize a practical field check for full-frame landscape shooting. This is a real user path, so it should come before another broad advice review.
+Before the upcoming travel use case, prioritize a practical field check for the user's actual camera and destination: Canon EOS T6 with an 18-55mm APS-C kit zoom, traveling to Sept-Iles, mostly shooting landscapes with some street photography and a small amount of portrait work. This is a real user path, so it should come before another broad advice review.
 
 Goal:
 
-- Make Luma useful as a travel landscape starting-point assistant for a full-frame camera.
-- Confirm common landscape paths have reasonable first-shot guidance, risk warnings, and adjustment steps.
+- Make Luma useful as a travel starting-point assistant for an APS-C kit-zoom camera.
+- Confirm coastal landscape, fog, heavy cloud, rain, harbour street, moving street, portrait, sunset tripod, and night harbour paths have reasonable first-shot guidance, risk warnings, and adjustment steps.
 - Avoid spending this pass on lower-priority device paths such as ActionCam unless an invariant catches a known issue.
 
-Suggested audit set name:
+Current audit set names:
 
 ```text
-travel-fullframe-landscape
+travel-aps-c-landscape
+travel-t6-sept-iles
 ```
 
-Suggested cases:
+The earlier `travel-fullframe-landscape` set can remain as broader coverage, but it is no longer the priority field-use path.
 
-1. FullFrame + Daylight + Landscape + Handheld + Still + Clear.
-2. FullFrame + Midday + Landscape + Handheld + Still + Harsh clear light.
-3. FullFrame + GoldenHour + Landscape + Handheld + Still + Mixed cloud.
-4. FullFrame + Sunset + Landscape + Tripod + Still + Clear or mixed cloud.
-5. FullFrame + BlueHour + Landscape + Handheld + Still + Clear.
-6. FullFrame + BlueHour + Landscape + Handheld + Still + Fog or low visibility.
-7. FullFrame + Night + Landscape + Tripod + Still + Clear or mixed cloud.
-8. FullFrame + Night + Urban + Tripod + Still + Bright signs or mixed city light.
-9. FullFrame + NightSky + Tripod + Still + Clear.
-10. FullFrame + HeavyCloud + Landscape + Handheld + Still.
+Suggested Sept-Iles cases:
+
+1. APS-C + Midday + Landscape + Handheld + Still + Heavy cloud coastal landscape.
+2. APS-C + BlueHour + Landscape + Handheld + Still + Fog or low visibility.
+3. APS-C + GoldenHour + Urban + Handheld + Still + Mixed cloud harbour street.
+4. APS-C + Afternoon + Urban + Handheld + Moving + Mixed cloud street scene.
+5. APS-C + Afternoon + Urban + Handheld + Still + Rainy street scene.
+6. APS-C + GoldenHour + Portrait + Handheld + Still + Mixed cloud casual portrait.
+7. APS-C + Midday + Portrait + Handheld + Still + Heavy cloud casual portrait.
+8. APS-C + Sunset + Landscape + Tripod + Still + Clear coast.
+9. APS-C + Night + Urban + Tripod + Still + Mixed harbour lights.
+10. APS-C + Midday + Landscape + Handheld + Still + Clear shoreline.
 
 Review focus:
 
@@ -178,6 +181,8 @@ Review focus:
 - Blue hour should stay stable and avoid over-brightening signs, fog, or sky.
 - Night tripod landscape should lead with noise, focus, stability, or long-exposure concerns before highlight risk.
 - Night sky tripod should prioritize focus, star trailing, exposure length, and noise.
+- Moving street scenes should protect shutter speed first and raise ISO before allowing subject blur.
+- APS-C portrait guidance should respect the 18-55mm kit zoom's actual aperture range instead of implying f/2.8 is available.
 - Handheld night or blue-hour landscape should be honest about stability limits.
 
 This travel set should be treated as a targeted product-readiness pass, not a replacement for the broader invariant checker. If time is short, run this set manually first, then implement `--check-invariants` after the trip-focused path is usable.
