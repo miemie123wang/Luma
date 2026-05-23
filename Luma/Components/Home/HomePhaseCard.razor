@@ -23,7 +23,7 @@
         <MudDivider Class="divider" />
 
         <MudText Typo="Typo.body2" Class="phase-next">
-            @Localizer["NextPhase_Text", Localizer[Phase.NextPhase]]
+            @Localizer[NextPhaseTextKey, Localizer[NextPhaseValueKey]]
         </MudText>
     </MudCardContent>
 </MudCard>
@@ -35,6 +35,14 @@
     private string DescriptionKey => HasHeavyCloudOverHarshDaylight
         ? "Phase_CloudyDaylight_Desc"
         : Phase.Description;
+
+    private string NextPhaseTextKey => HasHeavyCloudOverHarshDaylight
+        ? "NextPhase_CloudyDaylight_Text"
+        : "NextPhase_Text";
+
+    private string NextPhaseValueKey => HasHeavyCloudOverHarshDaylight
+        ? "Phase_CloudyDaylight_Next"
+        : Phase.NextPhase;
 
     private bool HasHeavyCloudOverHarshDaylight =>
         Weather?.CloudCover >= 75 &&
