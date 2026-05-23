@@ -192,10 +192,14 @@
 
 .advice-title-row {
     align-items: center;
-    display: flex;
+    display: grid;
     gap: 0.75rem;
-    justify-content: space-between;
+    grid-template-columns: minmax(0, 1fr) auto;
     min-width: 0;
+}
+
+.advice-title-row .card-kicker {
+    margin-bottom: 0;
 }
 
 .advice-card-heading {
