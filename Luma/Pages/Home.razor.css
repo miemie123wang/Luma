@@ -192,10 +192,11 @@
 
 .advice-title-row {
     align-items: center;
-    display: grid;
+    display: block;
     gap: 0.75rem;
-    grid-template-columns: minmax(0, 1fr) auto;
     min-width: 0;
+    padding-right: 11.5rem;
+    position: relative;
 }
 
 .advice-title-row .card-kicker {
@@ -206,8 +207,10 @@
     min-width: 0;
 }
 
-.prompt-copy-button {
-    flex: 0 0 auto;
+.advice-title-row ::deep .prompt-copy-button {
+    position: absolute;
+    right: 0;
+    top: -0.1rem;
     white-space: nowrap;
 }
 
@@ -248,16 +251,19 @@
 }
 
 @media (max-width: 430px) {
-    .field-overview,
-    .advice-card-header {
+    .field-overview {
         grid-template-columns: 1fr;
     }
 
-    .prompt-action-column {
-        align-items: stretch;
+    .advice-title-row {
+        display: grid;
+        gap: 0.65rem;
+        padding-right: 0;
     }
 
-    .prompt-action-column ::deep .mud-button-root {
+    .advice-title-row ::deep .prompt-copy-button {
+        justify-self: stretch;
+        position: static;
         width: 100%;
     }
 }
@@ -390,10 +396,6 @@
 }
 
 @media (max-width: 720px) {
-    .home-heading {
-        max-width: none;
-    }
-
     .field-overview {
         grid-template-columns: 1fr;
     }
