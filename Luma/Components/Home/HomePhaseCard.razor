@@ -8,7 +8,7 @@
                     @Phase.Icon @Localizer[Phase.Name]
                 </MudText>
                 <MudText Typo="Typo.body1" Class="phase-description">
-                    @Localizer[Phase.Description]
+                    @Localizer[DescriptionKey]
                 </MudText>
             </div>
 
@@ -30,4 +30,13 @@
 
 @code {
     [Parameter, EditorRequired] public LightPhaseInfo Phase { get; set; } = default!;
+    [Parameter] public WeatherInfo? Weather { get; set; }
+
+    private string DescriptionKey => HasHeavyCloudOverHarshDaylight
+        ? "Phase_CloudyDaylight_Desc"
+        : Phase.Description;
+
+    private bool HasHeavyCloudOverHarshDaylight =>
+        Weather?.CloudCover >= 75 &&
+        Phase.Phase is LightPhase.Morning or LightPhase.Midday or LightPhase.Afternoon;
 }

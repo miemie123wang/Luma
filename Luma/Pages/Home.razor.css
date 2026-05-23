@@ -203,24 +203,27 @@
 }
 
 .advice-card-header {
-    align-items: start;
     display: grid;
-    gap: 1rem;
-    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.35rem;
     margin-bottom: 1rem;
     min-height: 3.25rem;
+}
+
+.advice-title-row {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    min-width: 0;
 }
 
 .advice-card-heading {
     min-width: 0;
 }
 
-.prompt-action-column {
-    align-items: flex-end;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    z-index: 1;
+.prompt-copy-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 .advice-quick-plan {

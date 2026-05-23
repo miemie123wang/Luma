@@ -38,7 +38,7 @@
     {
         <div class="card-stack">
             <section class="field-overview">
-                <HomePhaseCard Phase="CurrentPhase" />
+                <HomePhaseCard Phase="CurrentPhase" Weather="Weather" />
 
                 <HomeDetailsCard Weather="Weather"
                                  Location="Location"
@@ -74,22 +74,23 @@
                 <MudCard Class="advice-card content-card mt-3">
                     <MudCardContent>
                         <div class="advice-card-header">
-                            <div class="advice-card-heading">
+                            <div class="advice-title-row">
                                 <MudText Typo="Typo.caption" Class="card-kicker">@Localizer["Advice_Card_Title"]</MudText>
-                                <MudText Typo="Typo.subtitle2" Class="advice-title">@Advice.Title</MudText>
-                                <MudText Typo="Typo.caption" Class="advice-meta">
-                                    @Localizer["Advice_Context", Localizer[$"CameraOption_{GetCameraKey(CurrentSettings.Camera)}"], Localizer[$"Experience_{GetExperienceKey(CurrentSettings.Experience)}"], Localizer[$"Style_{GetStyleKey(SelectedShootingStyle)}"]]
-                                </MudText>
-                            </div>
-
-                            <div class="prompt-action-column">
                                 <MudButton Variant="Variant.Outlined"
                                            Color="Color.Warning"
                                            Size="Size.Small"
+                                           Class="prompt-copy-button"
                                            StartIcon="@Icons.Material.Filled.ContentCopy"
                                            OnClick="CopyAiPromptAsync">
                                     @(PromptCopyStatusMessage ?? Localizer["Advice_CopyPrompt_Button"])
                                 </MudButton>
+                            </div>
+
+                            <div class="advice-card-heading">
+                                <MudText Typo="Typo.subtitle2" Class="advice-title">@Advice.Title</MudText>
+                                <MudText Typo="Typo.caption" Class="advice-meta">
+                                    @Localizer["Advice_Context", Localizer[$"CameraOption_{GetCameraKey(CurrentSettings.Camera)}"], Localizer[$"Experience_{GetExperienceKey(CurrentSettings.Experience)}"], Localizer[$"Style_{GetStyleKey(SelectedShootingStyle)}"]]
+                                </MudText>
                             </div>
                         </div>
 
