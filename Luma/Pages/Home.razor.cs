@@ -126,10 +126,30 @@ public partial class Home : ComponentBase
     {
         if (!firstRender) return;
 
-        CurrentSettings = await SettingsService.LoadAsync();
-        await LoadCurrentLightAsync();
-        IsLoading = false;
-        StateHasChanged();
+        try
+        {
+            CurrentSettings = await SettingsService.LoadAsync();
+            var loadTask = LoadCurrentLightAsync();
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(15));
+
+            if (await Task.WhenAny(loadTask, timeoutTask) == loadTask)
+            {
+                await loadTask;
+            }
+            else
+            {
+                ErrorMessage = Localizer["Error_LocationTimeout"];
+            }
+        }
+        catch
+        {
+            ErrorMessage = Localizer["Error_LocationUnavailable"];
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
     }
 
     private async Task LoadCurrentLightAsync()
