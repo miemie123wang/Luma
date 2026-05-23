@@ -653,6 +653,28 @@ dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set m
 
 Result: 360 cases checked, no invariant failures found.
 
+## Advice Check Script
+
+Added `tools/check-advice.ps1` as the local wrapper for the advice quality gate.
+
+Command:
+
+```powershell
+.\tools\check-advice.ps1
+```
+
+The script runs:
+
+- `matrix-smoke` invariants.
+- `high-risk` invariants.
+- `regression` invariants.
+- `travel-t6-sept-iles` invariants.
+- `travel-aps-c-landscape` invariants.
+- Localization validation.
+- App build.
+
+It stops at the first non-zero exit code so the failing output remains visible in the terminal.
+
 ## Next Session Plan
 
 The durable quality plan should start with automation, not another broad manual review.

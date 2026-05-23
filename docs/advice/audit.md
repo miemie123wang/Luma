@@ -79,6 +79,14 @@ dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set m
 
 The checker prints only failures. A clean run prints `No invariant failures found.` and exits with code 0; failures are listed by case and return a non-zero exit code. The `matrix-smoke` set generates a broader representative scan for machine checks only; do not use it as a manual review file unless a specific failure needs inspection.
 
+For the normal local quality gate, run the wrapper script instead of typing every command manually:
+
+```powershell
+.\tools\check-advice.ps1
+```
+
+The script runs `matrix-smoke`, the named regression/travel invariant sets, localization validation, and the app build. It stops at the first failure so the failing command output stays visible.
+
 Examples of invariants learned from review:
 
 - `PhoneBasic` output should not give manual camera controls such as ISO, aperture, shutter speed, or depth-of-field instructions as the user's action.
@@ -111,7 +119,7 @@ The next stage should move from case-by-case fixing to explicit quality gates.
 
 Priority order:
 
-1. Keep `--check-invariants` green on known sets and `matrix-smoke`.
+1. Keep `tools/check-advice.ps1` green before committing advice-rule changes.
 2. Expand toward a fuller generated matrix only after a new invariant justifies broader coverage.
 3. Split advice rules by device capability only when a shared category changes the user's real action.
 4. Add metadata to generated audit output so each case can show which advice keys were used.
