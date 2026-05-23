@@ -5,25 +5,6 @@
     min-height: calc(100vh - 64px);
 }
 
-.home-heading {
-    margin: 0 auto 1.35rem;
-    max-width: 44rem;
-    text-align: left;
-}
-
-.page-title {
-    color: #f5a623;
-    font-weight: 700;
-    letter-spacing: 0;
-    margin-bottom: 0.35rem;
-}
-
-.page-subtitle {
-    color: #b4b8bc;
-    margin-bottom: 0;
-    display: block;
-}
-
 ::deep .light-card {
     background-color: #222;
     border: 1px solid #4a4a4a;

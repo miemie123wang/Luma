@@ -3,15 +3,6 @@
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="home-container py-5">
 
-    <header class="home-heading">
-        <MudText Typo="Typo.h5" Class="page-title">
-            @Localizer["Home_Title"]
-        </MudText>
-        <MudText Typo="Typo.caption" Class="page-subtitle">
-            @Localizer["Home_Subtitle"]
-        </MudText>
-    </header>
-
     @if (IsLoading)
     {
         <MudCard Class="light-card">
