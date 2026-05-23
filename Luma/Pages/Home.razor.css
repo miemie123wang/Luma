@@ -184,33 +184,28 @@
 }
 
 .advice-card-header {
-    display: grid;
-    gap: 0.35rem;
     margin-bottom: 1rem;
     min-height: 3.25rem;
-}
-
-.advice-title-row {
-    align-items: center;
-    display: block;
-    gap: 0.75rem;
-    min-width: 0;
     padding-right: 11.5rem;
     position: relative;
-}
-
-.advice-title-row .card-kicker {
-    margin-bottom: 0;
 }
 
 .advice-card-heading {
     min-width: 0;
 }
 
-.advice-title-row ::deep .prompt-copy-button {
+.prompt-action-column {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
     position: absolute;
     right: 0;
-    top: -0.1rem;
+    top: 0;
+    z-index: 1;
+}
+
+.prompt-action-column ::deep .mud-button-root {
     white-space: nowrap;
 }
 
@@ -255,15 +250,18 @@
         grid-template-columns: 1fr;
     }
 
-    .advice-title-row {
-        display: grid;
-        gap: 0.65rem;
+    .advice-card-header {
         padding-right: 0;
+        padding-top: 2.8rem;
     }
 
-    .advice-title-row ::deep .prompt-copy-button {
-        justify-self: stretch;
-        position: static;
+    .prompt-action-column {
+        align-items: stretch;
+        left: 0;
+        right: 0;
+    }
+
+    .prompt-action-column ::deep .mud-button-root {
         width: 100%;
     }
 }
