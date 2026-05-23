@@ -91,6 +91,37 @@
                             </div>
                         </div>
 
+                        @if (QuickFirstShot != null || QuickRiskWarning != null || QuickAdjustment != null)
+                        {
+                            <div class="advice-quick-plan" aria-label='@Localizer["Advice_QuickPlan_Title"]'>
+                                <MudText Typo="Typo.caption" Class="advice-quick-title">@Localizer["Advice_QuickPlan_Title"]</MudText>
+
+                                @if (QuickFirstShot != null)
+                                {
+                                    <div class="advice-quick-row">
+                                        <div class="advice-quick-label">@Localizer["Advice_FirstShot_Title"]</div>
+                                        <div class="advice-quick-text">@QuickFirstShot</div>
+                                    </div>
+                                }
+
+                                @if (QuickRiskWarning != null)
+                                {
+                                    <div class="advice-quick-row">
+                                        <div class="advice-quick-label">@Localizer["Advice_RiskWarnings_Title"]</div>
+                                        <div class="advice-quick-text">@QuickRiskWarning</div>
+                                    </div>
+                                }
+
+                                @if (QuickAdjustment != null)
+                                {
+                                    <div class="advice-quick-row">
+                                        <div class="advice-quick-label">@Localizer["Advice_Adjustments_Title"]</div>
+                                        <div class="advice-quick-text">@QuickAdjustment</div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
                         @if (!string.IsNullOrEmpty(Advice.FeasibilityWarning))
                         {
                             <div class="advice-section advice-section-warning">

@@ -33,6 +33,9 @@ public partial class Home : ComponentBase
     protected string? LocationWarningMessage { get; set; }
     protected string? WeatherWarningMessage { get; set; }
     protected string? PromptCopyStatusMessage { get; set; }
+    protected string? QuickFirstShot => Advice?.ExposureSteps.FirstOrDefault();
+    protected string? QuickRiskWarning => Advice?.RiskWarnings.FirstOrDefault();
+    protected string? QuickAdjustment => Advice?.AdjustmentSteps.FirstOrDefault();
 
     protected record OptionItem<T>(string LabelKey, T Value);
 
