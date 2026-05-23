@@ -1,0 +1,57 @@
+.detail-section {
+    align-content: center;
+    display: grid;
+    gap: 0.55rem;
+    height: 100%;
+}
+
+.detail-line {
+    margin-top: 0;
+}
+
+.detail-pill {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(151, 163, 172, 0.12);
+    border-radius: 8px;
+    display: block;
+    padding: 0.62rem 0.72rem;
+}
+
+.detail-pill-primary {
+    border-color: rgba(111, 184, 191, 0.24);
+}
+
+.phase-next {
+    color: #bdc7cc;
+    line-height: 1.45;
+}
+
+.phase-location {
+    color: #aab4b9;
+}
+
+.phase-warning {
+    color: var(--mud-palette-warning);
+}
+
+.weather-good {
+    color: #8fd0a8;
+}
+
+.weather-muted {
+    color: #aeb7bd;
+}
+
+.weather-summary-line {
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.weather-status {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 700;
+    margin-left: 0;
+    margin-top: 0.2rem;
+    text-transform: uppercase;
+}

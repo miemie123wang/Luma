@@ -5,29 +5,24 @@
         <div class="detail-section">
             @if (Weather != null)
             {
-                <div class="weather-summary-line phase-next">
-                    @Localizer["Weather_Summary", Weather.Icon, Localizer[Weather.Description], Weather.CloudCover]
-                    @if (Weather.IsGoodForPhoto)
-                    {
-                        <div class="weather-status weather-good">@Localizer["SuitableForPhoto"]</div>
-                    }
-                    else
-                    {
-                        <div class="weather-status weather-muted">@Localizer["UnsuitableForPhoto"]</div>
-                    }
+                <div class="weather-summary-line phase-next detail-pill detail-pill-primary">
+                    <span>@Localizer["Weather_Summary", Weather.Icon, Localizer[Weather.Description], Weather.CloudCover]</span>
+                    <span class="@(Weather.IsGoodForPhoto ? "weather-status weather-good" : "weather-status weather-muted")">
+                        @(Weather.IsGoodForPhoto ? Localizer["SuitableForPhoto"] : Localizer["UnsuitableForPhoto"])
+                    </span>
                 </div>
-                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+                <MudText Typo="Typo.caption" Class="phase-location detail-line detail-pill">
                     @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), FormattedVisibility]
                 </MudText>
             }
             else if (!string.IsNullOrEmpty(WeatherWarningMessage))
             {
-                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning">
+                <MudText Typo="Typo.caption" Class="phase-warning detail-pill">
                     ⚠️ @WeatherWarningMessage
                 </MudText>
             }
 
-            <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+            <MudText Typo="Typo.caption" Class="phase-location detail-line detail-pill">
                 @if (Location != null)
                 {
                     @Localizer["Location_Info", LocationName, Location.Lat.ToString("F4", CultureInfo.InvariantCulture), Location.Lng.ToString("F4", CultureInfo.InvariantCulture)]
@@ -40,19 +35,19 @@
 
             @if (!string.IsNullOrEmpty(LocationWarningMessage))
             {
-                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning detail-line">
+                <MudText Typo="Typo.caption" Class="phase-warning detail-line detail-pill">
                     ⚠️ @LocationWarningMessage
                 </MudText>
             }
 
             @if (Location?.Altitude != null)
             {
-                <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-location detail-line">
+                <MudText Typo="Typo.caption" Class="phase-location detail-line detail-pill">
                     @string.Format(Localizer["Altitude_Display"], (int)Location.Altitude.Value)
                 </MudText>
                 @if (Location.Altitude.Value > 2000)
                 {
-                    <MudText Typo="Typo.caption" Align="Align.Center" Class="phase-warning detail-line">
+                    <MudText Typo="Typo.caption" Class="phase-warning detail-line detail-pill">
                         ⚠️ @Localizer["Altitude_Warning"]
                     </MudText>
                 }

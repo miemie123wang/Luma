@@ -1,0 +1,58 @@
+.phase-card-inner {
+    align-items: end;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.phase-title {
+    color: #f5a623;
+    font-weight: 750;
+    letter-spacing: 0;
+    line-height: 1.08;
+}
+
+.phase-description {
+    color: #eef2f3;
+    margin-top: 0.55rem;
+}
+
+.phase-rating {
+    display: flex;
+    gap: 0.28rem;
+    padding-bottom: 0.2rem;
+}
+
+.phase-rating-dot {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    display: block;
+    height: 0.48rem;
+    width: 0.48rem;
+}
+
+.phase-rating-dot-active {
+    background: #f5a623;
+    box-shadow: 0 0 14px rgba(245, 166, 35, 0.38);
+}
+
+.phase-next {
+    color: #bdc7cc;
+    line-height: 1.45;
+}
+
+.divider {
+    margin: 1.15rem 0;
+    border-color: rgba(245, 166, 35, 0.2);
+}
+
+@media (max-width: 520px) {
+    .phase-card-inner {
+        align-items: start;
+        grid-template-columns: 1fr;
+    }
+
+    .phase-rating {
+        padding-bottom: 0;
+    }
+}

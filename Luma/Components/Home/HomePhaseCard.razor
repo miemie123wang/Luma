@@ -2,16 +2,27 @@
 
 <MudCard Class="light-card content-card phase-card">
     <MudCardContent>
-        <MudText Typo="Typo.h4" Align="Align.Center" Class="phase-title">
-            @Phase.Icon @Localizer[Phase.Name]
-        </MudText>
-        <MudText Typo="Typo.body1" Align="Align.Center" Class="phase-description">
-            @Localizer[Phase.Description]
-        </MudText>
+        <div class="phase-card-inner">
+            <div class="phase-identity">
+                <MudText Typo="Typo.h4" Class="phase-title">
+                    @Phase.Icon @Localizer[Phase.Name]
+                </MudText>
+                <MudText Typo="Typo.body1" Class="phase-description">
+                    @Localizer[Phase.Description]
+                </MudText>
+            </div>
+
+            <div class="phase-rating" aria-hidden="true">
+                @for (var index = 1; index <= 5; index++)
+                {
+                    <span class="@(index <= Phase.Rating ? "phase-rating-dot phase-rating-dot-active" : "phase-rating-dot")"></span>
+                }
+            </div>
+        </div>
 
         <MudDivider Class="divider" />
 
-        <MudText Typo="Typo.body2" Align="Align.Center" Class="phase-next">
+        <MudText Typo="Typo.body2" Class="phase-next">
             @Localizer["NextPhase_Text", Localizer[Phase.NextPhase]]
         </MudText>
     </MudCardContent>

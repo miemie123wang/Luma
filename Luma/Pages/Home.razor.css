@@ -1,16 +1,26 @@
 .home-container {
-    background: #0d0d0d;
+    background:
+        radial-gradient(circle at 18% 0%, rgba(245, 166, 35, 0.12), transparent 34rem),
+        linear-gradient(180deg, #111315 0%, #0b0c0d 42%, #0d0d0d 100%);
+    min-height: calc(100vh - 64px);
+}
+
+.home-heading {
+    margin: 0 auto 1.35rem;
+    max-width: 44rem;
+    text-align: left;
 }
 
 .page-title {
     color: #f5a623;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    letter-spacing: 0;
+    margin-bottom: 0.35rem;
 }
 
 .page-subtitle {
-    color: #999;
-    margin-bottom: 2rem;
+    color: #b4b8bc;
+    margin-bottom: 0;
     display: block;
 }
 
@@ -27,38 +37,45 @@
 }
 
 .card-stack {
-    display: block;
+    display: grid;
+    gap: 1rem;
 }
 
 ::deep .info-card,
 ::deep .advice-card {
-    background-color: #1b1b1b;
-    border: 1px solid #3f3f3f;
+    background: rgba(22, 24, 25, 0.95);
+    border: 1px solid rgba(151, 163, 172, 0.18);
     border-radius: 12px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
 }
 
 ::deep .phase-card {
-    background: #232323;
-    border-color: #505050;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+    background:
+        linear-gradient(145deg, rgba(43, 38, 29, 0.98), rgba(20, 28, 31, 0.98)),
+        #202020;
+    border-color: rgba(245, 166, 35, 0.42);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.36);
 }
 
 ::deep .advice-card {
-    background: #1d1b18;
-    border-color: rgba(245, 166, 35, 0.38);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+    background: linear-gradient(180deg, #211d17 0%, #17191a 100%);
+    border-color: rgba(245, 166, 35, 0.5);
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.34);
 }
 
 ::deep .detail-card {
-    background: #151515;
-    border-color: #303030;
-    box-shadow: none;
+    background: rgba(13, 16, 18, 0.88);
+    border-color: rgba(116, 143, 155, 0.24);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+}
+
+::deep .style-card {
+    background: rgba(17, 19, 20, 0.96);
+    border-color: rgba(116, 143, 155, 0.22);
 }
 
 ::deep .content-card {
     display: block;
-    margin-bottom: 1.35rem;
     overflow: hidden;
 }
 
@@ -74,25 +91,67 @@
     color: #f5a623;
     display: block;
     font-weight: 700;
-    margin-bottom: 0.85rem;
+    letter-spacing: 0.04rem;
+    margin-bottom: 0.7rem;
     text-transform: uppercase;
+}
+
+.field-overview {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1.2fr) minmax(17rem, 0.8fr);
+}
+
+.field-overview ::deep .content-card {
+    height: 100%;
+    margin-top: 0 !important;
+}
+
+.phase-card-inner {
+    align-items: end;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .phase-title {
     color: #f5a623;
+    font-weight: 750;
+    letter-spacing: 0;
+    line-height: 1.08;
 }
 
 .phase-description {
-    color: #f0f0f0;
-    margin-top: 0.5rem;
+    color: #eef2f3;
+    margin-top: 0.55rem;
+}
+
+.phase-rating {
+    display: flex;
+    gap: 0.28rem;
+    padding-bottom: 0.2rem;
+}
+
+.phase-rating-dot {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    display: block;
+    height: 0.48rem;
+    width: 0.48rem;
+}
+
+.phase-rating-dot-active {
+    background: #f5a623;
+    box-shadow: 0 0 14px rgba(245, 166, 35, 0.38);
 }
 
 .phase-next {
-    color: #999;
+    color: #bdc7cc;
+    line-height: 1.45;
 }
 
 .phase-location {
-    color: #555;
+    color: #aab4b9;
 }
 
 .phase-warning {
@@ -104,8 +163,8 @@
 }
 
 .divider {
-    margin: 1.25rem 0;
-    border-color: #333;
+    margin: 1.15rem 0;
+    border-color: rgba(245, 166, 35, 0.2);
 }
 
 .section-divider {
@@ -115,8 +174,8 @@
 
 .style-section {
     display: grid;
-    gap: 0.75rem;
-    justify-items: center;
+    gap: 0.65rem;
+    justify-items: stretch;
     margin: 0.1rem 0;
 }
 
@@ -128,7 +187,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .advice-title {
@@ -144,7 +203,12 @@
 }
 
 .advice-card-header {
+    align-items: start;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) auto;
     margin-bottom: 1rem;
+    min-height: 3.25rem;
 }
 
 .advice-card-heading {
@@ -152,6 +216,10 @@
 }
 
 .prompt-action-column {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
     z-index: 1;
 }
 
@@ -192,9 +260,17 @@
 }
 
 @media (max-width: 430px) {
+    .field-overview,
     .advice-card-header {
-        padding-right: 0 !important;
-        padding-top: 2.8rem;
+        grid-template-columns: 1fr;
+    }
+
+    .prompt-action-column {
+        align-items: stretch;
+    }
+
+    .prompt-action-column ::deep .mud-button-root {
+        width: 100%;
     }
 }
 
@@ -223,8 +299,8 @@
 }
 
 .advice-section {
-    background: #181818;
-    border: 1px solid #333;
+    background: rgba(18, 20, 21, 0.92);
+    border: 1px solid rgba(151, 163, 172, 0.18);
     border-radius: 8px;
     padding: 1.2rem 1.5rem 1.2rem 1.75rem;
     margin-top: 1.15rem;
@@ -251,8 +327,8 @@
 }
 
 .advice-section-muted-panel {
-    background: #171717;
-    border-color: #3a3328;
+    background: rgba(16, 19, 20, 0.9);
+    border-color: rgba(116, 143, 155, 0.18);
 }
 
 .advice-section-warning {
@@ -282,28 +358,74 @@
 
 .detail-section {
     display: grid;
-    gap: 0.35rem;
-    margin-top: 0.5rem;
+    align-content: center;
+    gap: 0.55rem;
+    height: 100%;
 }
 
 .detail-line {
-    margin-top: 0.2rem;
+    margin-top: 0;
+}
+
+.detail-pill {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(151, 163, 172, 0.12);
+    border-radius: 8px;
+    display: block;
+    padding: 0.62rem 0.72rem;
+}
+
+.detail-pill-primary {
+    border-color: rgba(111, 184, 191, 0.24);
 }
 
 .weather-good {
-    color: var(--mud-palette-warning);
+    color: #8fd0a8;
 }
 
 .weather-muted {
-    color: var(--mud-palette-text-secondary);
+    color: #aeb7bd;
 }
 
 .weather-summary-line {
     font-size: 0.875rem;
-    text-align: center;
+    text-align: left;
 }
 
 .weather-status {
-    display: inline;
-    margin-left: 0.25rem;
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 700;
+    margin-left: 0;
+    margin-top: 0.2rem;
+    text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+    .home-heading {
+        max-width: none;
+    }
+
+    .field-overview {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    ::deep .content-card .mud-card-content {
+        padding: 1.05rem;
+    }
+
+    .phase-card-inner {
+        align-items: start;
+        grid-template-columns: 1fr;
+    }
+
+    .phase-rating {
+        padding-bottom: 0;
+    }
+
+    .advice-section {
+        padding: 1rem 1.05rem 1rem 1.2rem;
+    }
 }

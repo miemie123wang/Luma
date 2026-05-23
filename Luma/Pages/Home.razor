@@ -1,14 +1,16 @@
 @page "/"
 @inject Microsoft.Extensions.Localization.IStringLocalizer<Luma.SharedResource> Localizer
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="home-container py-6">
+<MudContainer MaxWidth="MaxWidth.Medium" Class="home-container py-5">
 
-    <MudText Typo="Typo.h5" Class="page-title">
-        @Localizer["Home_Title"]
-    </MudText>
-    <MudText Typo="Typo.caption" Class="page-subtitle">
-        @Localizer["Home_Subtitle"]
-    </MudText>
+    <header class="home-heading">
+        <MudText Typo="Typo.h5" Class="page-title">
+            @Localizer["Home_Title"]
+        </MudText>
+        <MudText Typo="Typo.caption" Class="page-subtitle">
+            @Localizer["Home_Subtitle"]
+        </MudText>
+    </header>
 
     @if (IsLoading)
     {
@@ -35,17 +37,18 @@
     else if (CurrentPhase != null)
     {
         <div class="card-stack">
-            <HomePhaseCard Phase="CurrentPhase" />
+            <section class="field-overview">
+                <HomePhaseCard Phase="CurrentPhase" />
 
-            <HomeDetailsCard Weather="Weather"
-                             Location="Location"
-                             LocationName="@LocationName"
-                             FormattedVisibility="@FormattedVisibility"
-                             WeatherWarningMessage="@WeatherWarningMessage"
-                             LocationWarningMessage="@LocationWarningMessage" />
+                <HomeDetailsCard Weather="Weather"
+                                 Location="Location"
+                                 LocationName="@LocationName"
+                                 FormattedVisibility="@FormattedVisibility"
+                                 WeatherWarningMessage="@WeatherWarningMessage"
+                                 LocationWarningMessage="@LocationWarningMessage" />
+            </section>
 
-            <MudCard Class="info-card content-card mt-3"
-                     Style="background:#1b1b1b; border:1px solid #4a4a4a; box-shadow:0 10px 24px rgba(0,0,0,.25); border-radius:12px;">
+            <MudCard Class="info-card content-card style-card mt-3">
                 <MudCardContent>
                     <MudText Typo="Typo.caption" Class="card-kicker">@Localizer["Style_Label"]</MudText>
                     <div class="style-section">
@@ -68,10 +71,9 @@
                                        SelectedSubjectMotion="SelectedSubjectMotion"
                                        OnSubjectMotionChanged="SelectSubjectMotion" />
 
-                <MudCard Class="advice-card content-card mt-3"
-                         Style="background:#211d17; border:1px solid rgba(245,166,35,.55); box-shadow:0 14px 30px rgba(0,0,0,.35); border-radius:12px;">
+                <MudCard Class="advice-card content-card mt-3">
                     <MudCardContent>
-                        <div class="advice-card-header" Style="position:relative; min-height:3.25rem; padding-right:10rem;">
+                        <div class="advice-card-header">
                             <div class="advice-card-heading">
                                 <MudText Typo="Typo.caption" Class="card-kicker">@Localizer["Advice_Card_Title"]</MudText>
                                 <MudText Typo="Typo.subtitle2" Class="advice-title">@Advice.Title</MudText>
@@ -80,7 +82,7 @@
                                 </MudText>
                             </div>
 
-                            <div class="prompt-action-column" Style="position:absolute; top:0; right:0; align-items:flex-end; display:flex; flex-direction:column; gap:0.35rem;">
+                            <div class="prompt-action-column">
                                 <MudButton Variant="Variant.Outlined"
                                            Color="Color.Warning"
                                            Size="Size.Small"
