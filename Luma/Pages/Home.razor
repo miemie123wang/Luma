@@ -65,18 +65,19 @@
                 <MudCard Class="advice-card content-card mt-3">
                     <MudCardContent>
                         <div class="advice-card-header">
-                            <div class="advice-card-top-row">
-                                <MudText Typo="Typo.caption" Class="card-kicker">@Localizer["Advice_Card_Title"]</MudText>
+                            <div class="advice-card-top-row" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; width:100%;">
+                                <MudText Typo="Typo.caption" Class="card-kicker" Style="margin-bottom:0; min-width:0; flex:1 1 auto;">
+                                    @Localizer["Advice_Card_Title"]
+                                </MudText>
 
-                                <div class="prompt-action-column">
-                                    <MudButton Variant="Variant.Outlined"
-                                               Color="Color.Warning"
-                                               Size="Size.Small"
-                                               StartIcon="@Icons.Material.Filled.ContentCopy"
-                                               OnClick="CopyAiPromptAsync">
-                                        @(PromptCopyStatusMessage ?? Localizer["Advice_CopyPrompt_Button"])
-                                    </MudButton>
-                                </div>
+                                <MudButton Variant="Variant.Outlined"
+                                           Color="Color.Warning"
+                                           Size="Size.Small"
+                                           Style="margin-left:auto; flex:0 0 auto; white-space:nowrap;"
+                                           StartIcon="@Icons.Material.Filled.ContentCopy"
+                                           OnClick="CopyAiPromptAsync">
+                                    @(PromptCopyStatusMessage ?? Localizer["Advice_CopyPrompt_Button"])
+                                </MudButton>
                             </div>
 
                             <div class="advice-card-heading">

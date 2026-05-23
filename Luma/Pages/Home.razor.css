@@ -191,10 +191,6 @@
 }
 
 .advice-card-top-row {
-    align-items: center;
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: minmax(0, 1fr) auto;
     min-width: 0;
 }
 
@@ -204,20 +200,6 @@
 
 .advice-card-heading {
     min-width: 0;
-}
-
-.prompt-action-column {
-    align-items: flex-end;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    justify-self: end;
-    min-width: 0;
-    z-index: 1;
-}
-
-.prompt-action-column ::deep .mud-button-root {
-    white-space: nowrap;
 }
 
 .advice-quick-plan {
@@ -261,17 +243,9 @@
         grid-template-columns: 1fr;
     }
 
-    .advice-card-top-row {
-        gap: 0.65rem;
-    }
-
-    .prompt-action-column ::deep .mud-button-root {
+    .advice-card-top-row ::deep .mud-button-root {
         padding-left: 0.65rem;
         padding-right: 0.65rem;
-    }
-
-    .prompt-action-column ::deep .mud-button-label {
-        font-size: 0.76rem;
     }
 }
 
