@@ -1,14 +1,17 @@
 using System.Globalization;
 using System.Text;
+using Luma;
 using Luma.Localization;
 using Luma.Models;
 using Luma.Services;
+using Microsoft.Extensions.Localization;
 
 CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en");
 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
 
-var adviceService = new ShootingAdviceService(new InMemoryStringLocalizer());
 var options = ParseOptions(args);
+var localizer = new TracingStringLocalizer(new InMemoryStringLocalizer());
+var adviceService = new ShootingAdviceService(localizer);
 var output = new StringBuilder();
 
 if (options.CheckInvariants)
@@ -48,6 +51,7 @@ output.AppendLine();
 
 foreach (var auditCase in GetCases(options.Set))
 {
+    localizer.ClearTrace();
     var advice = adviceService.GetAdvice(auditCase.Context);
 
     output.AppendLine($"Case {auditCase.Number}: {auditCase.Name}");
@@ -60,11 +64,11 @@ foreach (var auditCase in GetCases(options.Set))
     output.AppendLine($"Subject: {auditCase.Context.SubjectMotion}");
     output.AppendLine();
     output.AppendLine("Local output:");
-    output.AppendLine($"Feasibility: {advice.FeasibilityWarning ?? "(none)"}");
-    AppendList(output, "First test shot", advice.ExposureSteps);
-    AppendList(output, "Watch first", advice.RiskWarnings);
-    AppendList(output, "If it is not working", advice.AdjustmentSteps);
-    AppendList(output, "Steps", advice.FieldSteps);
+    output.AppendLine($"Feasibility: {FormatAdviceText(advice.FeasibilityWarning, localizer, options.ShowKeys)}");
+    AppendList(output, "First test shot", advice.ExposureSteps, localizer, options.ShowKeys);
+    AppendList(output, "Watch first", advice.RiskWarnings, localizer, options.ShowKeys);
+    AppendList(output, "If it is not working", advice.AdjustmentSteps, localizer, options.ShowKeys);
+    AppendList(output, "Steps", advice.FieldSteps, localizer, options.ShowKeys);
     output.AppendLine();
 }
 
@@ -86,7 +90,7 @@ static void WriteOutput(Options options, string outputText)
     Console.WriteLine($"Advice audit output written to {options.OutputPath}");
 }
 
-static void AppendList(StringBuilder output, string heading, IReadOnlyList<string> items)
+static void AppendList(StringBuilder output, string heading, IReadOnlyList<string> items, TracingStringLocalizer localizer, bool showKeys)
 {
     output.AppendLine($"{heading}:");
 
@@ -97,7 +101,21 @@ static void AppendList(StringBuilder output, string heading, IReadOnlyList<strin
     }
 
     foreach (var item in items)
-        output.AppendLine($"- {item}");
+        output.AppendLine($"- {FormatAdviceText(item, localizer, showKeys)}");
+}
+
+static string FormatAdviceText(string? text, TracingStringLocalizer localizer, bool showKeys)
+{
+    if (string.IsNullOrWhiteSpace(text))
+        return "(none)";
+
+    if (!showKeys)
+        return text;
+
+    var keys = localizer.GetKeysForValue(text);
+    return keys.Count == 0
+        ? text
+        : $"[{string.Join(", ", keys)}] {text}";
 }
 
 static Options ParseOptions(string[] args)
@@ -105,6 +123,7 @@ static Options ParseOptions(string[] args)
     var set = "high-risk";
     string? outputPath = null;
     var checkInvariants = false;
+    var showKeys = false;
 
     for (var index = 0; index < args.Length; index++)
     {
@@ -113,6 +132,12 @@ static Options ParseOptions(string[] args)
         if (arg == "--check-invariants")
         {
             checkInvariants = true;
+            continue;
+        }
+
+        if (arg == "--show-keys")
+        {
+            showKeys = true;
             continue;
         }
 
@@ -154,7 +179,7 @@ static Options ParseOptions(string[] args)
     if (set is not "high-risk" and not "regression" and not "travel-fullframe-landscape" and not "travel-aps-c-landscape" and not "travel-t6-sept-iles" and not "matrix-smoke")
         throw new ArgumentException($"Unknown audit set: {set}. Use high-risk, regression, travel-fullframe-landscape, travel-aps-c-landscape, travel-t6-sept-iles, or matrix-smoke.");
 
-    return new Options(set, outputPath, checkInvariants);
+    return new Options(set, outputPath, checkInvariants, showKeys);
 }
 
 static IReadOnlyList<InvariantFailure> CheckInvariants(ShootingAdviceService adviceService, IReadOnlyList<AuditCase> cases)
@@ -1254,7 +1279,51 @@ static WeatherInfo RainyWeather() => new()
     IsGoodForPhoto = false
 };
 
-internal sealed record Options(string Set, string? OutputPath, bool CheckInvariants);
+internal sealed record Options(string Set, string? OutputPath, bool CheckInvariants, bool ShowKeys);
+
+internal sealed class TracingStringLocalizer : IStringLocalizer<SharedResource>
+{
+    private readonly IStringLocalizer<SharedResource> _inner;
+    private readonly List<TraceEntry> _trace = [];
+
+    public TracingStringLocalizer(IStringLocalizer<SharedResource> inner)
+    {
+        _inner = inner;
+    }
+
+    public LocalizedString this[string name]
+    {
+        get
+        {
+            var localized = _inner[name];
+            _trace.Add(new TraceEntry(name, localized.Value));
+            return localized;
+        }
+    }
+
+    public LocalizedString this[string name, params object[] arguments]
+    {
+        get
+        {
+            var localized = _inner[name, arguments];
+            _trace.Add(new TraceEntry(name, localized.Value));
+            return localized;
+        }
+    }
+
+    public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) =>
+        _inner.GetAllStrings(includeParentCultures);
+
+    public void ClearTrace() => _trace.Clear();
+
+    public IReadOnlyList<string> GetKeysForValue(string value) => _trace
+        .Where(entry => entry.Value == value)
+        .Select(entry => entry.Key)
+        .Distinct(StringComparer.Ordinal)
+        .ToList();
+}
+
+internal sealed record TraceEntry(string Key, string Value);
 
 internal sealed record InvariantFailure(
     int CaseNumber,

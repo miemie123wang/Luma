@@ -675,6 +675,24 @@ The script runs:
 
 It stops at the first non-zero exit code so the failing output remains visible in the terminal.
 
+## Advice Key Trace Output
+
+Added `--show-keys` to `tools/Luma.AdviceAudit` for manual inspection and review triage.
+
+Command:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --show-keys
+```
+
+The audit tool now wraps the normal in-memory localizer with a tracing localizer. For each generated advice line, `--show-keys` prefixes the matching top-level localization key, for example:
+
+```text
+- [Advice_Start_Landscape_LowLight_AutoDevice] Start with a stable frame, use a timer or steady support, and keep the brightest sky or lights from clipping.
+```
+
+This does not change the app output or invariant checker behavior. It is intended for cases where a review or invariant failure identifies bad wording and the next step is to locate the exact advice fragment quickly.
+
 ## Next Session Plan
 
 The durable quality plan should start with automation, not another broad manual review.
