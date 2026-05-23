@@ -13,4 +13,5 @@ public class WeatherInfo
     public double WindSpeed { get; set; }      // km/h
     public double Visibility { get; set; }        // 米
     public double Temperature { get; set; }    // °C
+    public int? TomorrowPrecipitationProbability { get; set; }
 }

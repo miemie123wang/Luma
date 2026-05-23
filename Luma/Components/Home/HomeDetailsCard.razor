@@ -14,6 +14,12 @@
                 <MudText Typo="Typo.caption" Class="phase-location detail-line detail-pill">
                     @Localizer["Weather_Details", Weather.Temperature.ToString("F0", CultureInfo.InvariantCulture), Weather.WindSpeed.ToString("F0", CultureInfo.InvariantCulture), FormattedVisibility]
                 </MudText>
+                @if (Weather.TomorrowPrecipitationProbability is int tomorrowRainChance)
+                {
+                    <MudText Typo="Typo.caption" Class="phase-location detail-line detail-pill">
+                        @Localizer["Weather_TomorrowRainChance", tomorrowRainChance]
+                    </MudText>
+                }
             }
             else if (!string.IsNullOrEmpty(WeatherWarningMessage))
             {

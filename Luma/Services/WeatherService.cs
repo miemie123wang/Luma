@@ -13,13 +13,17 @@ public class WeatherService(HttpClient http)
             $"?latitude={lat.ToString(CultureInfo.InvariantCulture)}" +
             $"&longitude={lng.ToString(CultureInfo.InvariantCulture)}" +
             "&current=cloud_cover,precipitation,weather_code,wind_speed_10m,visibility,temperature_2m" +
-            "&forecast_days=1";
+            "&daily=precipitation_probability_max" +
+            "&forecast_days=2";
 
         try
         {
             var response = await http.GetFromJsonAsync<OpenMeteoResponse>(url);
             var current = response?.Current;
             if (current == null) return null;
+            int? tomorrowPrecipitationProbability = response?.Daily?.PrecipitationProbabilityMax is { Count: > 1 } probabilities
+                ? probabilities[1]
+                : null;
 
             return new WeatherInfo
             {
@@ -31,7 +35,8 @@ public class WeatherService(HttpClient http)
                 IsGoodForPhoto = current.CloudCover < 50 && current.Precipitation == 0,
                 WindSpeed     = current.WindSpeed,
                 Visibility    = current.Visibility,
-                Temperature   = current.Temperature
+                Temperature   = current.Temperature,
+                TomorrowPrecipitationProbability = tomorrowPrecipitationProbability
             };
         }
         catch (Exception ex)
@@ -74,6 +79,9 @@ file class OpenMeteoResponse
 {
     [JsonPropertyName("current")]
     public OpenMeteoCurrent? Current { get; set; }
+
+    [JsonPropertyName("daily")]
+    public OpenMeteoDaily? Daily { get; set; }
 }
 
 file class OpenMeteoCurrent
@@ -95,4 +103,10 @@ file class OpenMeteoCurrent
 
     [JsonPropertyName("temperature_2m")]
     public double Temperature { get; set; }
+}
+
+file class OpenMeteoDaily
+{
+    [JsonPropertyName("precipitation_probability_max")]
+    public List<int>? PrecipitationProbabilityMax { get; set; }
 }
