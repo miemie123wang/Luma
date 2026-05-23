@@ -55,6 +55,11 @@
     border-color: rgba(116, 143, 155, 0.22);
 }
 
+::deep .field-window-card {
+    background: linear-gradient(135deg, rgba(19, 34, 33, 0.96), rgba(24, 24, 18, 0.96));
+    border-color: rgba(111, 184, 191, 0.34);
+}
+
 ::deep .content-card {
     display: block;
     overflow: hidden;
@@ -86,6 +91,47 @@
 .field-overview ::deep .content-card {
     height: 100%;
     margin-top: 0 !important;
+}
+
+.field-window-layout {
+    align-items: start;
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: auto minmax(0, 1fr);
+}
+
+.field-window-icon {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(111, 184, 191, 0.24);
+    border-radius: 8px;
+    display: flex;
+    font-size: 1.35rem;
+    height: 2.5rem;
+    justify-content: center;
+    width: 2.5rem;
+}
+
+.field-window-copy {
+    min-width: 0;
+}
+
+.field-window-title {
+    color: #f1f6f5;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+
+.field-window-summary,
+.field-window-detail {
+    color: #cfd9d8;
+    line-height: 1.45;
+    margin-top: 0;
+}
+
+.field-window-detail {
+    color: #9fb9b7;
+    margin-top: 0.35rem;
 }
 
 .phase-card-inner {
@@ -385,6 +431,10 @@
 @media (max-width: 520px) {
     ::deep .content-card .mud-card-content {
         padding: 1.05rem;
+    }
+
+    .field-window-layout {
+        grid-template-columns: 1fr;
     }
 
     .phase-card-inner {

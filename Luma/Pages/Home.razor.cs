@@ -14,6 +14,7 @@ public partial class Home : ComponentBase
     [Inject] private WeatherService WeatherService { get; set; } = default!;
     [Inject] private SettingsService SettingsService { get; set; } = default!;
     [Inject] private ShootingAdviceService ShootingAdviceService { get; set; } = default!;
+    [Inject] private FieldWindowService FieldWindowService { get; set; } = default!;
     [Inject] private AiPromptBuilder AiPromptBuilder { get; set; } = default!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
     private string? _lastUICulture;
@@ -26,6 +27,7 @@ public partial class Home : ComponentBase
     protected WeatherInfo? Weather { get; set; }
     protected UserSettings CurrentSettings { get; set; } = new();
     protected ShootingAdvice? Advice { get; set; }
+    protected FieldWindowRecommendation? FieldWindow { get; set; }
     protected bool IsLoading { get; set; } = true;
     protected ShootingStyle SelectedShootingStyle { get; set; } = ShootingStyle.Landscape;
     protected CameraSupportMode SelectedSupportMode { get; set; } = CameraSupportMode.Handheld;
@@ -233,6 +235,8 @@ public partial class Home : ComponentBase
     {
         if (CurrentPhase == null)
             return;
+
+        FieldWindow = FieldWindowService.GetRecommendation(CurrentPhase, Weather);
 
         Advice = ShootingAdviceService.GetAdvice(new ShootingAdviceContext
         {

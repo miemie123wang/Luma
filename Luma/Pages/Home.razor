@@ -39,6 +39,26 @@
                                  LocationWarningMessage="@LocationWarningMessage" />
             </section>
 
+            @if (FieldWindow != null)
+            {
+                <MudCard Class="info-card content-card field-window-card mt-3">
+                    <MudCardContent>
+                        <div class="field-window-layout">
+                            <div class="field-window-icon" aria-hidden="true">@FieldWindow.Icon</div>
+                            <div class="field-window-copy">
+                                <MudText Typo="Typo.caption" Class="card-kicker">@Localizer["FieldWindow_Card_Title"]</MudText>
+                                <MudText Typo="Typo.subtitle2" Class="field-window-title">@FieldWindow.Title</MudText>
+                                <MudText Typo="Typo.body2" Class="field-window-summary">@FieldWindow.Summary</MudText>
+                                @if (!string.IsNullOrEmpty(FieldWindow.Detail))
+                                {
+                                    <MudText Typo="Typo.body2" Class="field-window-detail">@FieldWindow.Detail</MudText>
+                                }
+                            </div>
+                        </div>
+                    </MudCardContent>
+                </MudCard>
+            }
+
             <MudCard Class="info-card content-card style-card mt-3">
                 <MudCardContent>
                     <MudText Typo="Typo.caption" Class="card-kicker">@Localizer["Style_Label"]</MudText>
