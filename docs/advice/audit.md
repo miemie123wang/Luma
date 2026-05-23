@@ -74,9 +74,10 @@ Run the invariant checker with:
 dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk --check-invariants
 dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --check-invariants
 dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-t6-sept-iles --check-invariants
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set matrix-smoke --check-invariants
 ```
 
-The checker prints only failures. A clean run prints `No invariant failures found.` and exits with code 0; failures are listed by case and return a non-zero exit code.
+The checker prints only failures. A clean run prints `No invariant failures found.` and exits with code 0; failures are listed by case and return a non-zero exit code. The `matrix-smoke` set generates a broader representative scan for machine checks only; do not use it as a manual review file unless a specific failure needs inspection.
 
 Examples of invariants learned from review:
 
@@ -110,8 +111,8 @@ The next stage should move from case-by-case fixing to explicit quality gates.
 
 Priority order:
 
-1. Use `--check-invariants` to scan known sets and report only failures.
-2. Expand the invariant checker to a broad generated matrix once the named sets stay clean.
+1. Keep `--check-invariants` green on known sets and `matrix-smoke`.
+2. Expand toward a fuller generated matrix only after a new invariant justifies broader coverage.
 3. Split advice rules by device capability only when a shared category changes the user's real action.
 4. Add metadata to generated audit output so each case can show which advice keys were used.
 5. Continue external review by theme instead of asking for one broad overall review.

@@ -17,6 +17,8 @@ if (options.CheckInvariants)
 
     output.AppendLine($"Invariant check: {options.Set}");
     output.AppendLine();
+    output.AppendLine($"Cases checked: {GetCases(options.Set).Count}");
+    output.AppendLine();
 
     if (failures.Count == 0)
     {
@@ -149,8 +151,8 @@ static Options ParseOptions(string[] args)
         throw new ArgumentException($"Unknown argument: {arg}");
     }
 
-    if (set is not "high-risk" and not "regression" and not "travel-fullframe-landscape" and not "travel-aps-c-landscape" and not "travel-t6-sept-iles")
-        throw new ArgumentException($"Unknown audit set: {set}. Use high-risk, regression, travel-fullframe-landscape, travel-aps-c-landscape, or travel-t6-sept-iles.");
+    if (set is not "high-risk" and not "regression" and not "travel-fullframe-landscape" and not "travel-aps-c-landscape" and not "travel-t6-sept-iles" and not "matrix-smoke")
+        throw new ArgumentException($"Unknown audit set: {set}. Use high-risk, regression, travel-fullframe-landscape, travel-aps-c-landscape, travel-t6-sept-iles, or matrix-smoke.");
 
     return new Options(set, outputPath, checkInvariants);
 }
@@ -173,7 +175,7 @@ static IReadOnlyList<InvariantFailure> CheckInvariants(ShootingAdviceService adv
         }
 
         if (auditCase.Context.Camera == CameraType.ActionCam && ContainsAny(allText,
-            "tap to focus", "tap the subject", "manual ISO", "manual shutter", "shutter speed", "sport mode", "action mode", "burst"))
+            "tap to focus", "tap the subject", "ISO", "manual shutter", "shutter speed", "sport mode", "action mode", "burst"))
         {
             failures.Add(Fail(auditCase, "ActionCam device language", "ActionCam advice contains phone/manual-camera motion or control language."));
         }
@@ -254,8 +256,69 @@ static IReadOnlyList<AuditCase> GetCases(string set) => set switch
     "travel-fullframe-landscape" => GetTravelFullFrameLandscapeCases(),
     "travel-aps-c-landscape" => GetTravelApsCLandscapeCases(),
     "travel-t6-sept-iles" => GetTravelT6SeptIlesCases(),
+    "matrix-smoke" => GetMatrixSmokeCases(),
     _ => throw new ArgumentOutOfRangeException(nameof(set), set, null)
 };
+
+static IReadOnlyList<AuditCase> GetMatrixSmokeCases()
+{
+    var cases = new List<AuditCase>();
+    var number = 1;
+
+    foreach (var scenario in GetMatrixSmokeScenarios())
+    {
+        foreach (var camera in Enum.GetValues<CameraType>())
+        {
+            foreach (var experience in Enum.GetValues<ExperienceLevel>())
+            {
+                cases.Add(new AuditCase(
+                    number++,
+                    $"{scenario.Name} - {camera} - {experience}",
+                    scenario.WeatherLabel,
+                    new ShootingAdviceContext
+                    {
+                        Phase = scenario.Phase,
+                        Weather = scenario.GetWeather(),
+                        Style = scenario.Style,
+                        Camera = camera,
+                        Experience = experience,
+                        SupportMode = scenario.SupportMode,
+                        SubjectMotion = scenario.SubjectMotion
+                    }));
+            }
+        }
+    }
+
+    return cases;
+}
+
+static IReadOnlyList<MatrixSmokeScenario> GetMatrixSmokeScenarios() =>
+[
+    new("Midday clear landscape handheld", LightPhase.Midday, "clear", ClearWeather, ShootingStyle.Landscape, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Midday clear moving portrait", LightPhase.Midday, "clear", ClearWeather, ShootingStyle.Portrait, CameraSupportMode.Handheld, SubjectMotion.Moving),
+    new("Midday clear moving urban", LightPhase.Midday, "clear", ClearWeather, ShootingStyle.Urban, CameraSupportMode.Handheld, SubjectMotion.Moving),
+    new("Midday heavy-cloud landscape", LightPhase.Midday, "heavy cloud", HeavyCloudWeather, ShootingStyle.Landscape, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Foggy morning urban", LightPhase.Morning, "fog or low visibility", FoggyWeather, ShootingStyle.Urban, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Rainy afternoon urban", LightPhase.Afternoon, "rain", RainyWeather, ShootingStyle.Urban, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Golden-hour landscape", LightPhase.GoldenHourEvening, "mixed cloud", MixedCloudWeather, ShootingStyle.Landscape, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Golden-hour moving portrait", LightPhase.GoldenHourEvening, "mixed cloud", MixedCloudWeather, ShootingStyle.Portrait, CameraSupportMode.Handheld, SubjectMotion.Moving),
+    new("Sunset tripod landscape", LightPhase.Sunset, "clear", ClearWeather, ShootingStyle.Landscape, CameraSupportMode.Tripod, SubjectMotion.Still),
+    new("Sunset moving urban", LightPhase.Sunset, "clear", ClearWeather, ShootingStyle.Urban, CameraSupportMode.Handheld, SubjectMotion.Moving),
+    new("Blue-hour handheld landscape", LightPhase.BlueHour, "mixed cloud", MixedCloudWeather, ShootingStyle.Landscape, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Blue-hour handheld urban", LightPhase.BlueHour, "mixed cloud", MixedCloudWeather, ShootingStyle.Urban, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Blue-hour moving portrait", LightPhase.BlueHour, "mixed cloud", MixedCloudWeather, ShootingStyle.Portrait, CameraSupportMode.Handheld, SubjectMotion.Moving),
+    new("Blue-dusk tripod landscape", LightPhase.BlueDusk, "heavy cloud", HeavyCloudWeather, ShootingStyle.Landscape, CameraSupportMode.Tripod, SubjectMotion.Still),
+    new("Nautical dawn handheld urban", LightPhase.NauticalDawn, "mixed cloud", MixedCloudWeather, ShootingStyle.Urban, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Night handheld landscape", LightPhase.Night, "mixed cloud", MixedCloudWeather, ShootingStyle.Landscape, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Night tripod landscape", LightPhase.Night, "mixed cloud", MixedCloudWeather, ShootingStyle.Landscape, CameraSupportMode.Tripod, SubjectMotion.Still),
+    new("Night handheld urban", LightPhase.Night, "mixed cloud", MixedCloudWeather, ShootingStyle.Urban, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Night tripod urban", LightPhase.Night, "mixed cloud", MixedCloudWeather, ShootingStyle.Urban, CameraSupportMode.Tripod, SubjectMotion.Still),
+    new("Night handheld portrait", LightPhase.Night, "mixed cloud", MixedCloudWeather, ShootingStyle.Portrait, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Night moving portrait", LightPhase.Night, "mixed cloud", MixedCloudWeather, ShootingStyle.Portrait, CameraSupportMode.Handheld, SubjectMotion.Moving),
+    new("Night-sky handheld", LightPhase.Night, "clear", ClearWeather, ShootingStyle.NightSky, CameraSupportMode.Handheld, SubjectMotion.Still),
+    new("Night-sky tripod", LightPhase.Night, "clear", ClearWeather, ShootingStyle.NightSky, CameraSupportMode.Tripod, SubjectMotion.Still),
+    new("Astronomical-dusk night-sky tripod", LightPhase.AstronomicalDusk, "clear", ClearWeather, ShootingStyle.NightSky, CameraSupportMode.Tripod, SubjectMotion.Still)
+];
 
 static IReadOnlyList<AuditCase> GetHighRiskCases() =>
 [
@@ -1198,6 +1261,15 @@ internal sealed record InvariantFailure(
     string CaseName,
     string InvariantName,
     string Message);
+
+internal sealed record MatrixSmokeScenario(
+    string Name,
+    LightPhase Phase,
+    string WeatherLabel,
+    Func<WeatherInfo> GetWeather,
+    ShootingStyle Style,
+    CameraSupportMode SupportMode,
+    SubjectMotion SubjectMotion);
 
 internal sealed record AuditCase(
     int Number,

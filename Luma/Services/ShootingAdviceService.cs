@@ -256,6 +256,9 @@ public class ShootingAdviceService
         if (IsAutoExposureDevice(context.Camera) && context.Style == ShootingStyle.Landscape && !lowLight)
             return _localizer["Advice_Start_Landscape_AutoDevice"];
 
+        if (IsAutoExposureDevice(context.Camera) && context.Style == ShootingStyle.Landscape && lowLight)
+            return _localizer["Advice_Start_Landscape_LowLight_AutoDevice"];
+
         return context.Style switch
         {
             ShootingStyle.Portrait when harshLight => _localizer["Advice_Start_Portrait_Harsh"],
@@ -382,6 +385,9 @@ public class ShootingAdviceService
 
         if (risk == AdviceRisk.Blur && IsAutoExposureDevice(context.Camera))
             return _localizer["Advice_Adjust_Blur_AutoDevice"];
+
+        if (risk == AdviceRisk.Noise && IsAutoExposureDevice(context.Camera))
+            return _localizer["Advice_Adjust_Noise_AutoDevice"];
 
         return GetAdjustmentStep(risk);
     }

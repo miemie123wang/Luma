@@ -589,7 +589,7 @@ Remaining Sept-Iles notes:
 
 Useful additions to `tools/Luma.AdviceAudit` later:
 
-- Add a full or large matrix mode for machine checks, not manual review.
+- Add a full matrix mode only if `matrix-smoke` is no longer broad enough for machine checks.
 - Add `--culture en|es|zh-Hans|zh-Hant` for translation spot checks.
 - Add richer markdown output with stable headings and optional metadata for each case.
 - Add a `--review-template` option that writes an empty review file next to the generated output.
@@ -627,6 +627,31 @@ dotnet build .\Luma\Luma.csproj
 ```
 
 All listed checks passed after the two wording fixes.
+
+## Matrix Smoke Invariant Pass
+
+Added a `matrix-smoke` audit set for broad invariant scanning. It generates 360 representative cases from 24 high-risk scene profiles, 5 camera types, and 3 experience levels. The set is intended for `--check-invariants`, not manual review.
+
+Command:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set matrix-smoke --check-invariants
+```
+
+The first broad run found two additional device-language leaks:
+
+- `PhoneBasic` and `ActionCam` low-light tripod landscape cases inherited the manual-camera landscape starting point `low ISO if possible`. Fixed with an auto-device low-light landscape starting point that uses stable framing, timer/support, and clipping control instead of ISO control.
+- Auto-exposure devices in tripod low-light noise cases inherited the manual-camera noise adjustment `lower ISO or use a longer exposure`. Fixed with an auto-device noise adjustment that recommends steadiness, timer use, brighter light, or night mode longer capture.
+
+The ActionCam invariant was also tightened so any `ISO` wording in ActionCam output is treated as a device-language failure.
+
+Current broad result:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set matrix-smoke --check-invariants
+```
+
+Result: 360 cases checked, no invariant failures found.
 
 ## Next Session Plan
 
