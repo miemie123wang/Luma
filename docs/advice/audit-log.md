@@ -787,3 +787,63 @@ Good commit boundaries for future advice work:
 - Commit one audit layer and its fixes together when the fixes are small and directly tied to the findings.
 - Avoid mixing advice rule changes with UI refactors.
 - Update this log when a review result directly changes a rule.
+
+## Forecast And Field-Window Follow-Up
+
+May 2026 field-use review produced a useful external prompt pattern for overcast travel shooting:
+
+```text
+Today has 100% cloud cover, so sunset / golden-hour color may not appear. The current window is likely better because the light is soft and stable. If tomorrow has high rain probability, today may be the better outdoor shooting day.
+```
+
+This is a high-value product direction because it turns raw weather and sun-time data into a field decision: leave now, wait, or skip.
+
+Already implemented foundation:
+
+- Current cloud cover, precipitation, weather code, wind, visibility, and temperature from Open-Meteo.
+- SunCalc sunrise, sunset, and golden-hour timing.
+- Tomorrow maximum rain probability via Open-Meteo `daily=precipitation_probability_max` with `forecast_days=2`.
+- Cloud-aware phase copy: heavy overcast daylight no longer tells the user to wait for golden hour; it frames the current period as a stable soft-light window.
+
+Next best product step:
+
+1. Add a short `Field window` recommendation near the top of the home screen.
+2. Use existing data only at first:
+   - Current cloud cover.
+   - Current precipitation.
+   - Current light phase.
+   - Golden-hour / sunset timing.
+   - Tomorrow precipitation probability.
+3. Start with conservative rules:
+   - If cloud cover is `>= 85%` and current precipitation is `0`, say the current light is a stable soft-light window.
+   - If cloud cover is `>= 85%`, say golden-hour color may be weak and the user does not need to wait for it.
+   - If tomorrow rain probability is `>= 60%` and today is currently dry, say today may be the more reliable outdoor window.
+   - If current precipitation is active, avoid saying now is the best window; instead mention rain cover, reflections, or waiting for a break.
+4. Keep the copy short. It should read like a decision, not a weather report.
+
+Potential UI copy:
+
+```text
+现在适合出门
+云量 100%，光线稳定柔和；黄金时段色彩可能不明显，不必专门等待。
+明天降雨概率 70%，今天更适合安排外拍。
+```
+
+Future API expansion:
+
+- Open-Meteo hourly forecast: `hourly=precipitation_probability,precipitation,cloud_cover` for a same-day 3-6 hour shooting window.
+- OpenStreetMap / Overpass: nearby parks, waterfronts, trails, viewpoints, piers, marinas, and green spaces.
+- Google Places: richer nearby place recommendations if an API key and billing are acceptable.
+- Hard-coded travel location packs for known trips such as Sept-Iles or Montreal / DDO. This may produce better recommendations than generic place search for personal travel use.
+
+Rules worth hard-coding before adding new APIs:
+
+- Overcast landscape: use foreground, water, foliage, and color separation; avoid waiting for dramatic sun color.
+- Overcast phone settings: low ISO where possible, slight positive exposure compensation if the scene meters too dark, RAW / Pro mode when available, cloudy white balance if auto white balance looks cold.
+- Beginner composition prompt: one foreground, one leading line, and avoid placing the horizon in the exact middle unless symmetry is intentional.
+- Today-versus-tomorrow prompt: if tomorrow rain probability is high and current conditions are dry, make the opportunity cost visible.
+
+Validation idea:
+
+- Add forecast-aware audit cases after the `Field window` recommendation exists: heavy overcast dry today / rainy tomorrow, raining now / clear tomorrow, clear now / rainy tomorrow, and mixed cloud with good golden-hour chance.
+- Add invariants so heavy overcast daylight does not say `wait for golden hour` as the primary timing instruction.

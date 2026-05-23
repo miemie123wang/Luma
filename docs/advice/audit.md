@@ -48,6 +48,8 @@ Current hard-coded advice is roughly 50-plus localized advice fragments that are
 - Capture-condition notes for support mode and subject movement.
 - Beginner field steps.
 
+Forecast-aware field-window guidance is a new adjacent layer. It should answer whether the user should go now, wait, or treat tomorrow as less reliable. Keep this layer separate from exposure advice so weather timing copy does not create conflicts with camera settings.
+
 Audit should focus on combinations where these fragments can conflict, especially night or low-light scenes, phone versus camera wording, handheld versus tripod guidance, and moving subjects.
 
 ## Review Limits And Invariants
