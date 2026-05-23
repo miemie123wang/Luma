@@ -184,10 +184,22 @@
 }
 
 .advice-card-header {
+    display: grid;
+    gap: 0.35rem;
     margin-bottom: 1rem;
     min-height: 3.25rem;
-    padding-right: 11.5rem;
-    position: relative;
+}
+
+.advice-card-top-row {
+    align-items: center;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-width: 0;
+}
+
+.advice-card-top-row .card-kicker {
+    margin-bottom: 0;
 }
 
 .advice-card-heading {
@@ -199,9 +211,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
-    position: absolute;
-    right: 0;
-    top: 0;
+    justify-self: end;
+    min-width: 0;
     z-index: 1;
 }
 
@@ -250,19 +261,17 @@
         grid-template-columns: 1fr;
     }
 
-    .advice-card-header {
-        padding-right: 0;
-        padding-top: 2.8rem;
-    }
-
-    .prompt-action-column {
-        align-items: stretch;
-        left: 0;
-        right: 0;
+    .advice-card-top-row {
+        gap: 0.65rem;
     }
 
     .prompt-action-column ::deep .mud-button-root {
-        width: 100%;
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+    }
+
+    .prompt-action-column ::deep .mud-button-label {
+        font-size: 0.76rem;
     }
 }
 
