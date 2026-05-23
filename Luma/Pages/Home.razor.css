@@ -155,12 +155,6 @@
     z-index: 1;
 }
 
-.prompt-copy-status {
-    color: #aaa;
-    font-size: 0.78rem;
-    text-align: right;
-}
-
 @media (max-width: 430px) {
     .advice-card-header {
         padding-right: 0 !important;

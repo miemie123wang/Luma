@@ -86,12 +86,8 @@
                                            Size="Size.Small"
                                            StartIcon="@Icons.Material.Filled.ContentCopy"
                                            OnClick="CopyAiPromptAsync">
-                                    @Localizer["Advice_CopyPrompt_Button"]
+                                    @(PromptCopyStatusMessage ?? Localizer["Advice_CopyPrompt_Button"])
                                 </MudButton>
-                                @if (!string.IsNullOrEmpty(PromptCopyStatusMessage))
-                                {
-                                    <div class="prompt-copy-status">@PromptCopyStatusMessage</div>
-                                }
                             </div>
                         </div>
 

@@ -17,6 +17,7 @@ public partial class Home : ComponentBase
     [Inject] private AiPromptBuilder AiPromptBuilder { get; set; } = default!;
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
     private string? _lastUICulture;
+    private int _promptCopyVersion = 0;
     
 
     protected LightPhaseInfo? CurrentPhase { get; set; }
@@ -72,6 +73,7 @@ public partial class Home : ComponentBase
         if (Advice == null || CurrentPhase == null)
             return;
 
+        var copyVersion = ++_promptCopyVersion;
         string statusMessage;
 
         try
@@ -95,9 +97,11 @@ public partial class Home : ComponentBase
         }
 
         PromptCopyStatusMessage = statusMessage;
+        StateHasChanged();
+
         await Task.Delay(2000);
 
-        if (PromptCopyStatusMessage == statusMessage)
+        if (copyVersion == _promptCopyVersion)
         {
             PromptCopyStatusMessage = null;
             StateHasChanged();
@@ -211,6 +215,7 @@ public partial class Home : ComponentBase
             SubjectMotion = SelectedSubjectMotion
         });
 
+        _promptCopyVersion++;
         PromptCopyStatusMessage = null;
     }
 
