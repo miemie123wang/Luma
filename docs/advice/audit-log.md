@@ -589,13 +589,44 @@ Remaining Sept-Iles notes:
 
 Useful additions to `tools/Luma.AdviceAudit` later:
 
-- Add `--check-invariants` to scan a broad matrix and report known rule violations.
 - Add a full or large matrix mode for machine checks, not manual review.
 - Add `--culture en|es|zh-Hans|zh-Hant` for translation spot checks.
 - Add richer markdown output with stable headings and optional metadata for each case.
 - Add a `--review-template` option that writes an empty review file next to the generated output.
 - Add a simple duplicate-line detector to find repeated generic bullets.
 - Add a device-language check that flags shutter-speed strings in phone/action-cam moving-subject cases.
+
+## Invariant Checker Pass
+
+Implemented `--check-invariants` in `tools/Luma.AdviceAudit`. It runs the selected audit set, prints only failures, and exits non-zero when any invariant fails.
+
+Initial invariant group implemented:
+
+- PhoneBasic manual-control language check.
+- ActionCam device-language check, including phone-style moving language.
+- ActionCam moving workflow must mention video, high-frame-rate capture, or stabilization.
+- NightSky should not lead with daylight highlight-protection language.
+- Night tripod landscape should not lead with highlight risk.
+- Tripod low-light output should not include handheld-only `1/focal length` guidance.
+- Beginner handheld night manual-camera output should include a feasibility warning.
+
+First checker run found two useful follow-up fixes:
+
+- ActionCam blur adjustment still inherited phone-style `night/action mode` wording. Fixed with an ActionCam-specific blur adjustment that uses stabilization, brighter light, slower movement, and higher-frame-rate video language.
+- PhoneBasic beginner moving feasibility still mentioned accepting higher ISO. Fixed with an auto-device beginner moving feasibility line that recommends burst/action/sport/video and better light instead of ISO control.
+
+Validation completed:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk --check-invariants
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --check-invariants
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-t6-sept-iles --check-invariants
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-aps-c-landscape --check-invariants
+dotnet run --project .\tools\Luma.LocalizationCheck\Luma.LocalizationCheck.csproj
+dotnet build .\Luma\Luma.csproj
+```
+
+All listed checks passed after the two wording fixes.
 
 ## Next Session Plan
 

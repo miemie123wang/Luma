@@ -68,6 +68,16 @@ The product positioning should stay honest: Luma is a travel photography startin
 
 Use review to discover new classes of problems. Once a problem repeats or becomes clear enough to describe as a rule, convert it into an automated invariant check.
 
+Run the invariant checker with:
+
+```powershell
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set high-risk --check-invariants
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set regression --check-invariants
+dotnet run --project .\tools\Luma.AdviceAudit\Luma.AdviceAudit.csproj -- --set travel-t6-sept-iles --check-invariants
+```
+
+The checker prints only failures. A clean run prints `No invariant failures found.` and exits with code 0; failures are listed by case and return a non-zero exit code.
+
 Examples of invariants learned from review:
 
 - `PhoneBasic` output should not give manual camera controls such as ISO, aperture, shutter speed, or depth-of-field instructions as the user's action.
@@ -100,8 +110,8 @@ The next stage should move from case-by-case fixing to explicit quality gates.
 
 Priority order:
 
-1. Add `--check-invariants` to `tools/Luma.AdviceAudit`.
-2. Use the invariant checker to scan a broad generated matrix and report only failures.
+1. Use `--check-invariants` to scan known sets and report only failures.
+2. Expand the invariant checker to a broad generated matrix once the named sets stay clean.
 3. Split advice rules by device capability only when a shared category changes the user's real action.
 4. Add metadata to generated audit output so each case can show which advice keys were used.
 5. Continue external review by theme instead of asking for one broad overall review.

@@ -76,6 +76,9 @@ public class ShootingAdviceService
         if (context.Camera == CameraType.ActionCam && context.Phase == LightPhase.Night)
             return _localizer["Advice_Feasibility_ActionCamNight"];
 
+        if (context.Experience == ExperienceLevel.Beginner && context.SubjectMotion == SubjectMotion.Moving && IsAutoExposureDevice(context.Camera))
+            return _localizer["Advice_Feasibility_BeginnerMoving_AutoDevice"];
+
         if (context.Experience == ExperienceLevel.Beginner && context.SubjectMotion == SubjectMotion.Moving)
             return _localizer["Advice_Feasibility_BeginnerMoving"];
 
@@ -374,6 +377,9 @@ public class ShootingAdviceService
 
     private string GetAdjustmentStep(ShootingAdviceContext context, AdviceRisk risk)
     {
+        if (risk == AdviceRisk.Blur && context.Camera == CameraType.ActionCam)
+            return _localizer["Advice_Adjust_Blur_ActionCam"];
+
         if (risk == AdviceRisk.Blur && IsAutoExposureDevice(context.Camera))
             return _localizer["Advice_Adjust_Blur_AutoDevice"];
 

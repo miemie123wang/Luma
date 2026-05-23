@@ -11,6 +11,36 @@ var adviceService = new ShootingAdviceService(new InMemoryStringLocalizer());
 var options = ParseOptions(args);
 var output = new StringBuilder();
 
+if (options.CheckInvariants)
+{
+    var failures = CheckInvariants(adviceService, GetCases(options.Set));
+
+    output.AppendLine($"Invariant check: {options.Set}");
+    output.AppendLine();
+
+    if (failures.Count == 0)
+    {
+        output.AppendLine("No invariant failures found.");
+    }
+    else
+    {
+        output.AppendLine($"Failures: {failures.Count}");
+        output.AppendLine();
+
+        foreach (var failure in failures)
+        {
+            output.AppendLine($"Case {failure.CaseNumber}: {failure.CaseName}");
+            output.AppendLine($"Invariant: {failure.InvariantName}");
+            output.AppendLine($"Issue: {failure.Message}");
+            output.AppendLine();
+        }
+    }
+
+    WriteOutput(options, output.ToString());
+    Environment.ExitCode = failures.Count == 0 ? 0 : 1;
+    return;
+}
+
 output.AppendLine($"Audit set: {options.Set}");
 output.AppendLine();
 
@@ -36,14 +66,16 @@ foreach (var auditCase in GetCases(options.Set))
     output.AppendLine();
 }
 
-var outputText = output.ToString();
+WriteOutput(options, output.ToString());
 
-if (options.OutputPath is null)
+static void WriteOutput(Options options, string outputText)
 {
-    Console.Write(outputText);
-}
-else
-{
+    if (options.OutputPath is null)
+    {
+        Console.Write(outputText);
+        return;
+    }
+
     var directory = Path.GetDirectoryName(options.OutputPath);
     if (!string.IsNullOrEmpty(directory))
         Directory.CreateDirectory(directory);
@@ -70,10 +102,17 @@ static Options ParseOptions(string[] args)
 {
     var set = "high-risk";
     string? outputPath = null;
+    var checkInvariants = false;
 
     for (var index = 0; index < args.Length; index++)
     {
         var arg = args[index];
+
+        if (arg == "--check-invariants")
+        {
+            checkInvariants = true;
+            continue;
+        }
 
         if (arg == "--out" || arg == "-o")
         {
@@ -113,8 +152,100 @@ static Options ParseOptions(string[] args)
     if (set is not "high-risk" and not "regression" and not "travel-fullframe-landscape" and not "travel-aps-c-landscape" and not "travel-t6-sept-iles")
         throw new ArgumentException($"Unknown audit set: {set}. Use high-risk, regression, travel-fullframe-landscape, travel-aps-c-landscape, or travel-t6-sept-iles.");
 
-    return new Options(set, outputPath);
+    return new Options(set, outputPath, checkInvariants);
 }
+
+static IReadOnlyList<InvariantFailure> CheckInvariants(ShootingAdviceService adviceService, IReadOnlyList<AuditCase> cases)
+{
+    var failures = new List<InvariantFailure>();
+
+    foreach (var auditCase in cases)
+    {
+        var advice = adviceService.GetAdvice(auditCase.Context);
+        var allText = GetAdviceText(advice);
+        var firstRisk = advice.RiskWarnings.FirstOrDefault() ?? "";
+        var firstExposure = advice.ExposureSteps.FirstOrDefault() ?? "";
+
+        if (auditCase.Context.Camera == CameraType.PhoneBasic && ContainsAny(allText,
+            "ISO", "shutter speed", "aperture", "depth of field", "f/"))
+        {
+            failures.Add(Fail(auditCase, "PhoneBasic manual controls", "PhoneBasic advice contains manual camera control language."));
+        }
+
+        if (auditCase.Context.Camera == CameraType.ActionCam && ContainsAny(allText,
+            "tap to focus", "tap the subject", "manual ISO", "manual shutter", "shutter speed", "sport mode", "action mode", "burst"))
+        {
+            failures.Add(Fail(auditCase, "ActionCam device language", "ActionCam advice contains phone/manual-camera motion or control language."));
+        }
+
+        if (auditCase.Context.Camera == CameraType.ActionCam && auditCase.Context.SubjectMotion == SubjectMotion.Moving &&
+            !ContainsAny(allText, "video", "high-frame-rate", "stabilization"))
+        {
+            failures.Add(Fail(auditCase, "ActionCam moving workflow", "ActionCam moving-subject advice does not mention video, high-frame-rate capture, or stabilization."));
+        }
+
+        if (auditCase.Context.SupportMode == CameraSupportMode.Tripod && IsLowLight(auditCase.Context) &&
+            Contains(allText, "1/focal length"))
+        {
+            failures.Add(Fail(auditCase, "Tripod low-light handheld rule", "Tripod low-light advice contains handheld-only 1/focal length guidance."));
+        }
+
+        if (auditCase.Context.Style == ShootingStyle.NightSky &&
+            (Contains(firstRisk, "highlight") || Contains(firstExposure, "protect highlights")))
+        {
+            failures.Add(Fail(auditCase, "NightSky daylight highlight lead", "NightSky advice leads with daylight highlight-protection language."));
+        }
+
+        if (auditCase.Context.Phase == LightPhase.Night && auditCase.Context.Style == ShootingStyle.Landscape &&
+            auditCase.Context.SupportMode == CameraSupportMode.Tripod && Contains(firstRisk, "highlight"))
+        {
+            failures.Add(Fail(auditCase, "Night tripod landscape leading risk", "Night tripod landscape leads with highlight risk instead of noise, focus, stability, or long exposure."));
+        }
+
+        if (auditCase.Context.Experience == ExperienceLevel.Beginner && auditCase.Context.Phase == LightPhase.Night &&
+            auditCase.Context.SupportMode == CameraSupportMode.Handheld && IsManualCamera(auditCase.Context.Camera) &&
+            string.IsNullOrWhiteSpace(advice.FeasibilityWarning))
+        {
+            failures.Add(Fail(auditCase, "Beginner handheld night feasibility", "Beginner handheld night manual-camera advice has no feasibility warning."));
+        }
+    }
+
+    return failures;
+}
+
+static InvariantFailure Fail(AuditCase auditCase, string invariantName, string message) =>
+    new(auditCase.Number, auditCase.Name, invariantName, message);
+
+static string GetAdviceText(ShootingAdvice advice)
+{
+    var parts = new List<string>();
+
+    if (!string.IsNullOrWhiteSpace(advice.FeasibilityWarning))
+        parts.Add(advice.FeasibilityWarning);
+
+    parts.AddRange(advice.ExposureSteps);
+    parts.AddRange(advice.RiskWarnings);
+    parts.AddRange(advice.AdjustmentSteps);
+    parts.AddRange(advice.FieldSteps);
+
+    return string.Join("\n", parts);
+}
+
+static bool ContainsAny(string text, params string[] values) => values.Any(value => Contains(text, value));
+
+static bool Contains(string text, string value) => text.Contains(value, StringComparison.OrdinalIgnoreCase);
+
+static bool IsLowLight(ShootingAdviceContext context) => context.Phase is
+    LightPhase.Night or
+    LightPhase.AstronomicalDawn or
+    LightPhase.NauticalDawn or
+    LightPhase.BlueHour or
+    LightPhase.BlueDusk or
+    LightPhase.NauticalDusk or
+    LightPhase.AstronomicalDusk ||
+    context.Style == ShootingStyle.NightSky;
+
+static bool IsManualCamera(CameraType camera) => camera is CameraType.MirrorlessAPS or CameraType.FullFrame;
 
 static IReadOnlyList<AuditCase> GetCases(string set) => set switch
 {
@@ -1060,7 +1191,13 @@ static WeatherInfo RainyWeather() => new()
     IsGoodForPhoto = false
 };
 
-internal sealed record Options(string Set, string? OutputPath);
+internal sealed record Options(string Set, string? OutputPath, bool CheckInvariants);
+
+internal sealed record InvariantFailure(
+    int CaseNumber,
+    string CaseName,
+    string InvariantName,
+    string Message);
 
 internal sealed record AuditCase(
     int Number,
