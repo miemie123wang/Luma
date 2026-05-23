@@ -36,6 +36,13 @@ public partial class Home : ComponentBase
     protected string? QuickFirstShot => Advice?.ExposureSteps.FirstOrDefault();
     protected string? QuickRiskWarning => Advice?.RiskWarnings.FirstOrDefault();
     protected string? QuickAdjustment => Advice?.AdjustmentSteps.FirstOrDefault();
+    protected IReadOnlyList<string> AdditionalAdviceDetails => Advice == null
+        ? []
+        : Advice.ExposureSteps.Skip(1)
+            .Concat(Advice.RiskWarnings.Skip(1))
+            .Concat(Advice.AdjustmentSteps.Skip(1))
+            .Concat(Advice.FieldSteps)
+            .ToList();
 
     protected record OptionItem<T>(string LabelKey, T Value);
 

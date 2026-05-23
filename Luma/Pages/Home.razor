@@ -80,7 +80,6 @@
                             </div>
 
                             <div class="advice-card-heading">
-                                <MudText Typo="Typo.subtitle2" Class="advice-title">@Advice.Title</MudText>
                                 <MudText Typo="Typo.caption" Class="advice-meta">
                                     @Localizer["Advice_Context", Localizer[$"CameraOption_{GetCameraKey(CurrentSettings.Camera)}"], Localizer[$"Experience_{GetExperienceKey(CurrentSettings.Experience)}"], Localizer[$"Style_{GetStyleKey(SelectedShootingStyle)}"]]
                                 </MudText>
@@ -128,42 +127,12 @@
                             </div>
                         }
 
-                        <div class="advice-section advice-section-primary">
-                            <div class="advice-section-title pt-2">@Localizer["Advice_FirstShot_Title"]</div>
-                            <ul class="advice-list pl-2">
-                                @foreach (var item in Advice.ExposureSteps)
-                                {
-                                    <li>@item</li>
-                                }
-                            </ul>
-                        </div>
-
-                        <div class="advice-section advice-section-muted-panel">
-                            <div class="advice-section-title pt-2">@Localizer["Advice_RiskWarnings_Title"]</div>
-                            <ul class="advice-list advice-list-muted pl-2">
-                                @foreach (var item in Advice.RiskWarnings)
-                                {
-                                    <li>@item</li>
-                                }
-                            </ul>
-                        </div>
-
-                        <div class="advice-section advice-section-primary">
-                            <div class="advice-section-title pt-2">@Localizer["Advice_Adjustments_Title"]</div>
-                            <ul class="advice-list pl-2">
-                                @foreach (var item in Advice.AdjustmentSteps)
-                                {
-                                    <li>@item</li>
-                                }
-                            </ul>
-                        </div>
-
-                        @if (Advice.FieldSteps.Count > 0)
+                        @if (AdditionalAdviceDetails.Count > 0)
                         {
                             <div class="advice-section advice-section-primary">
-                                <div class="advice-section-title pt-2">@Localizer["Advice_FieldSteps_Title"]</div>
+                                <div class="advice-section-title pt-2">@Localizer["Advice_Details_Title"]</div>
                                 <ul class="advice-list pl-2">
-                                    @foreach (var item in Advice.FieldSteps)
+                                    @foreach (var item in AdditionalAdviceDetails)
                                     {
                                         <li>@item</li>
                                     }
