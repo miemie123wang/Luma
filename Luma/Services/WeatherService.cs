@@ -13,7 +13,9 @@ public class WeatherService(HttpClient http)
             $"?latitude={lat.ToString(CultureInfo.InvariantCulture)}" +
             $"&longitude={lng.ToString(CultureInfo.InvariantCulture)}" +
             "&current=cloud_cover,precipitation,weather_code,wind_speed_10m,visibility,temperature_2m" +
+            "&hourly=precipitation_probability,precipitation,cloud_cover" +
             "&daily=precipitation_probability_max" +
+            "&timezone=auto" +
             "&forecast_days=2";
 
         try
@@ -36,7 +38,8 @@ public class WeatherService(HttpClient http)
                 WindSpeed     = current.WindSpeed,
                 Visibility    = current.Visibility,
                 Temperature   = current.Temperature,
-                TomorrowPrecipitationProbability = tomorrowPrecipitationProbability
+                TomorrowPrecipitationProbability = tomorrowPrecipitationProbability,
+                HourlyForecast = GetUpcomingHourlyForecast(response?.Hourly)
             };
         }
         catch (Exception ex)
@@ -73,18 +76,61 @@ public class WeatherService(HttpClient http)
         95         => "⛈️",
         _          => "🌡️"
     };
+
+    private static IReadOnlyList<HourlyWeatherForecast> GetUpcomingHourlyForecast(OpenMeteoHourly? hourly)
+    {
+        if (hourly?.Time == null || hourly.PrecipitationProbability == null || hourly.Precipitation == null || hourly.CloudCover == null)
+            return [];
+
+        var count = new[]
+        {
+            hourly.Time.Count,
+            hourly.PrecipitationProbability.Count,
+            hourly.Precipitation.Count,
+            hourly.CloudCover.Count
+        }.Min();
+
+        if (count == 0)
+            return [];
+
+        var now = DateTime.Now.AddMinutes(-30);
+        var horizon = DateTime.Now.AddHours(6);
+        var forecast = new List<HourlyWeatherForecast>();
+
+        for (var index = 0; index < count; index++)
+        {
+            if (!DateTime.TryParse(hourly.Time[index], CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var time))
+                continue;
+
+            if (time < now || time > horizon)
+                continue;
+
+            forecast.Add(new HourlyWeatherForecast
+            {
+                Time = time,
+                PrecipitationProbability = hourly.PrecipitationProbability[index],
+                Precipitation = hourly.Precipitation[index],
+                CloudCover = hourly.CloudCover[index]
+            });
+        }
+
+        return forecast;
+    }
 }
 
-file class OpenMeteoResponse
+class OpenMeteoResponse
 {
     [JsonPropertyName("current")]
     public OpenMeteoCurrent? Current { get; set; }
 
     [JsonPropertyName("daily")]
     public OpenMeteoDaily? Daily { get; set; }
+
+    [JsonPropertyName("hourly")]
+    public OpenMeteoHourly? Hourly { get; set; }
 }
 
-file class OpenMeteoCurrent
+class OpenMeteoCurrent
 {
     [JsonPropertyName("cloud_cover")]
     public int CloudCover { get; set; }
@@ -105,8 +151,23 @@ file class OpenMeteoCurrent
     public double Temperature { get; set; }
 }
 
-file class OpenMeteoDaily
+class OpenMeteoDaily
 {
     [JsonPropertyName("precipitation_probability_max")]
     public List<int>? PrecipitationProbabilityMax { get; set; }
+}
+
+class OpenMeteoHourly
+{
+    [JsonPropertyName("time")]
+    public List<string>? Time { get; set; }
+
+    [JsonPropertyName("precipitation_probability")]
+    public List<int>? PrecipitationProbability { get; set; }
+
+    [JsonPropertyName("precipitation")]
+    public List<double>? Precipitation { get; set; }
+
+    [JsonPropertyName("cloud_cover")]
+    public List<int>? CloudCover { get; set; }
 }

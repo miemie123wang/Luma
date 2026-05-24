@@ -14,4 +14,13 @@ public class WeatherInfo
     public double Visibility { get; set; }        // 米
     public double Temperature { get; set; }    // °C
     public int? TomorrowPrecipitationProbability { get; set; }
+    public IReadOnlyList<HourlyWeatherForecast> HourlyForecast { get; set; } = [];
+}
+
+public class HourlyWeatherForecast
+{
+    public DateTime Time { get; set; }
+    public int CloudCover { get; set; }
+    public int PrecipitationProbability { get; set; }
+    public double Precipitation { get; set; }
 }

@@ -53,6 +53,15 @@
                                 {
                                     <MudText Typo="Typo.body2" Class="field-window-detail">@FieldWindow.Detail</MudText>
                                 }
+                                @if (FieldWindow.Notes.Count > 0)
+                                {
+                                    <ul class="field-window-notes">
+                                        @foreach (var note in FieldWindow.Notes)
+                                        {
+                                            <li>@note</li>
+                                        }
+                                    </ul>
+                                }
                             </div>
                         </div>
                     </MudCardContent>
