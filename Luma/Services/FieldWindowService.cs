@@ -22,6 +22,7 @@ public class FieldWindowService
         var isDryNow = weather.Precipitation <= 0;
         var highCloudCover = weather.CloudCover >= 85;
         var highRainTomorrow = tomorrowRainChance >= 60;
+        var hourlyRainRisk = GetHourlyRainRisk(weather);
         var hourlyNote = GetHourlyWindowNote(weather);
         var isLowLightWindow = IsLowLightWindow(phase.Phase);
 
@@ -40,6 +41,18 @@ public class FieldWindowService
                     ? Text("FieldWindow_TomorrowRainStillHigh", tomorrowRainChance!.Value)
                     : null,
                 Notes = notes,
+                Tone = FieldWindowTone.Caution
+            };
+        }
+
+        if (hourlyRainRisk != null && !highCloudCover && !highRainTomorrow)
+        {
+            return new FieldWindowRecommendation
+            {
+                Icon = "⏱️",
+                Title = Text("FieldWindow_RainSoon_Title"),
+                Summary = Text("FieldWindow_RainSoon_Summary", hourlyRainRisk.Time.ToString("HH:mm", CultureInfo.CurrentCulture)),
+                Detail = Text("FieldWindow_RainSoon_Detail"),
                 Tone = FieldWindowTone.Caution
             };
         }
@@ -116,8 +129,7 @@ public class FieldWindowService
         if (weather.HourlyForecast.Count == 0)
             return null;
 
-        var rainRisk = weather.HourlyForecast.FirstOrDefault(point =>
-            point.PrecipitationProbability >= 50 || point.Precipitation > 0);
+        var rainRisk = GetHourlyRainRisk(weather);
 
         if (rainRisk != null)
             return Text("FieldWindow_Hourly_RainRisk", rainRisk.Time.ToString("HH:mm", CultureInfo.CurrentCulture));
@@ -125,6 +137,10 @@ public class FieldWindowService
         var maxProbability = weather.HourlyForecast.Max(point => point.PrecipitationProbability);
         return Text("FieldWindow_Hourly_DryWindow", maxProbability);
     }
+
+    private static HourlyWeatherForecast? GetHourlyRainRisk(WeatherInfo weather) =>
+        weather.HourlyForecast.FirstOrDefault(point =>
+            point.PrecipitationProbability >= 50 || point.Precipitation > 0);
 
     private static bool IsLowLightWindow(LightPhase phase) => phase is
         LightPhase.BlueHour or

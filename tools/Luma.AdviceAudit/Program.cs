@@ -12,15 +12,18 @@ CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
 var options = ParseOptions(args);
 var localizer = new TracingStringLocalizer(new InMemoryStringLocalizer());
 var adviceService = new ShootingAdviceService(localizer);
+var fieldWindowService = new FieldWindowService(localizer);
 var output = new StringBuilder();
 
 if (options.CheckInvariants)
 {
-    var failures = CheckInvariants(adviceService, GetCases(options.Set));
+    var failures = options.Set == "field-window"
+        ? CheckFieldWindowInvariants(fieldWindowService, GetFieldWindowCases())
+        : CheckInvariants(adviceService, GetCases(options.Set));
 
     output.AppendLine($"Invariant check: {options.Set}");
     output.AppendLine();
-    output.AppendLine($"Cases checked: {GetCases(options.Set).Count}");
+    output.AppendLine($"Cases checked: {GetCaseCount(options.Set)}");
     output.AppendLine();
 
     if (failures.Count == 0)
@@ -48,6 +51,26 @@ if (options.CheckInvariants)
 
 output.AppendLine($"Audit set: {options.Set}");
 output.AppendLine();
+
+if (options.Set == "field-window")
+{
+    foreach (var auditCase in GetFieldWindowCases())
+    {
+        var recommendation = fieldWindowService.GetRecommendation(auditCase.Phase, auditCase.Weather);
+
+        output.AppendLine($"Case {auditCase.Number}: {auditCase.Name}");
+        output.AppendLine($"Phase: {auditCase.Phase.Phase}");
+        output.AppendLine($"Weather: {auditCase.WeatherLabel}");
+        output.AppendLine($"Title: {recommendation?.Title ?? "(none)"}");
+        output.AppendLine($"Summary: {recommendation?.Summary ?? "(none)"}");
+        output.AppendLine($"Detail: {recommendation?.Detail ?? "(none)"}");
+        AppendList(output, "Notes", recommendation?.Notes ?? [], localizer, options.ShowKeys);
+        output.AppendLine();
+    }
+
+    WriteOutput(options, output.ToString());
+    return;
+}
 
 foreach (var auditCase in GetCases(options.Set))
 {
@@ -176,11 +199,15 @@ static Options ParseOptions(string[] args)
         throw new ArgumentException($"Unknown argument: {arg}");
     }
 
-    if (set is not "high-risk" and not "regression" and not "travel-fullframe-landscape" and not "travel-aps-c-landscape" and not "travel-t6-sept-iles" and not "matrix-smoke")
-        throw new ArgumentException($"Unknown audit set: {set}. Use high-risk, regression, travel-fullframe-landscape, travel-aps-c-landscape, travel-t6-sept-iles, or matrix-smoke.");
+    if (set is not "high-risk" and not "regression" and not "travel-fullframe-landscape" and not "travel-aps-c-landscape" and not "travel-t6-sept-iles" and not "matrix-smoke" and not "field-window")
+        throw new ArgumentException($"Unknown audit set: {set}. Use high-risk, regression, travel-fullframe-landscape, travel-aps-c-landscape, travel-t6-sept-iles, matrix-smoke, or field-window.");
 
     return new Options(set, outputPath, checkInvariants, showKeys);
 }
+
+static int GetCaseCount(string set) => set == "field-window"
+    ? GetFieldWindowCases().Count
+    : GetCases(set).Count;
 
 static IReadOnlyList<InvariantFailure> CheckInvariants(ShootingAdviceService adviceService, IReadOnlyList<AuditCase> cases)
 {
@@ -243,6 +270,76 @@ static IReadOnlyList<InvariantFailure> CheckInvariants(ShootingAdviceService adv
 static InvariantFailure Fail(AuditCase auditCase, string invariantName, string message) =>
     new(auditCase.Number, auditCase.Name, invariantName, message);
 
+static InvariantFailure FailFieldWindow(FieldWindowAuditCase auditCase, string invariantName, string message) =>
+    new(auditCase.Number, auditCase.Name, invariantName, message);
+
+static IReadOnlyList<InvariantFailure> CheckFieldWindowInvariants(FieldWindowService fieldWindowService, IReadOnlyList<FieldWindowAuditCase> cases)
+{
+    var failures = new List<InvariantFailure>();
+
+    foreach (var auditCase in cases)
+    {
+        var recommendation = fieldWindowService.GetRecommendation(auditCase.Phase, auditCase.Weather);
+        var allText = GetFieldWindowText(recommendation);
+
+        if (auditCase.Invariant == FieldWindowInvariant.OvercastLowLight)
+        {
+            if (recommendation == null)
+            {
+                failures.Add(FailFieldWindow(auditCase, "Overcast low-light recommendation", "No recommendation was produced."));
+                continue;
+            }
+
+            if (recommendation.Tone != FieldWindowTone.Caution)
+                failures.Add(FailFieldWindow(auditCase, "Overcast low-light tone", "Overcast blue-hour/night guidance should be cautionary, not a generic good window."));
+
+            if (!ContainsAny(allText, "night-light", "city lights", "reflections", "silhouettes"))
+                failures.Add(FailFieldWindow(auditCase, "Overcast low-light subject direction", "Overcast low-light guidance does not point toward night-light subjects."));
+
+            if (ContainsAny(allText, "Good window now", "golden-hour color may be weak", "you do not need to wait"))
+                failures.Add(FailFieldWindow(auditCase, "Overcast low-light daylight copy", "Overcast low-light guidance reused daylight overcast copy."));
+        }
+        else if (auditCase.Invariant == FieldWindowInvariant.OvercastDaylight)
+        {
+            if (recommendation == null)
+            {
+                failures.Add(FailFieldWindow(auditCase, "Overcast daylight recommendation", "No recommendation was produced."));
+                continue;
+            }
+
+            if (recommendation.Tone != FieldWindowTone.Good)
+                failures.Add(FailFieldWindow(auditCase, "Overcast daylight tone", "Daylight overcast guidance should be a good stable-light window."));
+
+            if (!ContainsAny(allText, "soft and stable", "water", "foliage", "street details", "portraits"))
+                failures.Add(FailFieldWindow(auditCase, "Overcast daylight subject direction", "Daylight overcast guidance does not keep the stable soft-light recipe."));
+        }
+        else if (auditCase.Invariant == FieldWindowInvariant.RainSoon)
+        {
+            if (recommendation == null)
+            {
+                failures.Add(FailFieldWindow(auditCase, "Rain soon recommendation", "No recommendation was produced for upcoming rain."));
+                continue;
+            }
+
+            if (!ContainsAny(allText, "Rain risk rises", "must-have shot", "before the weather turns"))
+                failures.Add(FailFieldWindow(auditCase, "Rain soon timing", "Upcoming rain guidance does not make the timing risk explicit."));
+        }
+        else if (auditCase.Invariant == FieldWindowInvariant.TomorrowRainHigh)
+        {
+            if (recommendation == null)
+            {
+                failures.Add(FailFieldWindow(auditCase, "Tomorrow rain recommendation", "No recommendation was produced for high rain tomorrow."));
+                continue;
+            }
+
+            if (!ContainsAny(allText, "tomorrow rain chance", "today", "dry window"))
+                failures.Add(FailFieldWindow(auditCase, "Tomorrow rain timing", "High rain tomorrow guidance does not make today's window explicit."));
+        }
+    }
+
+    return failures;
+}
+
 static string GetAdviceText(ShootingAdvice advice)
 {
     var parts = new List<string>();
@@ -254,6 +351,25 @@ static string GetAdviceText(ShootingAdvice advice)
     parts.AddRange(advice.RiskWarnings);
     parts.AddRange(advice.AdjustmentSteps);
     parts.AddRange(advice.FieldSteps);
+
+    return string.Join("\n", parts);
+}
+
+static string GetFieldWindowText(FieldWindowRecommendation? recommendation)
+{
+    if (recommendation == null)
+        return "";
+
+    var parts = new List<string>
+    {
+        recommendation.Title,
+        recommendation.Summary
+    };
+
+    if (!string.IsNullOrWhiteSpace(recommendation.Detail))
+        parts.Add(recommendation.Detail);
+
+    parts.AddRange(recommendation.Notes);
 
     return string.Join("\n", parts);
 }
@@ -343,6 +459,38 @@ static IReadOnlyList<MatrixSmokeScenario> GetMatrixSmokeScenarios() =>
     new("Night-sky handheld", LightPhase.Night, "clear", ClearWeather, ShootingStyle.NightSky, CameraSupportMode.Handheld, SubjectMotion.Still),
     new("Night-sky tripod", LightPhase.Night, "clear", ClearWeather, ShootingStyle.NightSky, CameraSupportMode.Tripod, SubjectMotion.Still),
     new("Astronomical-dusk night-sky tripod", LightPhase.AstronomicalDusk, "clear", ClearWeather, ShootingStyle.NightSky, CameraSupportMode.Tripod, SubjectMotion.Still)
+];
+
+static IReadOnlyList<FieldWindowAuditCase> GetFieldWindowCases() =>
+[
+    new(
+        1,
+        "Overcast blue dusk is night-light specific",
+        "heavy cloud, dry, low upcoming rain",
+        MakePhaseInfo(LightPhase.BlueDusk, "Phase_BlueDusk"),
+        HeavyCloudWeatherWithForecast(tomorrowRainChance: 55, hourlyProbabilities: [4, 7, 6, 5]),
+        FieldWindowInvariant.OvercastLowLight),
+    new(
+        2,
+        "Overcast afternoon remains a soft-light window",
+        "heavy cloud, dry, low upcoming rain",
+        MakePhaseInfo(LightPhase.Afternoon, "Phase_Afternoon"),
+        HeavyCloudWeatherWithForecast(tomorrowRainChance: 20, hourlyProbabilities: [5, 8, 12, 10]),
+        FieldWindowInvariant.OvercastDaylight),
+    new(
+        3,
+        "Dry now but rain risk rises soon",
+        "mixed cloud, dry now, rain risk in forecast",
+        MakePhaseInfo(LightPhase.Afternoon, "Phase_Afternoon"),
+        MixedCloudWeatherWithForecast(tomorrowRainChance: 35, hourlyProbabilities: [10, 25, 65, 70]),
+        FieldWindowInvariant.RainSoon),
+    new(
+        4,
+        "Dry today before high rain tomorrow",
+        "mixed cloud, dry now, high rain tomorrow",
+        MakePhaseInfo(LightPhase.Morning, "Phase_Morning"),
+        MixedCloudWeatherWithForecast(tomorrowRainChance: 80, hourlyProbabilities: [5, 10, 12, 8]),
+        FieldWindowInvariant.TomorrowRainHigh)
 ];
 
 static IReadOnlyList<AuditCase> GetHighRiskCases() =>
@@ -1267,6 +1415,46 @@ static WeatherInfo HeavyCloudWeather() => new()
     IsGoodForPhoto = false
 };
 
+static WeatherInfo HeavyCloudWeatherWithForecast(int tomorrowRainChance, IReadOnlyList<int> hourlyProbabilities)
+{
+    var weather = HeavyCloudWeather();
+    weather.TomorrowPrecipitationProbability = tomorrowRainChance;
+    weather.HourlyForecast = MakeHourlyForecast(hourlyProbabilities);
+    return weather;
+}
+
+static WeatherInfo MixedCloudWeatherWithForecast(int tomorrowRainChance, IReadOnlyList<int> hourlyProbabilities)
+{
+    var weather = MixedCloudWeather();
+    weather.TomorrowPrecipitationProbability = tomorrowRainChance;
+    weather.HourlyForecast = MakeHourlyForecast(hourlyProbabilities);
+    return weather;
+}
+
+static IReadOnlyList<HourlyWeatherForecast> MakeHourlyForecast(IReadOnlyList<int> probabilities)
+{
+    var start = DateTime.Today.AddHours(14);
+    return probabilities
+        .Select((probability, index) => new HourlyWeatherForecast
+        {
+            Time = start.AddHours(index),
+            CloudCover = 80,
+            PrecipitationProbability = probability,
+            Precipitation = 0
+        })
+        .ToList();
+}
+
+static LightPhaseInfo MakePhaseInfo(LightPhase phase, string keyPrefix) => new()
+{
+    Phase = phase,
+    Icon = "",
+    Name = $"{keyPrefix}_Name",
+    Description = $"{keyPrefix}_Desc",
+    NextPhase = $"{keyPrefix}_Next",
+    Rating = 3
+};
+
 static WeatherInfo RainyWeather() => new()
 {
     CloudCover = 90,
@@ -1330,6 +1518,22 @@ internal sealed record InvariantFailure(
     string CaseName,
     string InvariantName,
     string Message);
+
+internal enum FieldWindowInvariant
+{
+    OvercastLowLight,
+    OvercastDaylight,
+    RainSoon,
+    TomorrowRainHigh
+}
+
+internal sealed record FieldWindowAuditCase(
+    int Number,
+    string Name,
+    string WeatherLabel,
+    LightPhaseInfo Phase,
+    WeatherInfo Weather,
+    FieldWindowInvariant Invariant);
 
 internal sealed record MatrixSmokeScenario(
     string Name,

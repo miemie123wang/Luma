@@ -30,6 +30,7 @@ try {
         'matrix-smoke',
         'high-risk',
         'regression',
+        'field-window',
         'travel-t6-sept-iles',
         'travel-aps-c-landscape'
     )
