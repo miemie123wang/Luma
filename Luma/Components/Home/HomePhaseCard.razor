@@ -32,7 +32,9 @@
     [Parameter, EditorRequired] public LightPhaseInfo Phase { get; set; } = default!;
     [Parameter] public WeatherInfo? Weather { get; set; }
 
-    private string DescriptionKey => HasHeavyCloudOverHarshDaylight
+    private string DescriptionKey => HasHeavyCloudOverBlueHour
+        ? "Phase_CloudyBlueHour_Desc"
+        : HasHeavyCloudOverHarshDaylight
         ? "Phase_CloudyDaylight_Desc"
         : Phase.Description;
 
@@ -47,4 +49,8 @@
     private bool HasHeavyCloudOverHarshDaylight =>
         Weather?.CloudCover >= 75 &&
         Phase.Phase is LightPhase.Morning or LightPhase.Midday or LightPhase.Afternoon;
+
+    private bool HasHeavyCloudOverBlueHour =>
+        Weather?.CloudCover >= 85 &&
+        Phase.Phase is LightPhase.BlueHour or LightPhase.BlueDusk;
 }

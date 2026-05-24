@@ -23,6 +23,7 @@ public class FieldWindowService
         var highCloudCover = weather.CloudCover >= 85;
         var highRainTomorrow = tomorrowRainChance >= 60;
         var hourlyNote = GetHourlyWindowNote(weather);
+        var isLowLightWindow = IsLowLightWindow(phase.Phase);
 
         if (!isDryNow)
         {
@@ -38,6 +39,30 @@ public class FieldWindowService
                 Detail = highRainTomorrow
                     ? Text("FieldWindow_TomorrowRainStillHigh", tomorrowRainChance!.Value)
                     : null,
+                Notes = notes,
+                Tone = FieldWindowTone.Caution
+            };
+        }
+
+        if (highCloudCover && isLowLightWindow)
+        {
+            var notes = new List<string>
+            {
+                Text("FieldWindow_OvercastLowLight_Recipe"),
+                Text("FieldWindow_OvercastLowLight_Settings")
+            };
+
+            if (hourlyNote != null)
+                notes.Insert(0, hourlyNote);
+
+            return new FieldWindowRecommendation
+            {
+                Icon = "🌃",
+                Title = Text("FieldWindow_OvercastLowLight_Title"),
+                Summary = Text("FieldWindow_OvercastLowLight_Summary", weather.CloudCover),
+                Detail = highRainTomorrow
+                    ? Text("FieldWindow_TomorrowRainHigh", tomorrowRainChance!.Value)
+                    : Text("FieldWindow_OvercastLowLight_Detail"),
                 Notes = notes,
                 Tone = FieldWindowTone.Caution
             };
@@ -61,7 +86,7 @@ public class FieldWindowService
                 Summary = Text("FieldWindow_Overcast_Summary", weather.CloudCover),
                 Detail = highRainTomorrow
                     ? Text("FieldWindow_TomorrowRainHigh", tomorrowRainChance!.Value)
-                    : Text("FieldWindow_Overcast_Detail"),
+                    : null,
                 Notes = notes,
                 Tone = FieldWindowTone.Good
             };
@@ -100,6 +125,13 @@ public class FieldWindowService
         var maxProbability = weather.HourlyForecast.Max(point => point.PrecipitationProbability);
         return Text("FieldWindow_Hourly_DryWindow", maxProbability);
     }
+
+    private static bool IsLowLightWindow(LightPhase phase) => phase is
+        LightPhase.BlueHour or
+        LightPhase.BlueDusk or
+        LightPhase.NauticalDusk or
+        LightPhase.AstronomicalDusk or
+        LightPhase.Night;
 
     private string Text(string key, params object[] arguments) => _localizer[key, arguments].ToString();
 }
